@@ -155,8 +155,13 @@ const categoryData = {
 document.querySelectorAll('.tv-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const category = btn.getAttribute('data-category');
+    if (!categoryData[category]) {
+      console.error(`Category ${category} 不存在於 categoryData 中`);
+      return;
+    }
+
     const groups = categoryData[category];
-    categoryTitle.textContent = btn.alt;
+    categoryTitle.textContent = btn.alt || '小組';
     groupsContainer.innerHTML = '';
 
     groups.forEach(group => {
@@ -181,3 +186,4 @@ backButton.addEventListener('click', () => {
     gsap.fromTo(tvScreen, { opacity: 0 }, { opacity: 1, duration: 0.5 });
   }});
 });
+

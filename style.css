@@ -13,7 +13,7 @@ body {
   background-size: auto;
   background-attachment: fixed;
   background-position: center center;
-  font-family: 'Noto Serif TC', 'Cormorant Garamond', serif;
+  font-family: 'FangSong', '仿宋', 'FangSong_GB2312', 'Source Han Serif TC', 'Noto Serif TC', serif;
   color: var(--text-light);
   overflow-x: hidden;
 }
@@ -498,14 +498,27 @@ body {
 }
 
 #back-button {
-  padding: 10px 20px;
-  margin: 10px;
-  cursor: pointer;
-  background: #09500f;
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: none;
   border: none;
-  color: #e6c967;
-  font-size: 16px;
-  border-radius: 4px;
+  cursor: pointer;
+  z-index: 10;
+  padding: 0;
+}
+
+#back-icon {
+  width: 48px;   /* 或依需求調整大小 */
+  height: auto;
+  transition: transform 0.3s ease, filter 0.3s ease;
+  filter: drop-shadow(0 0 6px rgba(230, 201, 103, 0.5));
+}
+
+#back-button:hover #back-icon {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 10px rgba(230, 201, 103, 0.8));
 }
 
 #category-title {
