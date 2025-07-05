@@ -225,133 +225,73 @@ body {
   height: 80vh;
 }
 
+/* 展覽介紹區潑墨背景與副標題 */
 .intro-section {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 80px 20px;
-  min-height: 80vh;
-  text-align: center;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
 }
 
-.intro-text.flower-frame-container {
-  position: relative;
-  max-width: 800px;
-  width: 90%;
-  aspect-ratio: 16 / 9;
-  margin: 0 auto;
-  background: url('flower2.png') center center no-repeat;
-  background-size: contain;
-}
-
-.intro-title-center {
+#ink-splash-canvas {
   position: absolute;
-  top: 40%;
-  left: 48%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.intro-content {
+  position: absolute;
+  top: 50%;
+  left: 72%; /* 右移避免被潑墨擋住 */
   transform: translate(-50%, -50%);
-  font-size: 42px;
-  color: #2e3a14;
-  font-weight: bold;
+  text-align: left;
   z-index: 2;
+  color: #2e3a14;
 }
 
-/* 套用於所有副標文字 */
-.subtitle-glow-underline {
-  position: relative;
-  display: inline-block;
-  color: #3e2a14; /* 深褐穩重 */
-  font-weight: 500;
+.intro-title {
+  font-size: 64px;
+  margin: 0 0 20px 0;
+  opacity: 0;
 }
 
-
-.subtitle-frame {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-}
-
-.subtitle-segment {
-  position: absolute;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 20px;
-  color: #861900;
+.intro-subtitles p {
+  font-size: 24px;
+  margin: 8px 0;
+  opacity: 0;
   white-space: nowrap;
-  z-index: 5;
+  overflow: hidden;
+  border-right: 2px solid #2e3a14;
 }
 
-.subtitle-segment.top {
-  top: 10px;
-  left: -10%;
-  transform: translateX(50%);
+@media (max-width: 768px) {
+  .intro-content {
+    left: 55%;
+  }
+  .intro-title {
+    font-size: 36px;
+  }
+  .intro-subtitles p {
+    font-size: 18px;
+  }
 }
 
-.subtitle-segment.bottom {
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(50%);
+/* 打字機效果 */
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
 }
 
-.subtitle-segment.left,
-.subtitle-segment.right {
-  writing-mode: vertical-rl;
-  text-orientation: upright;
-  font-size: 22px;
-  color: #861900;
-  white-space: nowrap;
-  line-height: 1.6;
+@keyframes blink-caret {
+  0%, 100% { border-color: transparent; }
+  50% { border-color: rgba(0,0,0,0.5); }
 }
 
-.subtitle-segment.left {
-  top: 5%;
-  left: -20px;
-  transform: translateY(50%);
-}
 
-.subtitle-segment.right {
-  top: -10%;
-  right: 30px;
-  transform: translateY(50%);
-}
 
-/* 水平文字下劃線掃光 */
-.subtitle-glow-underline::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  height: 2px;
-  width: 100%;
-  background: linear-gradient(90deg, rgba(230, 201, 103, 0) 0%, rgba(19, 87, 0, 0.8) 50%, rgba(230, 201, 103, 0) 100%);
-  background-size: 200% 100%;
-  animation: glow-underline 4s linear infinite;
-}
 
-/* 垂直文字側邊線掃光 */
-.subtitle-vertical-glow::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 2px;
-  height: 100%;
-  background: linear-gradient(0deg, rgba(230, 201, 103, 0) 0%, rgba(19, 87, 0, 0.8) 50%, rgba(230, 201, 103, 0) 100%);
-  background-size: 100% 200%;
-  animation: glow-underline-vertical 4s linear infinite;
-}
-
-@keyframes glow-underline {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-@keyframes glow-underline-vertical {
-  0% { background-position: 0 200%; }
-  100% { background-position: 0 -200%; }
-}
 
 .transition-door {
   position: fixed;

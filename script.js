@@ -116,6 +116,98 @@ window.addEventListener("load", () => {
   }, 1800);
 });
 
+// GSAP 註冊
+gsap.registerPlugin(ScrollTrigger);
+
+// 潑墨動畫修正
+const canvas = document.getElementById('ink-splash-canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const particles = [];
+const particleCount = 600; // 更豐富但適度
+const splashX = window.innerWidth * 0.3;
+const splashY = window.innerHeight * 0.5;
+
+function createParticles() {
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: splashX,
+      y: splashY,
+      radius: Math.random() * 60 + 10,
+      opacity: Math.random() * 0.2 + 0.3,
+      scale: 0,
+      speed: Math.random() * 0.05 + 0.01,
+      dx: (Math.random() - 0.5) * 15,
+      dy: (Math.random() - 0.5) * 15
+    });
+  }
+}
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  let allDone = true;
+  particles.forEach(p => {
+    p.scale += p.speed;
+    p.x += p.dx * p.speed;
+    p.y += p.dy * p.speed;
+    if (p.scale < 1) allDone = false;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.radius * p.scale, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(0,0,0,${p.opacity})`;
+    ctx.fill();
+  });
+  if (!allDone) {
+    requestAnimationFrame(animateParticles);
+  } else {
+    revealText();
+  }
+}
+
+function splashIn() {
+  createParticles();
+  animateParticles();
+}
+
+// 打字機效果
+function typeWriterEffect(element, text, speed = 50) {
+  element.textContent = "";
+  let i = 0;
+  function type() {
+    if (i < text.length) {
+      element.textContent += text.charAt(i);
+      i++;
+      setTimeout(type, speed);
+    }
+  }
+  type();
+}
+
+function revealText() {
+  const title = document.querySelector('.intro-title');
+  const subtitles = [
+    document.getElementById('subtitle-line-1'),
+    document.getElementById('subtitle-line-2'),
+    document.getElementById('subtitle-line-3'),
+    document.getElementById('subtitle-line-4')
+  ];
+  gsap.to(title, { opacity: 1, duration: 1 });
+  const texts = subtitles.map(sub => sub.textContent);
+  subtitles.forEach((el, idx) => {
+    setTimeout(() => {
+      typeWriterEffect(el, texts[idx], 60);
+      gsap.to(el, { opacity: 1, duration: 0.5 });
+    }, 1200 + idx * 1000); // 每行間隔依序顯示
+  });
+}
+
+window.addEventListener('load', splashIn);
+
+
+
+
+
 // TV 區互動展示
 const tvScreen = document.getElementById('tv-screen');
 const categoryDisplay = document.getElementById('category-display');
