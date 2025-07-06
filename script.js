@@ -33,32 +33,73 @@ ScrollTrigger.create({
   onLeaveBack: () => gsap.to("#walkway", { opacity: 1, duration: 0.5 })
 });
 
-// 門動畫
+// ====== 門動畫完整鎖定滾輪版本 ======
+
 const leftDoor = document.querySelector('.left-door');
 const rightDoor = document.querySelector('.right-door');
 
-function playDoorTransition(openToTV = true) {
-  return new Promise(resolve => {
-    leftDoor.classList.add('active');
-    rightDoor.classList.add('active');
-    leftDoor.classList.remove('open');
-    rightDoor.classList.remove('open');
-
-    setTimeout(() => {
-      leftDoor.classList.add('open');
-      rightDoor.classList.add('open');
-      resolve();
-    }, 1200);
-  });
+// 滾動鎖定 / 解鎖
+function lockScroll() {
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('wheel', preventDefault, { passive: false });
+    window.addEventListener('touchmove', preventDefault, { passive: false });
+}
+function unlockScroll() {
+    document.body.style.overflow = '';
+    window.removeEventListener('wheel', preventDefault);
+    window.removeEventListener('touchmove', preventDefault);
+}
+function preventDefault(e) {
+    e.preventDefault();
 }
 
+// 播放門動畫完整鎖住滾動流程
+function playDoorTransition(openToTV = true) {
+    return new Promise(resolve => {
+        lockScroll(); // 播放前鎖住滾動
+
+        // ===== 關門動畫開始 =====
+        leftDoor.classList.add('active');
+        rightDoor.classList.add('active');
+        leftDoor.classList.remove('open');
+        rightDoor.classList.remove('open');
+
+        setTimeout(() => {
+            // ===== 開門動畫開始 =====
+            leftDoor.classList.add('open');
+            rightDoor.classList.add('open');
+
+            setTimeout(() => {
+                unlockScroll(); // 播放完整解鎖滾動
+                resolve();
+            }, 1200); // 開門動畫時間
+
+        }, 1200); // 關門動畫時間
+    });
+}
+
+// 防止重複觸發
+let doorAnimationPlaying = false;
+
+function safePlayDoorTransition(openToTV = true) {
+    if (doorAnimationPlaying) return;
+    doorAnimationPlaying = true;
+
+    playDoorTransition(openToTV).then(() => {
+        doorAnimationPlaying = false;
+    });
+}
+
+// ScrollTrigger 設定
 ScrollTrigger.create({
-  trigger: "#tv-section",
-  start: "top 80%",
-  end: "top 20%",
-  onEnter: () => playDoorTransition(true),
-  onLeaveBack: () => playDoorTransition(false),
+    trigger: "#group-section",
+    start: "top 80%",
+    end: "top 20%",
+    onEnter: () => safePlayDoorTransition(true),
+    onLeaveBack: () => safePlayDoorTransition(false),
 });
+
+
 
 // 粒子沙效果
 const container = document.getElementById("sand-container");
@@ -209,7 +250,7 @@ window.addEventListener('load', splashIn);
 
 
 // TV 區互動展示
-const tvScreen = document.getElementById('tv-screen');
+const tvScreen = document.getElementById('group-screen');
 const categoryDisplay = document.getElementById('category-display');
 const categoryTitle = document.getElementById('category-title');
 const groupsContainer = document.getElementById('groups-container');
@@ -244,7 +285,7 @@ const categoryData = {
 };
 
 
-document.querySelectorAll('.tv-btn').forEach(btn => {
+document.querySelectorAll('.group-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const category = btn.getAttribute('data-category');
     if (!categoryData[category]) {
@@ -279,3 +320,33 @@ backButton.addEventListener('click', () => {
   }});
 });
 
+// 最新消息動畫區：
+document.addEventListener("DOMContentLoaded", () => {
+  gsap.registerPlugin(ScrollTrigger);
+
+  gsap.utils.toArray(".news-item").forEach((item, index) => {
+    gsap.from(item, {
+      opacity: 0,
+      y: 50,
+      duration: 0.8,
+      delay: index * 0.2,
+      scrollTrigger: {
+        trigger: item,
+        start: "top 80%",
+        toggleActions: "play none none none",
+      }
+    });
+  });
+
+  // 若需要 SVG 電話線動畫可於此添加：
+  // gsap.from("#telephone-line-path", {
+  //   strokeDasharray: "500",
+  //   strokeDashoffset: "500",
+  //   duration: 2,
+  //   scrollTrigger: {
+  //     trigger: "#news",
+  //     start: "top center",
+  //     toggleActions: "play none none none",
+  //   }
+  // });
+});
