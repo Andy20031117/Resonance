@@ -645,6 +645,72 @@ body {
   color: #f7f1e5;
 }
 
+/* 關於我們區塊整體設定 */
+/* 區塊容器 */
+#about-section {
+  padding: 80px 0;
+  background-color: #a87f4a;
+}
+
+/* 標題樣式 */
+.about-title {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.about-title h2 {
+  font-size: 32px;
+  font-weight: bold;
+  font-family: 'Noto Serif TC', serif;
+  color: #f2d16b;
+}
+
+/* 卡片容器 */
+.about-cards {
+  width: 90%;
+  margin: auto;
+}
+
+/* 單張卡片區 */
+.about-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 60px 0;
+  gap: 100px;
+}
+
+.about-card.left {
+  flex-direction: row-reverse;
+}
+
+/* 照片框（此版本已無需裁切） */
+.image-box {
+  width: 300px;
+  height: auto;
+  margin: 0 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+}
+
+.image-box img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* 文字說明區塊 */
+.description {
+  font-family: 'Noto Serif TC', serif;
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+.description p {
+  margin: 6px 0;
+  font-size: 16px;
+}
+
 /* RWD 手機與平板 */
 @media (max-width: 768px) {
   .news-item {
