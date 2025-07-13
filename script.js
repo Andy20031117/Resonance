@@ -160,90 +160,117 @@ window.addEventListener("load", () => {
 // GSAP 註冊
 gsap.registerPlugin(ScrollTrigger);
 
-// 潑墨動畫修正
-const canvas = document.getElementById('ink-splash-canvas');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
 
-const particles = [];
-const particleCount = 600; // 更豐富但適度
-const splashX = window.innerWidth * 0.3;
-const splashY = window.innerHeight * 0.5;
 
-function createParticles() {
-  for (let i = 0; i < particleCount; i++) {
-    particles.push({
-      x: splashX,
-      y: splashY,
-      radius: Math.random() * 60 + 10,
-      opacity: Math.random() * 0.2 + 0.3,
-      scale: 0,
-      speed: Math.random() * 0.05 + 0.01,
-      dx: (Math.random() - 0.5) * 15,
-      dy: (Math.random() - 0.5) * 15
+// ========== 背景星光動畫 ==========
+const bgCanvas = document.getElementById("background-canvas");
+const bgCtx = bgCanvas.getContext("2d");
+let stars = [];
+
+function resizeBGCanvas() {
+  bgCanvas.width = window.innerWidth;
+  bgCanvas.height = window.innerHeight;
+}
+resizeBGCanvas();
+window.addEventListener("resize", resizeBGCanvas);
+
+for (let i = 0; i < 120; i++) {
+  stars.push({
+    x: Math.random() * bgCanvas.width,
+    y: Math.random() * bgCanvas.height,
+    radius: Math.random() * 1.5 + 0.5,
+    speed: Math.random() * 0.3 + 0.1
+  });
+}
+
+function drawStars() {
+  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+  bgCtx.fillStyle = "#fce7a4aa";
+  for (let s of stars) {
+    bgCtx.beginPath();
+    bgCtx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+    bgCtx.fill();
+    s.y += s.speed;
+    if (s.y > bgCanvas.height) s.y = 0;
+  }
+  requestAnimationFrame(drawStars);
+}
+drawStars();
+
+
+// ========== 沙漏沙粒動畫 ==========
+const sandCanvas = document.getElementById("sand-canvas");
+const sandCtx = sandCanvas.getContext("2d");
+let grains = [];
+
+function initGrains() {
+  grains = [];
+  for (let i = 0; i < 150; i++) {
+    grains.push({
+      x: Math.random() * sandCanvas.width,
+      y: Math.random() * (sandCanvas.height / 2),
+      vy: 0
     });
   }
 }
+initGrains();
 
-function animateParticles() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  let allDone = true;
-  particles.forEach(p => {
-    p.scale += p.speed;
-    p.x += p.dx * p.speed;
-    p.y += p.dy * p.speed;
-    if (p.scale < 1) allDone = false;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.radius * p.scale, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(0,0,0,${p.opacity})`;
-    ctx.fill();
-  });
-  if (!allDone) {
-    requestAnimationFrame(animateParticles);
-  } else {
-    revealText();
-  }
-}
-
-function splashIn() {
-  createParticles();
-  animateParticles();
-}
-
-// 打字機效果
-function typeWriterEffect(element, text, speed = 50) {
-  element.textContent = "";
-  let i = 0;
-  function type() {
-    if (i < text.length) {
-      element.textContent += text.charAt(i);
-      i++;
-      setTimeout(type, speed);
+function drawSand() {
+  sandCtx.clearRect(0, 0, sandCanvas.width, sandCanvas.height);
+  sandCtx.fillStyle = "#fce7a4";
+  for (let g of grains) {
+    g.vy += 0.05; // gravity
+    g.y += g.vy;
+    if (g.y > sandCanvas.height - 5) {
+      g.y = Math.random() * 10;
+      g.vy = 0;
     }
+    sandCtx.beginPath();
+    sandCtx.arc(g.x, g.y, 1.5, 0, Math.PI * 2);
+    sandCtx.fill();
   }
-  type();
+  requestAnimationFrame(drawSand);
 }
+drawSand();
 
-function revealText() {
-  const title = document.querySelector('.intro-title');
-  const subtitles = [
-    document.getElementById('subtitle-line-1'),
-    document.getElementById('subtitle-line-2'),
-    document.getElementById('subtitle-line-3'),
-    document.getElementById('subtitle-line-4')
-  ];
-  gsap.to(title, { opacity: 1, duration: 1 });
-  const texts = subtitles.map(sub => sub.textContent);
-  subtitles.forEach((el, idx) => {
-    setTimeout(() => {
-      typeWriterEffect(el, texts[idx], 60);
-      gsap.to(el, { opacity: 1, duration: 0.5 });
-    }, 1200 + idx * 1000); // 每行間隔依序顯示
-  });
+
+// ========== 旋轉文字控制 ==========
+const textSVG = document.getElementById("text-svg");
+let currentSpeed = 40;       // 初始旋轉秒數
+let targetSpeed = 40;        // 目標秒數
+const speedStep = 0.2;       // 平滑調整速度
+const root = document.documentElement;
+
+// hover 停止旋轉
+textSVG.addEventListener("mouseenter", () => {
+  textSVG.style.animationPlayState = "paused";
+});
+textSVG.addEventListener("mouseleave", () => {
+  textSVG.style.animationPlayState = "running";
+});
+
+// 點擊加速（逐漸加快）
+textSVG.addEventListener("click", () => {
+  if (targetSpeed > 5) {
+    targetSpeed -= 5;
+  }
+});
+
+// 平滑更新動畫變數
+function updateSpeed() {
+  if (currentSpeed !== targetSpeed) {
+    currentSpeed += (targetSpeed - currentSpeed) * speedStep;
+    if (Math.abs(currentSpeed - targetSpeed) < 0.1) {
+      currentSpeed = targetSpeed;
+    }
+    root.style.setProperty('--rotate-speed', currentSpeed + "s");
+  }
+  requestAnimationFrame(updateSpeed);
 }
+updateSpeed();
 
-window.addEventListener('load', splashIn);
+
+
 
 
 
