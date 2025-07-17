@@ -33,6 +33,57 @@ ScrollTrigger.create({
   onLeaveBack: () => gsap.to("#walkway", { opacity: 1, duration: 0.5 })
 });
 
+
+const links = document.querySelectorAll("nav a");
+const transition = document.getElementById("train-transition");
+const train = document.getElementById("train-image");
+const mist = document.getElementById("mist-effect");
+
+links.forEach(link => {
+  link.addEventListener("click", function (e) {
+    e.preventDefault();
+    const targetId = this.getAttribute("href");
+    const targetElement = document.querySelector(targetId);
+
+    // 顯示轉場容器
+    transition.style.display = "block";
+
+    // 1️⃣ 初始位置重設：右側畫面外
+    train.style.transform = "translate(100vw, -50%)";
+    mist.style.transform = "translateX(100vw) translateY(-50%)";
+
+    void train.offsetWidth;
+    void mist.offsetWidth;
+
+    // 2️⃣ 滑入畫面（火車 + 煙霧）
+    train.style.transform = "translate(0vw, -50%)";
+    mist.style.transform = "translateX(65vw) translateY(-50%)"; // 可微調
+
+    // 3️⃣ 畫面跳轉
+    setTimeout(() => {
+      targetElement.scrollIntoView({ behavior: "auto" });
+    }, 1200);
+
+    // 4️⃣ 離開畫面（火車 + 煙霧）
+    setTimeout(() => {
+      train.style.transform = "translate(-100vw, -50%)";
+      mist.style.transform = "translateX(-60vw) translateY(-50%)";
+    }, 1300);
+
+    // 5️⃣ 關閉轉場畫面
+    setTimeout(() => {
+      transition.style.display = "none";
+    }, 2000);
+  });
+});
+
+
+
+
+
+
+
+
 // ====== 門動畫完整鎖定滾輪版本 ======
 
 const leftDoor = document.querySelector('.left-door');

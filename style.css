@@ -158,6 +158,68 @@ body {
 
 .logo img { height: 80px; }
 
+/* 🔁 火車轉場容器 */
+#train-transition {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url('station-bg.png'); /* ✅ 加入背景圖 */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+
+/* 火車圖片初始位置在畫面右側外面 */
+#train-image {
+  position: absolute;
+  bottom: 0;
+  top: 50%;
+  left: 0;
+/* 新增這兩行來控制縮放比例 */
+  width: 80vw;          /* 原來是100%畫面寬，改小一點 */
+  max-width: 900px;     /* 可設定最大寬度，視情況微調 */
+  height: auto;
+  max-height: 100%;
+  transform: translate(100vw,-50%); /* 初始狀態：螢幕外 */
+  transition: transform 1s ease-in-out;
+}
+
+#mist-effect {
+  position: absolute;
+  top: 45%;
+  left: 0;
+  width: 500px;
+  height: 500px;
+  background-image: url('mist.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transform: translateX(100vw) translateY(-50%); /* ✅ 初始在右側螢幕外 */
+  transition: transform 1s ease-in-out; /* ✅ 要有 transition 才能動畫移動 */
+  opacity: 0.9;
+  z-index: 2;
+  pointer-events: none;
+}
+
+
+
+@keyframes mist-shake {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(1px, -1px) rotate(-0.3deg); }
+  50% { transform: translate(-1px, 1px) rotate(0.3deg); }
+  75% { transform: translate(1px, 1px) rotate(-0.2deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+
+
+
 .menu {
   display: flex;
   flex-wrap: wrap;
