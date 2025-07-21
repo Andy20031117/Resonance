@@ -799,9 +799,9 @@ body {
   color: #f7f1e5;
 }
 
-/* 關於我們區塊整體設定 */
-/* 區塊容器 */
-#about-section {
+
+/* about整體區塊 */
+#about {
   padding: 80px 0;
   background-color: #a87f4a;
 }
@@ -819,32 +819,44 @@ body {
   color: #f2d16b;
 }
 
-/* 卡片容器 */
+/* 外框容器 */
 .about-cards {
   width: 90%;
   margin: auto;
 }
 
-/* 單張卡片區 */
-.about-card {
+/* 每一排（兩人一組） */
+.about-row {
   display: flex;
-  align-items: center;
   justify-content: center;
-  margin: 60px 0;
-  gap: 100px;
+  gap: 80px;
+  margin-bottom: 60px;
+  flex-wrap: wrap; /* 手機版可堆疊 */
 }
 
-.about-card.left {
-  flex-direction: row-reverse;
+/* 單一人物卡片 */
+.about-card {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  display: flex;
+  gap: 10px;
+  max-width: 300px;
 }
 
-/* 照片框（此版本已無需裁切） */
+/* 圖片框 */
 .image-box {
   width: 300px;
   height: auto;
-  margin: 0 30px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.about-card.right .image-box {
   clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+}
+
+.about-card.left .image-box {
+  clip-path: polygon(0 0, 90% 0, 100% 100%, 10% 100%);
 }
 
 .image-box img {
@@ -853,7 +865,7 @@ body {
   display: block;
 }
 
-/* 文字說明區塊 */
+/* 文字區塊 */
 .description {
   font-family: 'Noto Serif TC', serif;
   max-width: 280px;
@@ -864,6 +876,15 @@ body {
   margin: 6px 0;
   font-size: 16px;
 }
+
+/* RWD：手機版垂直堆疊 */
+@media (max-width: 768px) {
+  .about-row {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
 
 /* RWD 手機與平板 */
 @media (max-width: 768px) {
