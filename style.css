@@ -323,134 +323,51 @@ body {
   width: 100%;
   height: 100vh;
   overflow: hidden;
-  background-color: #111;
-  font-family: 'Noto Serif TC', serif;
 }
 
-/* Reset 限定在區段內 */
-.intro-section * {
-  box-sizing: border-box;
-}
-
-/* === 背景星光 canvas === */
-.intro-section #background-canvas {
+#ink-splash-canvas {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  animation: backgroundDrift 10s ease-in-out infinite alternate;
-}
-
-/* 桌面專用粒子聚字 canvas */
-.intro-section #particle-text-canvas {
-  display: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   z-index: 1;
-}
-@media (min-width: 768px) {
-  .intro-section #particle-text-canvas {
-    display: block;
-  }
+  pointer-events: none;
 }
 
-/* === 主標題（左側置中）=== */
-.intro-section .intro-title-container {
+.intro-content {
   position: absolute;
   top: 50%;
-  left: 8%;
-  transform: translateY(-50%);
-  z-index: 2;
-}
-.intro-section .intro-title {
-  font-size: 4.5rem;
-  color: #FF6F61; /* 珊瑚紅 */
-  font-weight: normal;
-  font-family: 'Ma Shan Zheng', cursive;
-  text-shadow:
-    1px 1px 2px #845c00,   /* 金色陰影1 */
-    2px 2px 4px #d2a74499; /* 金色陰影2 較柔 */
-}
-
-
-/* === 沙漏與旋轉文字容器（右側）=== */
-.intro-section .sandglass-wrapper {
-  position: absolute;
-  top: 50%;
-  left: 65%;
+  left: 72%; /* 右移避免被潑墨擋住 */
   transform: translate(-50%, -50%);
+  text-align: left;
   z-index: 2;
+  color: #2e3a14;
 }
 
-/* 沙漏樣式 */
-.intro-section .sandglass {
-  position: relative;
-  width: 100px;
-  height: 220px;
-  margin: 0 auto;
-}
-.intro-section .top-sand,
-.intro-section .bottom-sand {
-  width: 100px;
-  height: 20px;
-  background-color: #d2a744;
-  border-radius: 50%;
-}
-.intro-section .top-sand {
-  position: absolute;
-  top: 0;
-}
-.intro-section .bottom-sand {
-  position: absolute;
-  bottom: 0;
-}
-.intro-section #sand-canvas {
-  position: absolute;
-  top: 20px;
-  left: 0;
-  width: 100px;
-  height: 180px;
-  z-index: 1;
+.intro-title {
+  font-size: 64px;
+  margin: 0 0 20px 0;
+  opacity: 0;
 }
 
-/* === 圓形旋轉 SVG 容器 === */
-.intro-section #text-svg {
-  font-family: 'Ma Shan Zheng', cursive;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 550px; /* ✅ 放大圓形大小 */
-  height: 550px;
-  z-index: 1;
-  animation: rotateText linear infinite;
-  animation-duration: var(--rotate-speed, 50s); /* ✅ 調整轉速變快 */
-  transition: animation-duration 0.5s ease;
-  pointer-events: auto;
-}
-.intro-section #text-svg:hover {
-  animation-play-state: paused;
-}
-
-/* === 旋轉文字樣式 + 閃爍動畫 === */
-.intro-section text {
-  fill: url(#text-gradient); /* ✅ 套用漸層填色 */
+.intro-subtitles p {
   font-size: 24px;
-  font-weight: bold;
-  animation: flicker 4s infinite ease-in-out;
-  text-shadow: 0 0 3px rgba(252, 231, 164, 0.3);
+  margin: 8px 0;
+  opacity: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 2px solid #2e3a14;
 }
 
-/* === 文字閃爍動畫 === */
-@keyframes flicker {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
-  75% { opacity: 0.85; }
+@media (max-width: 768px) {
+  .intro-content {
+    left: 55%;
+  }
+  .intro-title {
+    font-size: 36px;
+  }
+  .intro-subtitles p {
+    font-size: 18px;
+  }
 }
 
 /* === 背景星光動畫 === */
@@ -800,63 +717,68 @@ body {
 }
 
 
-/* about整體區塊 */
-#about {
-  padding: 80px 0;
-  background-color: #a87f4a;
-}
-
-/* 標題樣式 */
+/* 關於我們區塊整體設定 */
+/* 整體區塊 */
 .about-title {
   text-align: center;
-  margin-bottom: 60px;
-}
-
-.about-title h2 {
-  font-size: 32px;
+  font-size: 1.5rem;
   font-weight: bold;
-  font-family: 'Noto Serif TC', serif;
   color: #f2d16b;
+  margin: 40px 0 20px;
 }
 
-/* 外框容器 */
-.about-cards {
+.sub-title {
+  text-align: center;
+  margin: 60px 0 30px;
+}
+
+.sub-title h3 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #f2d16b;
+  font-family: 'Noto Serif TC', serif;
+  border-bottom: 2px solid #f2d16b;
+  display: inline-block;
+  padding-bottom: 8px;
+}
+
+.about-row:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.about-card:hover .image-box {
+  transform: scale(1.03);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+
+.about-rows {
   width: 90%;
   margin: auto;
 }
 
-/* 每一排（兩人一組） */
 .about-row {
   display: flex;
   justify-content: center;
   gap: 80px;
   margin-bottom: 60px;
-  flex-wrap: wrap; /* 手機版可堆疊 */
+  flex-wrap: wrap;
 }
 
-/* 單一人物卡片 */
+/* 每張卡片：一張照片 + 一組文字 */
 .about-card {
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
   display: flex;
-  gap: 10px;
-  max-width: 300px;
+  align-items: center;
+  gap: 20px;
 }
 
-/* 圖片框 */
+/* 照片基本樣式 */
 .image-box {
   width: 300px;
-  height: auto;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.about-card.right .image-box {
-  clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
-}
-
-.about-card.left .image-box {
-  clip-path: polygon(0 0, 90% 0, 100% 100%, 10% 100%);
 }
 
 .image-box img {
@@ -865,24 +787,149 @@ body {
   display: block;
 }
 
-/* 文字區塊 */
+/* 左右傾斜形狀 */
+.image-box.right {
+  clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+}
+
+.image-box.left {
+  clip-path: polygon(0 0, 90% 0, 100% 100%, 10% 100%);
+}
+
+/* 文字樣式 */
 .description {
   font-family: 'Noto Serif TC', serif;
-  max-width: 280px;
+  max-width: 180px;
   line-height: 1.5;
 }
 
 .description p {
   margin: 6px 0;
   font-size: 16px;
+  color: #fff;
 }
 
-/* RWD：手機版垂直堆疊 */
-@media (max-width: 768px) {
-  .about-row {
-    flex-direction: column;
-    align-items: center;
-  }
+
+/* 對齊方式 */
+.description.left {
+  text-align: left;
+}
+
+.description.right {
+  text-align: right;
+}
+
+.description p:first-child {
+  color: #ffe38f;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.description p:last-child {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+/* Podcast 區塊樣式 */
+/* === Podcast 輪播樣式 === */
+.about-subtitle {
+  text-align: center;
+  margin: 60px 0 30px;
+}
+.about-subtitle h3 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #f2d16b;
+  font-family: 'Noto Serif TC', serif;
+  border-bottom: 2px solid #f2d16b;
+  display: inline-block;
+  padding-bottom: 8px;
+}
+.podcast-carousel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  position: relative;
+  margin-top: 60px;
+  overflow: hidden;
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.episode {
+  flex-shrink: 0;
+  width: 300px;
+  margin: 0 10px;
+  opacity: 0.3;
+  transform: scale(0.8);
+  transition: all 0.5s ease;
+  text-align: center;
+}
+
+.episode.active {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 2;
+}
+
+.episode img {
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.episode-info {
+  margin-top: 15px;
+  color: #fff;
+  font-family: 'Noto Serif TC', serif;
+}
+
+.episode-info h4 {
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+
+.episode-info p {
+  font-size: 14px;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.links a {
+  margin: 0 6px;
+  text-decoration: none;
+  color: #f2d16b;
+  font-size: 14px;
+  border-bottom: 1px solid transparent;
+  transition: all 0.3s;
+}
+
+.links a:hover {
+  border-color: #f2d16b;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 32px;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.arrow.left {
+  left: 50px;
+}
+
+.arrow.right {
+  right: 30px;
 }
 
 
@@ -906,5 +953,7 @@ body {
     text-align: center;
   }
 }
+
+
 
 
