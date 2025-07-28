@@ -336,29 +336,29 @@ const backButton = document.getElementById('back-button');
 
 const categoryData = {
   food: [
-    { name: "咩呷啥", desc: "從小吃到美食，讓我們為你一手包辦。" }
+    { name: "咩呷啥", desc: "哩咩呷啥？獻給選擇困難的你" , img: "grouplogo/meijiasha.png" , ig: "https://www.instagram.com/mei.jia.sha?igsh=MnJmMm1ocHJ6NjZs", web: "https://meijiasha.cc/" },
   ],
   clothing: [
-    { name: "Second Han Easy", desc: "打造校園二手生活圈，屬於大學生的歸屬感。" },
-    { name: "Vintaglo", desc: "一鍵選擇今天的OOTD，搭出你的生活樣貌。" }
+    { name: "Second Han Easy", desc: "打造校園二手生活圈，屬於大學生的歸屬感。" , img: "grouplogo/secondhan.png" , ig: "https://www.instagram.com/second_han.easy?igsh=MThnbWlmcHAwMThlcA==", web: "https://www.example.com" },
+    { name: "Vintaglo", desc: "每一件舊衣不只是循環利用，而是展現態度與風格的載體" , img: "grouplogo/vintaglo.png" ,ig: "https://www.instagram.com/vintaglo.__?igsh=OW05azV6c2QzZjV6", web: "https://www.example.com" },
   ],
   housing: [
-    { name: "藥嚀管", desc: "藥嚀在手，吃藥不愁，打造你的AI健康顧問。" },
-    { name: "未來居所", desc: "讓AI協助你大展身手，創建屬於你自己的房屋。" }
+    { name: "藥嚀管", desc: "藥嚀在手，吃藥不愁。" , img: "grouplogo/yaoningguan.png" , ig: "https://www.instagram.com/yao_ning_guan?igsh=MTN0Mnp6aG9vd25vdg==", web: "https://www.example.com" },
+    { name: "未來居所", desc: "讓AI協助你大展身手，創建屬於你自己的房屋。" , img: "grouplogo/futurenest.png" , ig: "https://www.instagram.com/future_nest111?igsh=MWxoNjlocHVhYjBlcw==", web: "https://www.example.com" },
   ],
   transport: [
-    { name: "自律控肉飯", desc: "挑選你想要的生活樣子，自律就從今天陪你一起。" }
+    { name: "自律控肉飯", desc: "時間自律是大家的課題，一起加入我們一起自律。" , img: "grouplogo/kongrolab.png" , ig: "https://www.instagram.com/kongro__lab?igsh=azB1Z2l6aG03NHl2", web: "https://www.example.com" },
   ],
   education: [
-    { name: "樂壓talks", desc: "用AI伙伴幫你關注心理健康，你的情緒我能看見！" },
-    { name: "Lunia", desc: "AI結合夢境紀錄，一種和自己對話的方式。" },
-    { name: "MaMoon", desc: "化身慈愛的母親，陪伴孩子走過語言黃金期。" },
-    { name: "彼站彼話", desc: "傳統文化不無聊，帶你進入趣味的閩南圈。" }
+    { name: "樂壓talks", desc: "AI陪你聊心事，壓力不再自己扛" , img: "grouplogo/leyatalks.png" , ig: "https://www.instagram.com/le_ya.talks?igsh=a3U3aDgxbTNjNnAx", web: "https://leyatalks.com/" },
+    { name: "Lunia", desc: "做一個能記錄夢的地方。在Lunia,夢不只是夢。" , img: "grouplogo/lunia.png" , ig: "https://www.instagram.com/lunia_diary?igsh=czVkdjgzNWI3NWM1", web: "https://www.example.com" },
+    { name: "MaMoon", desc: "會說話的好朋友 陪伴孩子的每一天。" , img: "grouplogo/mamoon.png" , ig: "https://www.instagram.com/mamoon_0223?igsh=MTIyZHFpMmc4ZDE2Ng==", web: "https://www.example.com" },
+    { name: "彼站彼話", desc: "傳統文化不無聊，帶你進入趣味的閩南圈。" , img: "grouplogo/bizhanbihua.png" , ig: "https://www.instagram.com/hitetsam_game?igsh=YXl2Y3RzeDZ2bTR1", web: "https://www.example.com" },
   ],
   entertainment: [
-    { name: "青山", desc: "一次跨越時代的對話，述說神明與人間的故事。" },
-    { name: "RightAway", desc: "你的行李箱裝的不只是行李，右滑遇見陪伴你的下一站。" },
-    { name: "光腳工作室", desc: "創造寓言色彩的魔法世界，體驗AI思維扮演。" }
+    { name: "青山", desc: "青山出巡，故事啟程『一次跨越時代的對話，一段重新連結傳統的旅程』" , img: "grouplogo/qingshan.png" , ig: "https://www.instagram.com/qingshan.ics?igsh=MWVzaGhzYzY1N3htNA==", web: "https://www.example.com" },
+    { name: "Rightway", desc: "右滑，遇見你的下一站！" , img: "grouplogo/rightway.png" , ig: "https://www.instagram.com/rightway.trip?igsh=MTM2ZXAxc2U1ZGd4Zg==", web: "https://www.example.com" },
+    { name: "光腳工作室", desc: "劇情冒險遊戲熱烈開發中，關注更多我們的開發日常和進度吧！" , img: "grouplogo/lightfoot.png" , ig: "https://www.instagram.com/lightfootgames?igsh=N2JzaHh2c2h2MmRr", web: "https://www.example.com" },
   ]
 };
 
@@ -378,7 +378,16 @@ document.querySelectorAll('.group-btn').forEach(btn => {
     groups.forEach(group => {
       const card = document.createElement('div');
       card.className = 'group-card';
-      card.innerHTML = `<h3>${group.name}</h3><p>${group.desc}</p>`;
+      console.log(group.img);
+      card.innerHTML = `${group.img ? `<img src="${group.img}" alt="${group.name}" class="group-img">` : ''}
+                        <h3>${group.name}</h3>
+                        <p>${group.desc}</p>
+                        <div class="card-links">
+                          ${group.ig ? `<a href="${group.ig}" target="_blank"><img src="ig icon.png" class="icon" alt="Instagram"></a>` : ''}
+                          ${group.web ? `<a href="${group.web}" target="_blank"><img src="web icon.png" class="icon" alt="Website"></a>` : ''}
+                        </div>
+      `;
+
       groupsContainer.appendChild(card);
     });
 

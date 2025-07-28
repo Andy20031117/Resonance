@@ -683,7 +683,6 @@ body {
   height: auto;
   border-radius: 4px;
   margin-bottom: 10px;
-  display: none; /* 先隱藏，未來填圖時顯示 */
 }
 
 .group-card h3 {
@@ -696,6 +695,32 @@ body {
   font-size: 14px;
   line-height: 1.4;
   color: #ddd;
+}
+
+
+.group-img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain; /* 或用 cover */
+  display: block;
+  margin: 0 auto 12px;
+}
+
+.card-links {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.card-links .icon {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.2s ease;
+}
+
+.card-links .icon:hover {
+  transform: scale(1.2);
 }
 
 /* 最新消息區塊樣式 */
