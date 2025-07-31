@@ -425,6 +425,23 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // 展覽資訊
+  const posterImage = document.getElementById('poster-image');
+  const toggleIcon = document.getElementById('toggle-icon');
+
+  let showingIndoor = true;
+
+  toggleIcon.addEventListener('click', () => {
+    showingIndoor = !showingIndoor;
+    posterImage.src = showingIndoor
+      ? 'venueinfo.png'
+      : 'venueinfo2.png';
+    posterImage.alt = showingIndoor
+      ? '校內展資訊'
+      : '校外展資訊';
+  });
+
+
   // 若需要 SVG 電話線動畫可於此添加：
   // gsap.from("#telephone-line-path", {
   //   strokeDasharray: "500",

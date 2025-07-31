@@ -46,7 +46,7 @@
       <li><a href="#group-section">參展小組</a></li>
       <li><a href="#news">最新消息</a></li>
       <li><a href="#about">關於我們</a></li>
-      <li><a href="#info">展覽資訊</a></li>
+      <li><a href="#venue">展覽資訊</a></li>
       <li><a href="#sponsor">贊助與合作</a></li>
       <li><a href="#media">社群媒體</a></li>
       <li><a href="#game">遊戲互動</a></li>
@@ -291,12 +291,15 @@
 <div class="about-subtitle">
   <h3>Podcast 時話時說</h3>
 </div>
-
 <div class="podcast-carousel">
   <button class="arrow left">←</button>
   <div class="carousel-track">
     <!-- 預設順序: EP05, EP06, EP07, EP01, EP02, EP03, EP04 -->
-    <div class="episode"><img src="images/ep5.jpg" alt="EP05">
+    <div class="episode">
+      <div class="episode-image-wrapper">
+          <img class="episode-img" src="podcast/ep5.png" alt="EP05" />
+          <img class="film-frame" src="film-frame.png" alt="frame" />
+        </div>
       <div class="episode-info">
         <h4>EP05｜科技始終於人性？從「冰棒」聊隱私與被監控的日常</h4>
         <p>你手機裡裝了『冰棒』嗎？有沒有注意到它什麼都知道？App帶來便利的同時，我們是不是也默默犧牲了隱私？</p>
@@ -307,7 +310,11 @@
         </div>
       </div>
     </div>
-    <div class="episode"><img src="images/ep6.jpg" alt="EP06">
+    <div class="episode">
+      <div class="episode-image-wrapper">
+          <img class="episode-img" src="podcast/ep6.png" alt="EP06" />
+          <img class="film-frame" src="film-frame.png" alt="frame" />
+      </div>
       <div class="episode-info">
         <h4>EP06｜打開 IG 那一瞬間：演算法是不是我們的鏡子？</h4>
         <p>你有注意過嗎？打開 IG 搜尋頁的第一篇貼文，好像都剛好很懂我。今天來聊聊，那些我們以為是喜歡，其實是被演算法『投餵』的內容。</p>
@@ -318,7 +325,11 @@
         </div>
       </div>
     </div>
-    <div class="episode"><img src="images/ep7.jpg" alt="EP07">
+    <div class="episode">
+      <div class="episode-image-wrapper">
+          <img class="episode-img" src="podcast/ep7.png" alt="EP07" />
+          <img class="film-frame" src="film-frame.png" alt="frame" />
+      </div>
       <div class="episode-info">
         <h4>EP07｜我們是誰？世新資傳在做什麼</h4>
         <p>歡迎收聽本季最後一集的節目！今天，我們要來聊聊我們的背景——世新大學資訊傳播學系。</p>
@@ -329,7 +340,11 @@
         </div>
       </div>
     </div>
-    <div class="episode active"><img src="images/ep1.jpg" alt="EP01">
+    <div class="episode active">
+      <div class="episode-image-wrapper">
+          <img class="episode-img" src="podcast/ep1.png" alt="EP01" />
+          <img class="film-frame" src="film-frame.png" alt="frame" />
+      </div>
       <div class="episode-info">
         <h4>EP01｜時光留言箱：寫給過去與未來的自己</h4>
         <p>如果你可以對十年前的自己說一句話，你會說什麼？那你希望十年後的你，記得現在的你是什麼樣子？</p>
@@ -340,7 +355,11 @@
         </div>
       </div>
     </div>
-    <div class="episode"><img src="images/ep2.jpg" alt="EP02">
+    <div class="episode">
+      <div class="episode-image-wrapper">
+          <img class="episode-img" src="podcast/ep2.png" alt="EP02" />
+          <img class="film-frame" src="film-frame.png" alt="frame" />
+      </div>
       <div class="episode-info">
         <h4>EP02｜童年回憶：那些年，我們一起追的卡通與玩具</h4>
         <p>你還記得小時候最喜歡看的電視節目嗎？還有那個你一定搶著玩的玩具？今天就一起回到我們的童年吧！</p>
@@ -351,7 +370,11 @@
         </div>
       </div>
     </div>
-    <div class="episode"><img src="images/ep3.jpg" alt="EP03">
+    <div class="episode">
+      <div class="episode-image-wrapper">
+          <img class="episode-img" src="podcast/ep3.png" alt="EP03" />
+          <img class="film-frame" src="film-frame.png" alt="frame" />
+      </div>
       <div class="episode-info">
         <h4>EP03｜童年回憶：那些年，我們一起追的卡通與玩具</h4>
         <p>你還記得小時候最喜歡看的電視節目嗎？還有那個你一定搶著玩的玩具？今天就一起回到我們的童年吧！</p>
@@ -362,7 +385,11 @@
         </div>
       </div>
     </div>
-    <div class="episode"><img src="images/ep4.jpg" alt="EP04">
+    <div class="episode">
+      <div class="episode-image-wrapper">
+          <img class="episode-img" src="podcast/ep4.png" alt="EP04" />
+          <img class="film-frame" src="film-frame.png" alt="frame" />
+      </div>
       <div class="episode-info">
         <h4>EP04｜GPT大公開：我們都問了些什麼？</h4>
         <p>今天我們要揭曉：我們到底都問了 GPT 些什麼？</p>
@@ -378,6 +405,24 @@
 </div>
 
 </section>
+
+<!--#info 區塊 -->
+<section id="venue" class="venue-section">
+  <div class="venue-title">
+    <h2>展覽資訊</h2>
+  </div>
+
+  <div class="poster-wrapper">
+    <img src="venueinfo.png" alt="校內展資訊" id="poster-image" class="poster-image">
+  </div>
+
+  <div class="flip-icon-wrapper">
+    <img src="filp-icon.png" alt="" id="toggle-icon" class="flip-icon">
+  </div>
+</section>
+
+
+
   
 
 

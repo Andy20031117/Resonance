@@ -975,40 +975,52 @@ body {
   padding-bottom: 8px;
 }
 .podcast-carousel {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 20px;
-  position: relative;
-  margin-top: 60px;
   overflow: hidden;
+  margin: 60px auto;
+  width: 100%;
+  max-width: 1200px;
 }
 
 .carousel-track {
   display: flex;
   transition: transform 0.5s ease-in-out;
+  gap: 40px;
+  align-items: center;
 }
 
 .episode {
   flex-shrink: 0;
-  width: 300px;
-  margin: 0 10px;
+  width: 320px;
   opacity: 0.3;
-  transform: scale(0.8);
+  transform: scale(0.6);
   transition: all 0.5s ease;
   text-align: center;
+  pointer-events: none;
 }
 
-.episode.active {
-  opacity: 1;
-  transform: scale(1);
-  z-index: 2;
+.episode-image-wrapper {
+  position: relative;
+  width: 100%;
 }
 
-.episode img {
+.episode-img {
   width: 100%;
   border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  display: block;
+}
+
+.film-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 
 .episode-info {
@@ -1018,8 +1030,9 @@ body {
 }
 
 .episode-info h4 {
-  font-size: 18px;
+  font-size: 16px;
   margin-bottom: 6px;
+  line-height: 1.4;
 }
 
 .episode-info p {
@@ -1051,15 +1064,82 @@ body {
   color: #fff;
   cursor: pointer;
   z-index: 10;
+  padding: 10px;
 }
 
 .arrow.left {
-  left: 50px;
+  left: 20px;
 }
 
 .arrow.right {
-  right: 30px;
+  right: 20px;
 }
+
+/* 放大縮小邏輯：依照 index 設定樣式 */
+.episode.active {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.episode.prev,
+.episode.next {
+  opacity: 0.6;
+  transform: scale(0.8);
+}
+
+.episode.prev2,
+.episode.next2 {
+  opacity: 0.3;
+  transform: scale(0.6);
+}
+
+
+/* 展覽資訊 */
+.venue-section {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #f2d16b;
+  margin: 40px 0 20px;
+}
+
+.poster-wrapper {
+  max-width: 85%;
+  margin: 0 auto;
+}
+
+.poster-image {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  transition: opacity 0.4s ease-in-out;
+}
+
+.poster-label {
+  margin-top: 10px;
+  font-size: 16px;
+  color: #555;
+  font-weight: 500;
+}
+
+.flip-icon-wrapper {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.flip-icon {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.flip-icon:hover {
+  transform: rotate(180deg);
+}
+
 
 
 /* RWD 手機與平板 */
