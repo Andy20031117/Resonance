@@ -408,7 +408,7 @@ backButton.addEventListener('click', () => {
 });
 
 // 最新消息動畫區：
-document.addEventListener("DOMContentLoaded", () => {
+ document.addEventListener("DOMContentLoaded"), () => 
   gsap.registerPlugin(ScrollTrigger);
 
   gsap.utils.toArray(".news-item").forEach((item, index) => {
@@ -480,54 +480,43 @@ const path = document.querySelector('#flight-path');
 const trailSegments = [];
 const segmentCount = 5;
 for (let i = 0; i < segmentCount; i++) {
-  const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-  line.setAttribute("class", "trail-line");
-  trailSVG.appendChild(line);
-  trailSegments.push(line);
+  const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  line.setAttribute("class", "trail-line");
+  trailSVG.appendChild(line);
+  trailSegments.push(line);
 }
 
-// 初始化拖尾歷史位置（每段記一點點的座標）
+// 初始化拖尾歷史位置
 const trailHistory = Array(segmentCount).fill({ x: 0, y: 0 });
 
-// ✅ 紙飛機沿著路徑循環飛行動畫
+// ✅ 紙飛機沿著路徑循環飛行動畫 (修正後)
 gsap.to(plane, {
-  duration: 12,
-  repeat: -1,
-  ease: "none",
-  motionPath: {
-    path: path,
-    align: path,
-    alignOrigin: [0.5, 0.5],
-    autoRotate: true
-  },
-   onUpdate: updateTrails
-}); // 正確結尾，整個 gsap.to() 動畫物件結束
+  duration: 12,
+  repeat: -1,
+  ease: "none",
+  motionPath: {
+    path: path,
+    align: path,
+    alignOrigin: [0.5, 0.5],
+    autoRotate: true
+  },
+  onUpdate: function() {
+    // 獲取 GSAP 設定的當前位置
+    const currentX = gsap.getProperty(plane, "x");
+    const currentY = gsap.getProperty(plane, "y");
 
-function updateTrails() {
-  const matrix = plane.getScreenCTM();
-  const bbox = plane.getBBox();
-  const center = {
-    x: bbox.x + bbox.width / 2,
-    y: bbox.y + bbox.height / 2
-  };
+    // 更新拖尾歷史紀錄
+    trailHistory.pop();
+    trailHistory.unshift({ x: currentX, y: currentY });
 
-  const pt = plane.ownerSVGElement.createSVGPoint();
-  pt.x = center.x;
-  pt.y = center.y;
-  const transformed = pt.matrixTransform(matrix);
-
-  trailHistory.pop();
-  trailHistory.unshift({ x: transformed.x, y: transformed.y });
-
-  for (let i = 0; i < trailSegments.length; i++) {
-    const curr = trailHistory[i];
-    const next = trailHistory[i + 1] || trailHistory[i];
-    trailSegments[i].setAttribute("x1", curr.x);
-    trailSegments[i].setAttribute("y1", curr.y);
-    trailSegments[i].setAttribute("x2", next.x);
-    trailSegments[i].setAttribute("y2", next.y);
-  }
-}
-
-
-
+    // 根據歷史紀錄更新拖尾線段
+    for (let i = 0; i < trailSegments.length; i++) {
+      const curr = trailHistory[i];
+      const next = trailHistory[i + 1] || trailHistory[i];
+      trailSegments[i].setAttribute("x1", curr.x);
+      trailSegments[i].setAttribute("y1", curr.y);
+      trailSegments[i].setAttribute("x2", next.x);
+      trailSegments[i].setAttribute("y2", next.y);
+    }
+  }
+});
