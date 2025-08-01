@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500" preserveAspectRatio="none">
+  <path id="flight-path" d="M50,300 Q150,150 300,200 T500,260 Q650,180 750,250 T950,100" fill="none" stroke="#6a8b96" stroke-dasharray="5,5" stroke-width="2"/>
+</svg>

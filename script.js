@@ -441,16 +441,93 @@ document.addEventListener("DOMContentLoaded", () => {
       : '校外展資訊';
   });
 
+// 啟用所需 GSAP 插件
+gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 
-  // 若需要 SVG 電話線動畫可於此添加：
-  // gsap.from("#telephone-line-path", {
-  //   strokeDasharray: "500",
-  //   strokeDashoffset: "500",
-  //   duration: 2,
-  //   scrollTrigger: {
-  //     trigger: "#news",
-  //     start: "top center",
-  //     toggleActions: "play none none none",
-  //   }
-  // });
+// ☁️ 每個雲朵淡入+上浮進場動畫
+gsap.utils.toArray(".cloud-item").forEach((el, i) => {
+  gsap.from(el, {
+    opacity: 0,
+    y: 60,
+    duration: 1,
+    ease: "sine.inOut",
+    scrollTrigger: {
+      trigger: el,
+      start: "top 90%",
+      toggleActions: "play none none reset"
+    }
+  });
 });
+
+// ☁️ 雲朵持續上下浮動動畫
+document.querySelectorAll('.cloud-item').forEach((el) => {
+  gsap.to(el, {
+    y: "+=10",
+    duration: 2.5 + Math.random(),
+    ease: "sine.inOut",
+    repeat: -1,
+    yoyo: true,
+    delay: Math.random() * 2
+  });
+});
+
+// 取得紙飛機與 SVG 元素
+const plane = document.querySelector('.paper-plane');
+const trailSVG = document.querySelector('.trail-svg');
+const path = document.querySelector('#flight-path');
+
+// 初始化拖尾線段
+const trailSegments = [];
+const segmentCount = 5;
+for (let i = 0; i < segmentCount; i++) {
+  const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  line.setAttribute("class", "trail-line");
+  trailSVG.appendChild(line);
+  trailSegments.push(line);
+}
+
+// 初始化拖尾歷史位置（每段記一點點的座標）
+const trailHistory = Array(segmentCount).fill({ x: 0, y: 0 });
+
+// ✅ 紙飛機沿著路徑循環飛行動畫
+gsap.to(plane, {
+  duration: 12,
+  repeat: -1,
+  ease: "none",
+  motionPath: {
+    path: path,
+    align: path,
+    alignOrigin: [0.5, 0.5],
+    autoRotate: true
+  },
+   onUpdate: updateTrails
+}); // 正確結尾，整個 gsap.to() 動畫物件結束
+
+function updateTrails() {
+  const matrix = plane.getScreenCTM();
+  const bbox = plane.getBBox();
+  const center = {
+    x: bbox.x + bbox.width / 2,
+    y: bbox.y + bbox.height / 2
+  };
+
+  const pt = plane.ownerSVGElement.createSVGPoint();
+  pt.x = center.x;
+  pt.y = center.y;
+  const transformed = pt.matrixTransform(matrix);
+
+  trailHistory.pop();
+  trailHistory.unshift({ x: transformed.x, y: transformed.y });
+
+  for (let i = 0; i < trailSegments.length; i++) {
+    const curr = trailHistory[i];
+    const next = trailHistory[i + 1] || trailHistory[i];
+    trailSegments[i].setAttribute("x1", curr.x);
+    trailSegments[i].setAttribute("y1", curr.y);
+    trailSegments[i].setAttribute("x2", next.x);
+    trailSegments[i].setAttribute("y2", next.y);
+  }
+}
+
+
+
