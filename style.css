@@ -546,7 +546,16 @@ body {
   left: 52%;
   transform: translateX(-50%);
   font-size: 36px;
-  color: var(--gold);
+  color: #f2d16b;
+  text-align: center;
+}
+
+.group-title span {
+  display: block;
+  font-size: 1rem;
+  font-family: 'Cormorant Garamond', serif;
+  color: #ffe0c2;
+  margin-top: 8px;
 }
 
 .group-buttons {
@@ -759,9 +768,17 @@ body {
 .news-section h2 {
   text-align: center;
   font-size: 2.2rem;
-  color: #004705;
+  color: #552d07;
   margin-bottom: 40px;
   font-family: 'ZCOOL KuaiLe', cursive;
+}
+
+.news-title span {
+  display: block;
+  font-size: 1rem;
+  font-family: 'Cormorant Garamond', serif;
+  color: #ffe0c2;
+  margin-top: 8px;
 }
 
 .news-container {
@@ -780,7 +797,7 @@ body {
 .news-category {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #004705;
+  color: #552d07;
   margin: 40px 0 20px;
 }
 
@@ -819,7 +836,7 @@ body {
 
 .news-text h3 {
   font-size: 1.3rem;
-  color: #004705;
+  color: #552d07;
   margin-bottom: 0.5rem;
   font-weight: bold;
 }
@@ -843,8 +860,16 @@ body {
   text-align: center;
   font-size: 1.5rem;
   font-weight: bold;
-  color: #f2d16b;
+  color: #552d07;
   margin: 40px 0 20px;
+}
+
+.about-title span {
+  display: block;
+  font-size: 1rem;
+  font-family: 'Cormorant Garamond', serif;
+  color: #ffe0c2;
+  margin-top: 8px;
 }
 
 .sub-title {
@@ -855,9 +880,9 @@ body {
 .sub-title h3 {
   font-size: 24px;
   font-weight: bold;
-  color: #f2d16b;
+  color: #552d07;
   font-family: 'Noto Serif TC', serif;
-  border-bottom: 2px solid #f2d16b;
+  border-bottom: 2px solid #552d07;
   display: inline-block;
   padding-bottom: 8px;
 }
@@ -940,7 +965,7 @@ body {
 }
 
 .description p:first-child {
-  color: #ffe38f;
+  color: #552d07;
   font-weight: bold;
   font-size: 16px;
 }
@@ -959,9 +984,9 @@ body {
 .about-subtitle h3 {
   font-size: 24px;
   font-weight: bold;
-  color: #f2d16b;
+  color: #552d07;
   font-family: 'Noto Serif TC', serif;
-  border-bottom: 2px solid #f2d16b;
+  border-bottom: 2px solid #552d07;
   display: inline-block;
   padding-bottom: 8px;
 }
@@ -1016,7 +1041,7 @@ body {
 
 .episode-info {
   margin-top: 15px;
-  color: #fff;
+  color: #fdead6;
   font-family: 'Noto Serif TC', serif;
 }
 
@@ -1035,14 +1060,14 @@ body {
 .links a {
   margin: 0 6px;
   text-decoration: none;
-  color: #f2d16b;
+  color: #552d07;
   font-size: 14px;
   border-bottom: 1px solid transparent;
   transition: all 0.3s;
 }
 
 .links a:hover {
-  border-color: #f2d16b;
+  border-color: #552d07;
 }
 
 .arrow {
@@ -1091,8 +1116,16 @@ body {
   text-align: center;
   font-size: 1.5rem;
   font-weight: bold;
-  color: #f2d16b;
+  color: #552d07;
   margin: 40px 0 20px;
+}
+
+.venue-section span {
+  display: block;
+  font-size: 1rem;
+  font-family: 'Cormorant Garamond', serif;
+  color: #ffe0c2;
+  margin-top: 8px;
 }
 
 .poster-wrapper {
@@ -1131,6 +1164,28 @@ body {
   transform: rotate(180deg);
 }
 
+.poster-image.flipping {
+  animation: flipY 0.6s ease-in-out;
+}
+
+@keyframes flipY {
+  0% {
+    transform: perspective(800px) rotateY(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: perspective(800px) rotateY(90deg);
+    opacity: 0;
+  }
+  51% {
+    transform: perspective(800px) rotateY(-90deg);
+    opacity: 0;
+  }
+  100% {
+    transform: perspective(800px) rotateY(0deg);
+    opacity: 1;
+  }
+}
 
 
 /* RWD 手機與平板 */
@@ -1169,7 +1224,7 @@ body {
 .section-title {
   font-size: 2.8rem;
   font-family: 'ZCOOL KuaiLe', cursive;
-  color: #fff4e6;
+  color: #552d07;
   margin-bottom: 60px;
   letter-spacing: 2px;
 }
@@ -1224,8 +1279,8 @@ body {
 .partner-name {
   font-family: 'ZCOOL KuaiLe', cursive;
   font-size: 1.5rem;
-  color: #fff;
-  text-shadow: 2px 2px 0 #000;
+  color: #552d07;
+  text-shadow: 2px 2px 0 #e6b687;
   margin-top: 20px;
   line-height: 1.3;
 }

@@ -433,14 +433,30 @@ document.addEventListener("DOMContentLoaded", () => {
   // ✅ 展覽資訊切換功能
   const posterImage = document.getElementById('poster-image');
   const toggleIcon = document.getElementById('toggle-icon');
-  if (posterImage && toggleIcon) {
-    let showingIndoor = true;
-    toggleIcon.addEventListener('click', () => {
-      showingIndoor = !showingIndoor;
-      posterImage.src = showingIndoor ? 'venueinfo.png' : 'venueinfo2.png';
-      posterImage.alt = showingIndoor ? '校內展資訊' : '校外展資訊';
-    });
-  }
+  const posterLabel = document.getElementById('poster-label');
+
+  let isIndoor = true;
+
+  toggleIcon.addEventListener('click', () => {
+    posterImage.classList.add('flipping');
+
+    setTimeout(() => {
+      isIndoor = !isIndoor;
+      posterImage.src = isIndoor
+        ? 'venueinfo.png'
+        : 'venueinfo2.png';
+      posterImage.alt = isIndoor
+        ? '校內展資訊'
+        : '校外展資訊';
+      posterLabel.textContent = isIndoor
+        ? '目前顯示：校內展資訊'
+        : '目前顯示：校外展資訊';
+    }, 300); // 在半翻的時候換圖片
+
+    setTimeout(() => {
+      posterImage.classList.remove('flipping');
+    }, 600); // 動畫結束後移除 class
+  });
 
   // ✅ 雲朵區塊：淡入動畫 + 上下浮動
   gsap.utils.toArray(".cloud-item").forEach((el) => {
