@@ -407,10 +407,15 @@ backButton.addEventListener('click', () => {
   }});
 });
 
-// 最新消息動畫區：
- document.addEventListener("DOMContentLoaded"), () => 
-  gsap.registerPlugin(ScrollTrigger);
 
+
+// ✅ 所有動畫與功能統一初始化
+document.addEventListener("DOMContentLoaded", () => {
+
+  // ✅ GSAP 外掛註冊
+  gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
+
+  // ✅ 最新消息動畫區塊
   gsap.utils.toArray(".news-item").forEach((item, index) => {
     gsap.from(item, {
       opacity: 0,
@@ -425,98 +430,94 @@ backButton.addEventListener('click', () => {
     });
   });
 
-  // 展覽資訊
+  // ✅ 展覽資訊切換功能
   const posterImage = document.getElementById('poster-image');
   const toggleIcon = document.getElementById('toggle-icon');
+  if (posterImage && toggleIcon) {
+    let showingIndoor = true;
+    toggleIcon.addEventListener('click', () => {
+      showingIndoor = !showingIndoor;
+      posterImage.src = showingIndoor ? 'venueinfo.png' : 'venueinfo2.png';
+      posterImage.alt = showingIndoor ? '校內展資訊' : '校外展資訊';
+    });
+  }
 
-  let showingIndoor = true;
+  // ✅ 雲朵區塊：淡入動畫 + 上下浮動
+  gsap.utils.toArray(".cloud-item").forEach((el) => {
+    // 淡入進場
+    gsap.from(el, {
+      opacity: 0,
+      y: 60,
+      duration: 1,
+      ease: "sine.inOut",
+      scrollTrigger: {
+        trigger: el,
+        start: "top 90%",
+        toggleActions: "play none none reset"
+      }
+    });
 
-  toggleIcon.addEventListener('click', () => {
-    showingIndoor = !showingIndoor;
-    posterImage.src = showingIndoor
-      ? 'venueinfo.png'
-      : 'venueinfo2.png';
-    posterImage.alt = showingIndoor
-      ? '校內展資訊'
-      : '校外展資訊';
+    // 上下浮動
+    gsap.to(el, {
+      y: "+=10",
+      duration: 2.5 + Math.random(),
+      ease: "sine.inOut",
+      repeat: -1,
+      yoyo: true,
+      delay: Math.random() * 2
+    });
   });
 
-// 啟用所需 GSAP 插件
-gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
-
-// ☁️ 每個雲朵淡入+上浮進場動畫
-gsap.utils.toArray(".cloud-item").forEach((el, i) => {
-  gsap.from(el, {
-    opacity: 0,
-    y: 60,
-    duration: 1,
-    ease: "sine.inOut",
-    scrollTrigger: {
-      trigger: el,
-      start: "top 90%",
-      toggleActions: "play none none reset"
-    }
-  });
+  console.log("✅ 所有功能與動畫已成功載入");
 });
 
-// ☁️ 雲朵持續上下浮動動畫
-document.querySelectorAll('.cloud-item').forEach((el) => {
-  gsap.to(el, {
-    y: "+=10",
-    duration: 2.5 + Math.random(),
-    ease: "sine.inOut",
-    repeat: -1,
-    yoyo: true,
-    delay: Math.random() * 2
-  });
-});
 
-// 取得紙飛機與 SVG 元素
+// ✅ 確保插件載入(紙飛機)
+gsap.registerPlugin(MotionPathPlugin);
+
+// ✅ 取得元素
 const plane = document.querySelector('.paper-plane');
 const trailSVG = document.querySelector('.trail-svg');
 const path = document.querySelector('#flight-path');
 
-// 初始化拖尾線段
+// ✅ 拖尾線段初始化
 const trailSegments = [];
 const segmentCount = 5;
+
 for (let i = 0; i < segmentCount; i++) {
-  const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-  line.setAttribute("class", "trail-line");
-  trailSVG.appendChild(line);
-  trailSegments.push(line);
+  const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  line.setAttribute("class", "trail-line");
+  trailSVG.appendChild(line);
+  trailSegments.push(line);
 }
 
-// 初始化拖尾歷史位置
 const trailHistory = Array(segmentCount).fill({ x: 0, y: 0 });
 
-// ✅ 紙飛機沿著路徑循環飛行動畫 (修正後)
+// ✅ 紙飛機沿著路徑飛行
 gsap.to(plane, {
-  duration: 12,
-  repeat: -1,
-  ease: "none",
-  motionPath: {
-    path: path,
-    align: path,
-    alignOrigin: [0.5, 0.5],
-    autoRotate: true
-  },
-  onUpdate: function() {
-    // 獲取 GSAP 設定的當前位置
-    const currentX = gsap.getProperty(plane, "x");
-    const currentY = gsap.getProperty(plane, "y");
+  duration: 12,
+  repeat: -1,
+  ease: "none",
+  motionPath: {
+    path: path,
+    align: path,
+    alignOrigin: [0.5, 0.5],
+    autoRotate: true
+  },
+  onUpdate: function () {
+    const currentX = gsap.getProperty(plane, "x");
+    const currentY = gsap.getProperty(plane, "y");
 
-    // 更新拖尾歷史紀錄
-    trailHistory.pop();
-    trailHistory.unshift({ x: currentX, y: currentY });
+    trailHistory.pop();
+    trailHistory.unshift({ x: currentX, y: currentY });
 
-    // 根據歷史紀錄更新拖尾線段
-    for (let i = 0; i < trailSegments.length; i++) {
-      const curr = trailHistory[i];
-      const next = trailHistory[i + 1] || trailHistory[i];
-      trailSegments[i].setAttribute("x1", curr.x);
-      trailSegments[i].setAttribute("y1", curr.y);
-      trailSegments[i].setAttribute("x2", next.x);
-      trailSegments[i].setAttribute("y2", next.y);
-    }
-  }
+    for (let i = 0; i < trailSegments.length; i++) {
+      const curr = trailHistory[i];
+      const next = trailHistory[i + 1] || curr;
+      trailSegments[i].setAttribute("x1", curr.x);
+      trailSegments[i].setAttribute("y1", curr.y);
+      trailSegments[i].setAttribute("x2", next.x);
+      trailSegments[i].setAttribute("y2", next.y);
+    }
+  }
 });

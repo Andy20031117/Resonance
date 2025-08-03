@@ -1159,8 +1159,7 @@ body {
 
 /* === 贊助與合作區塊 === */
 .cooperation-section {
-  background-size: cover;
-  background-position: center;
+  background: none;
   padding: 100px 5vw;
   text-align: center;
   color: #fff;
@@ -1239,6 +1238,8 @@ body {
   text-align: center;
   line-height: 1.5;
 }
+
+/* ✈️ 紙飛機整體區塊容器 */
 .plane-wrapper {
   position: absolute;
   top: 0;
@@ -1248,6 +1249,8 @@ body {
   pointer-events: none;
   z-index: 5;
 }
+
+/* ✈️ 紙飛機圖像設定 */
 .paper-plane {
   width: 150px;
   height: auto;
@@ -1258,6 +1261,8 @@ body {
   z-index: 10;
   filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.4));
 }
+
+/* ✈️ 拖尾線條 SVG 容器 */
 .trail-svg {
   position: absolute;
   top: 0;
@@ -1267,12 +1272,28 @@ body {
   pointer-events: none;
   z-index: 2;
 }
+
+/* ✈️ 拖尾虛線樣式 */
 .trail-line {
   stroke: #b0e0f8;
   stroke-width: 2;
   stroke-dasharray: 6, 4;
   opacity: 0.7;
   z-index: 1;
+}
+
+
+/* 紙飛機飛行動畫 */
+@keyframes fly-plane {
+  0% { offset-distance: 0%; }
+  100% { offset-distance: 100%; }
+}
+
+/* 拖尾線條流動動畫 */
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -20;
+  }
 }
 
 
