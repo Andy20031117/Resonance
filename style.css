@@ -749,7 +749,6 @@ body {
   clear: both;
   position: relative;
   width: 100%;
-  background-color: #783f2b;
   background-image: none;
   padding: 80px 20px; /* 與其他段落留白統一 */
   color: #f7f1e5;
@@ -759,7 +758,7 @@ body {
 .news-section h2 {
   text-align: center;
   font-size: 2.2rem;
-  color: #f2d16b;
+  color: #004705;
   margin-bottom: 40px;
   font-family: 'Noto Serif TC', serif;
 }
@@ -780,7 +779,7 @@ body {
 .news-category {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #f2d16b;
+  color: #004705;
   margin: 40px 0 20px;
 }
 
@@ -819,7 +818,7 @@ body {
 
 .news-text h3 {
   font-size: 1.3rem;
-  color: #f2d16b;
+  color: #004705;
   margin-bottom: 0.5rem;
   font-weight: bold;
 }
