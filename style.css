@@ -930,18 +930,81 @@ body {
   display: block;
 }
 
+/* === 卡片容器 === */
+.flip-card {
+  width: 300px;
+  height: 80px;
+  perspective: 1000px;
+  margin: 10px;
+}
+
+/* === 內層翻轉機制 === */
+.flip-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease;
+}
+
+.flip-card:hover .flip-inner {
+  transform: rotateY(180deg);
+}
+
+/* === 前後兩面結構 === */
+.flip-front, .flip-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flip-front img,
+.flip-back img {
+  width: auto;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* === 反面翻轉 === */
+.flip-back {
+  transform: rotateY(180deg);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200px;   /* 與老師區塊寬度一致 */
+  height: 220px;
+  transform-origin: center center;
+  transform: rotateY(180deg) translate(50%, -50%);
+  z-index: 2;
+}
+
+.flip-back img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+
 /* 左右傾斜形狀 */
-.image-box.right {
+.flip-front.right {
   clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
 }
 
-.image-box.left {
+.flip-front.left {
   clip-path: polygon(0 0, 90% 0, 100% 100%, 10% 100%);
 }
 
 /* 文字樣式 */
 .description {
   font-family: 'Noto Serif TC', serif;
+  width: 110px;
   max-width: 180px;
   line-height: 1.5;
 }
@@ -972,6 +1035,8 @@ body {
   font-size: 17px;
   font-weight: 600;
 }
+
+
 
 /* Podcast 區塊樣式 */
 /* === Podcast 輪播樣式 === */
