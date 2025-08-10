@@ -1423,6 +1423,78 @@ body {
   }
 }
 
+/* 社群媒體區塊 */
+.media-section {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.title {
+  text-align: center;
+  font-size: 2.8rem;
+  color: #552d07;
+  margin-bottom: 60px;
+  letter-spacing: 2px;
+}
+.title span {
+  display: block;
+  font-size: 1rem;
+  font-family: 'Cormorant Garamond', serif;
+  color: #ffe0c2;
+  margin-top: 8px;
+}
+
+/* 風箏初始位置 */
+.kite {
+  position: absolute;
+  bottom: -180px;
+  left: 25%;
+  width: 250px;
+  opacity: 0;
+  transition: transform 2.5s ease-out, bottom 2.5s ease-out, opacity 1.2s ease-out;
+}
+.kite.float {
+  bottom: 20%;
+  transform: translateY(-10px);
+  opacity: 1;
+}
+
+/* 社群卡片 */
+.social-cards {
+  position: absolute;
+  right: 20%;
+  top: 30%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.info-card {
+  background: rgba(255, 255, 255, 0.75);
+  padding: 1rem;
+  border-radius: 12px;
+  backdrop-filter: blur(5px);
+  width: 280px;
+}
+
+.info-card img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+/* 浮現動畫 */
+.info-card {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  transition-delay: var(--delay, 0s);
+}
+.info-card.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 
 
 

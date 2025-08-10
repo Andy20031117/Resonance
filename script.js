@@ -548,3 +548,30 @@ gsap.to(plane, {
     }
   }
 });
+
+
+// ✅ 社群媒體風箏
+ const kite = document.querySelector('.kite');
+  const cards = document.querySelectorAll('.info-card');
+
+function revealOnScroll() {
+  const windowHeight = window.innerHeight;
+
+  // 風箏浮上
+  const kiteTop = kite.getBoundingClientRect().top;
+  if (kiteTop < windowHeight - 100) {
+    kite.classList.add('float');
+  }
+
+  // 卡片依序浮現
+  cards.forEach((card, index) => {
+    const cardTop = card.getBoundingClientRect().top;
+    if (cardTop < windowHeight - 50) {
+      card.style.setProperty('--delay', `${index * 0.2}s`);
+      card.classList.add('show');
+    }
+  });
+}
+
+window.addEventListener('scroll', revealOnScroll);
+revealOnScroll();
