@@ -292,7 +292,6 @@ body {
 }
 
 .subtitle {
-  font-family: 'Cormorant Garamond', serif;
   color: var(--red);
   font-size: 30px;
   margin-top: 12px;
@@ -324,7 +323,6 @@ body {
   height: 100vh;
   overflow: hidden;
   background-color: #111;
-  font-family: 'Noto Serif TC', serif;
 }
 
 
@@ -372,7 +370,6 @@ body {
   font-size: 4.5rem;
   color: #FF6F61; /* 珊瑚紅 */
   font-weight: normal;
-  font-family: 'ZCOOL KuaiLe', cursive;
   text-shadow:
     1px 1px 2px #d2a744,   /* 金色陰影1 */
     2px 2px 4px #d2a74499; /* 金色陰影2 較柔 */
@@ -590,8 +587,8 @@ body {
 }
 
 #btn-clothing {
-  top: 80%;
-  left: -5%;
+  top: 67%;
+  left: 0%;
 }
 
 #btn-housing {
@@ -610,7 +607,7 @@ body {
 }
 
 #btn-entertainment {
-  top: 80%;
+  top: 75%;
   left: 90%;
 }
 
@@ -639,6 +636,8 @@ body {
   height: auto;
   transition: transform 0.3s ease, filter 0.3s ease;
   filter: drop-shadow(0 0 6px rgba(230, 201, 103, 0.5));
+  position: relative; /* 如果原本是 fixed/absolute 就保持不動 */
+  bottom: 40px; /* 數值越大越往上 */
 }
 
 #back-button:hover #back-icon {
@@ -647,10 +646,24 @@ body {
 }
 
 #category-title {
+  text-align: center;
   font-size: 24px;
   margin: 10px 0;
   color: #e6c967;
 }
+
+.category-icon {
+  width: 90px;
+  height: auto;
+  display: block;
+  margin: 0 auto 5px;
+  filter: drop-shadow(0 0 8px rgba(248, 243, 206, 0.9)); /* 金色光暈 */
+}
+
+#category-display {
+  margin-top: 60px; /* 負值往上移，數字可自行調整 */
+}
+
 
 /* 方案A 卡片區完善骨架 */
 #groups-container {
@@ -1003,7 +1016,6 @@ body {
 
 /* 文字樣式 */
 .description {
-  font-family: 'Noto Serif TC', serif;
   width: 110px;
   max-width: 180px;
   line-height: 1.5;
@@ -1105,7 +1117,6 @@ body {
 .episode-info {
   margin-top: 15px;
   color: #fdead6;
-  font-family: 'Noto Serif TC', serif;
 }
 
 .episode-info h4 {

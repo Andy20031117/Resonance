@@ -362,6 +362,14 @@ const categoryData = {
   ]
 };
 
+const categoryIcons = {
+  food: "food1.png",
+  clothing: "cloth1.png",
+  housing: "house1.png",
+  transport: "transport1.png",
+  education: "education1.png", // 育的圖
+  entertainment: "entertainment1.png"
+};
 
 document.querySelectorAll('.group-btn').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -372,7 +380,10 @@ document.querySelectorAll('.group-btn').forEach(btn => {
     }
 
     const groups = categoryData[category];
-    categoryTitle.textContent = btn.alt || '小組';
+    categoryTitle.innerHTML = `
+      ${categoryIcons[category] ? `<img src="${categoryIcons[category]}" alt="${btn.alt}" class="category-icon">` : ''}
+      <span>${btn.alt || '小組'}</span>
+    `;
     groupsContainer.innerHTML = '';
 
     groups.forEach(group => {
