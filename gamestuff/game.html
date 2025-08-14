@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>記憶追流 - 遊戲首頁</title>
+  <link rel="stylesheet" href="style_game.css" />
+</head>
+<body>
+  <canvas id="electric-bg"></canvas>
+  <div class="game-container">
+    <h1 class="game-title">記憶追流</h1>
+    <p class="game-subtitle">踏上旅程，與記憶共振。</p>
+    
+    <!-- 沙漏 SVG -->
+    <div class="sandglass-container">
+      <!-- 可放入動畫沙漏 SVG -->
+      <img src="gamestuff/sandglass.svg" alt="沙漏" class="sandglass" />
+    </div>
+
+    <!-- 按鈕 -->
+    <div class="button-group">
+      <button class="btn start-btn" onclick="startGame()">開始遊戲</button>
+      <button class="btn back-btn" onclick="goHome()">前往主頁</button>
+    </div>
+  </div>
+
+  <script src="script_game.js"></script>
+</body>
+
+</html>
