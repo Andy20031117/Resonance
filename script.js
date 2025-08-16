@@ -551,30 +551,37 @@ gsap.to(plane, {
 
 
 // ✅ 社群媒體風箏
- const kite = document.querySelector('.kite');
-  const cards = document.querySelectorAll('.info-card');
+document.addEventListener('DOMContentLoaded', () => {
+  const section = document.querySelector('#media');
+  const kite = section.querySelector('.kite');
+  const cards = [...section.querySelectorAll('.info-card')];
 
-function revealOnScroll() {
-  const windowHeight = window.innerHeight;
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        // 風箏浮上
+        kite.classList.add('float');
 
-  // 風箏浮上
-  const kiteTop = kite.getBoundingClientRect().top;
-  if (kiteTop < windowHeight - 100) {
-    kite.classList.add('float');
-  }
+        // 卡片依序浮現
+        cards.forEach((card, i) => {
+          card.style.setProperty('--delay', `${i * 0.2}s`); // 每張延遲 0.2s
+          // 先重置再加上 show → 確保每次進入都能重新播放
+          card.classList.remove('show');
+          requestAnimationFrame(() => card.classList.add('show'));
+        });
+      } else {
+        // 區塊離開後重置，下次再進來會重新播放
+        kite.classList.remove('float');
+        cards.forEach(card => card.classList.remove('show'));
+      }
+    });
+  }, { threshold: 0.3 });
 
-  // 卡片依序浮現
-  cards.forEach((card, index) => {
-    const cardTop = card.getBoundingClientRect().top;
-    if (cardTop < windowHeight - 50) {
-      card.style.setProperty('--delay', `${index * 0.2}s`);
-      card.classList.add('show');
-    }
-  });
-}
+  observer.observe(section);
+});
 
-window.addEventListener('scroll', revealOnScroll);
-revealOnScroll();
+
+
 
 
 // 返回頂部按鈕

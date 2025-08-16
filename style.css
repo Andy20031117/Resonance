@@ -1426,8 +1426,8 @@ body {
 /* 社群媒體區塊 */
 .media-section {
   position: relative;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh; /* 至少滿一屏，但允許超過 */
+  overflow: visible; /* 讓超出部分顯示 */
 }
 
 .title {
@@ -1448,26 +1448,26 @@ body {
 /* 風箏初始位置 */
 .kite {
   position: absolute;
-  bottom: -180px;
-  left: 25%;
-  width: 250px;
+  bottom: -600px;
+  left: 18%;
+  width: 450px;
   opacity: 0;
-  transition: transform 2.5s ease-out, bottom 2.5s ease-out, opacity 1.2s ease-out;
+  transition: bottom 1.8s ease-out, opacity 0.8s ease-out;
 }
 .kite.float {
-  bottom: 20%;
-  transform: translateY(-10px);
+  bottom:-40%; /* 調整這個數字決定停在哪裡 */
   opacity: 1;
 }
 
 /* 社群卡片 */
 .social-cards {
   position: absolute;
-  right: 20%;
+  right: 15%;
   top: 30%;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 兩欄 */
+  gap: 1.5rem 2rem; /* 上下間距 1.5rem，左右間距 2rem */
+  width: 600px;     /* 控制整體寬度，可以依需要調整 */
 }
 
 .info-card {
@@ -1475,16 +1475,13 @@ body {
   padding: 1rem;
   border-radius: 12px;
   backdrop-filter: blur(5px);
-  width: 280px;
-}
+  width: 100%;              /* 填滿格子 */
+  box-sizing: border-box;
 
-.info-card img {
-  width: 100%;
-  border-radius: 8px;
-}
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 
-/* 浮現動畫 */
-.info-card {
   opacity: 0;
   transform: translateY(30px);
   transition: opacity 0.8s ease, transform 0.8s ease;
@@ -1494,6 +1491,37 @@ body {
   opacity: 1;
   transform: translateY(0);
 }
+
+.info-card img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.info-card h3,
+.info-card p,
+.info-card a {
+  margin: 0;
+  line-height: 1.3; /* 預設大約 1.6，改小字距就會緊密 */
+}
+
+.info-card h3 {
+  color: #2c2c2c;   /* 深色標題 */
+  font-weight: bold;
+}
+
+.info-card p {
+  color: #555;      /* 次要資訊灰色 */
+}
+
+.info-card a {
+  color: #6b3e96;   /* 按鈕或連結紫色 */
+  font-weight: 600;
+  text-decoration: none;
+}
+.info-card a:hover {
+  text-decoration: underline;
+}
+
 
 /* 回到頂端按鈕 */
 #back-to-top {
@@ -1509,6 +1537,7 @@ body {
   pointer-events: none;
   transition: opacity 0.3s ease;
 }
+
 
 /* 圖片大小可調 */
 #back-to-top img {
