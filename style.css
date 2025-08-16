@@ -779,7 +779,7 @@ body {
 
 .news-section h2 {
   text-align: center;
-  font-size: 2.2rem;
+  font-size: 36px;
   color: #552d07;
   margin-bottom: 40px;
 }
@@ -869,7 +869,7 @@ body {
 /* 整體區塊 */
 .about-title {
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 24px;
   font-weight: bold;
   color: #552d07;
   margin: 40px 0 20px;
@@ -1188,7 +1188,7 @@ body {
 /* 展覽資訊 */
 .venue-section {
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 24px;
   font-weight: bold;
   color: #552d07;
   margin: 40px 0 20px;
@@ -1296,7 +1296,7 @@ body {
   overflow: hidden;
 }
 .section-title {
-  font-size: 2.8rem;
+  font-size: 36px;
   color: #552d07;
   margin-bottom: 60px;
   letter-spacing: 2px;
@@ -1432,7 +1432,7 @@ body {
 
 .title {
   text-align: center;
-  font-size: 2.8rem;
+  font-size: 36px;
   color: #552d07;
   margin-bottom: 60px;
   letter-spacing: 2px;
