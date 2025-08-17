@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>選擇角色 - 冒險開始</title>
+  <link rel="stylesheet" href="style_common.css" />
+  <link rel="stylesheet" href="style_character.css" />
+  <link rel="stylesheet" href="style_disruption.css" />
+
+</head>
+<body>
+
+   <!-- 返回按鈕 -->
+   <a href="game.html" class="back-button">返回首頁</a>
+
+   <!-- 選擇角色 -->
+  <section class="character-section">
+    <h1 class="select-title">選擇你的角色</h1>
+    <div class="card-container">
+      
+      <!-- 🟥 卡片 1：盾穩 -->
+      <div class="card" data-character="Dunwen">
+        <div class="card-inner">
+          <div class="card-front">
+            <img src="gamestuff/dunwen.png" alt="盾穩" class="avatar">
+            <h2>盾穩 <span class="en-name">Dunwen</span></h2>
+            <p class="quote">「穩，不代表怠惰，而是堅持到底。」</p>
+          </div>
+          <div class="card-back">
+            <h3>技能：勇往直前</h3>
+            <p>說明：抵擋 1 次干擾</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🟩 卡片 2：磁芮 -->
+      <div class="card" data-character="Zirui">
+        <div class="card-inner">
+          <div class="card-front">
+            <img src="gamestuff/zirui.png" alt="磁芮" class="avatar">
+            <h2>磁芮 <span class="en-name">Zirui</span></h2>
+            <p class="quote">「外界的干擾，擋不住我的吸引力。」</p>
+          </div>
+          <div class="card-back">
+            <h3>技能：向我聚集</h3>
+            <p>說明：在一定時間內吸取金幣</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🟪 卡片 3：亂序 -->
+      <div class="card" data-character="Runxo">
+        <div class="card-inner">
+          <div class="card-front">
+            <img src="gamestuff/runxo.png" alt="亂序" class="avatar">
+            <h2>亂序 <span class="en-name">Runxo</span></h2>
+            <p class="quote">「我不在你預期的時閒出現。」</p>
+          </div>
+          <div class="card-back">
+            <h3>技能：超時空跳躍</h3>
+            <p>說明：傳送到任意位置</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 冒險開始按鈕 -->
+    <button id="start-adventure" class="start-btn" disabled>冒險開始</button>
+
+   <!-- 🔔 警報中心按鈕（右上角） -->
+<div id="alert-button" class="alert-button" onclick="openDisruptionModal()" title="想打勝仗，先看攻略">
+  <div class="siren-light"></div>
+  <div class="alert-hint">想打勝仗，先看攻略</div>
+</div>
+
+<!-- 🪩 彈出式干擾物視窗 modal -->
+<div id="disruption-modal" class="modal hidden">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeDisruptionModal()">×</span>
+    <h2 class="modal-title">⚠️ 干擾物警告</h2>
+
+    <!-- 干擾物卡片區塊 -->
+    <div class="disruption-card-grid">
+      <!-- 1. 懶人病毒 -->
+      <div class="disruption-card">
+        <div class="glitch-icon virus-icon"></div>
+        <h3>懶人病毒</h3>
+        <p>濫用 AI、自動代答。<br>輸出沒有意義的結果</p>
+      </div>
+
+      <!-- 2. 異常卡帶 -->
+      <div class="disruption-card">
+        <div class="glitch-icon tape-icon"></div>
+        <h3>異常卡帶</h3>
+        <p>對過去的神化與複製式記憶。<br>僵化的懷舊泡泡</p>
+      </div>
+
+      <!-- 3. 象位錯誤體 -->
+      <div class="disruption-card">
+        <div class="glitch-icon crt-icon"></div>
+        <h3>象位錯誤體</h3>
+        <p>AI 與復古的假共鳴。<br>彼此以為同步其實全錯位</p>
+      </div>
+    </div>
+
+    <button class="back-btn" onclick="closeDisruptionModal()">了解完畢，回到準備</button>
+  </div>
+</div>
+
+
+
+
+  <script src="script_character.js"></script>
+  <script src="script_common.js"defer></script>
+  <script src="script_disruption.js"></script>
+
+
+</body>
+</html>
