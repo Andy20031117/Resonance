@@ -163,52 +163,77 @@
   <div class="news-title">
     <h2>最新消息<span>WHAT'S NEWS</span></h2>
   </div>
+  
   <div class="news-container">
-    <!-- 左側裝飾電話線可用 SVG 放於背景層 -->
-    <div class="news-content">
+  <div class="news-content">
 
-      <div class="news-category">線下活動</div>
+    <!-- 線下活動 -->
+    <div class="news-row offline">
+      <div class="news-left">
+        <div class="news-category">線下活動</div>
+        <img src="telephone.png" alt="電話聽筒" class="decor-phone telephone">
+      </div>
+      <div class="news-right">
+        <div class="news-item">
+          <div class="news-text">
+            <h3>AI古早味照片修復體驗會</h3>
+            <p class="news-date">2025/07/12</p>
+            <p>想讓爺爺奶奶的泛黃老照片重現生機嗎？本次活動將示範如何透過AI修復與著色老照片，並於現場提供免費修復體驗，讓回憶與色彩再次鮮活起來。</p>
+          </div>
+        </div>
 
-      <div class="news-item">
-        <img src="path/to/image1.jpg" alt="AI古早味照片修復體驗會" />
-        <div class="news-text">
-          <h3>AI古早味照片修復體驗會</h3>
-          <p class="news-date">2025/07/12</p>
-          <p>想讓爺爺奶奶的泛黃老照片重現生機嗎？本次活動將示範如何透過AI修復與著色老照片，並於現場提供免費修復體驗，讓回憶與色彩再次鮮活起來。</p>
+        <div class="news-item">
+          <div class="news-text">
+            <h3>古早味冰品快閃體驗攤</h3>
+            <p class="news-date">2025/07/20</p>
+            <p>走進童年回憶中的冰菓室！我們於展場現場設置古早味冰品快閃攤位，凡參加互動遊戲即可免費獲得清涼芋冰或紅豆冰棒，數量有限，送完為止。</p>
+          </div>
         </div>
       </div>
-
-      <div class="news-item">
-        <img src="path/to/image2.jpg" alt="古早味冰品快閃體驗攤" />
-        <div class="news-text">
-          <h3>古早味冰品快閃體驗攤</h3>
-          <p class="news-date">2025/07/20</p>
-          <p>走進童年回憶中的冰菓室！我們於展場現場設置古早味冰品快閃攤位，凡參加互動遊戲即可免費獲得清涼芋冰或紅豆冰棒，數量有限，送完為止。</p>
-        </div>
-      </div>
-
-      <div class="news-category">線上活動</div>
-
-      <div class="news-item">
-        <img src="path/to/image3.jpg" alt="線上講座｜復古攝影與AI創作" />
-        <div class="news-text">
-          <h3>線上講座｜復古攝影與AI創作</h3>
-          <p class="news-date">2025/07/18</p>
-          <p>邀請知名攝影師與AI創作者分享如何結合復古底片質感與AI圖像生成技術，打造專屬於你的時代共振風格影像，並有即時線上互動與抽獎。</p>
-        </div>
-      </div>
-
-      <div class="news-item">
-        <img src="path/to/image4.jpg" alt="AI×復古字型即興設計挑戰" />
-        <div class="news-text">
-          <h3>AI×復古字型即興設計挑戰</h3>
-          <p class="news-date">2025/07/25</p>
-          <p>想挑戰AI文字設計與你的創意火花嗎？本活動將提供AI字型生成工具，結合台式復古風格，參加者將在限時內完成作品並上傳展示，最佳作品可獲得神秘禮物。</p>
-        </div>
-      </div>
-
     </div>
+
+    <svg class="phone-line" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 800" preserveAspectRatio="none">
+      <!-- 起點 M：接聽筒底部 -->
+      <!-- C：控制點決定彎曲路徑 -->
+      <!-- 終點：接手機頂部 -->
+      <path d="M 250 290 
+              C 500 470, 800 400, 900 365
+              S 1500 460, 1680 450" 
+      stroke="#552d07" 
+      stroke-width="3" 
+      fill="none" />
+
+    </svg>
+
+    <!-- 線上活動 -->
+    <div class="news-row online">
+      <div class="news-left">
+        <div class="news-item online">
+          <div class="news-text">
+            <h3>線上講座｜復古攝影與AI創作</h3>
+            <p class="news-date">2025/07/18</p>
+            <p>邀請知名攝影師與AI創作者分享如何結合復古底片質感與AI圖像生成技術，打造專屬於你的時代共振風格影像，並有即時線上互動與抽獎。</p>
+          </div>
+        </div>
+
+        <div class="news-item online">
+          <div class="news-text">
+            <h3>AI×復古字型即興設計挑戰</h3>
+            <p class="news-date">2025/07/25</p>
+            <p>想挑戰AI文字設計與你的創意火花嗎？本活動將提供AI字型生成工具，結合台式復古風格，參加者將在限時內完成作品並上傳展示，最佳作品可獲得神秘禮物。</p>
+          </div>
+        </div>
+      </div>
+      <div class="news-right">
+        <img src="cellphone.png" alt="智慧型手機" class="decor-phone cellphone">
+        <div class="news-category">線上活動</div>
+      </div>
+    </div>
+
   </div>
+</div>
+
+
 </section>
 
 <!--#about 區塊 -->

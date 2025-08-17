@@ -766,13 +766,12 @@ body {
 
 
 /* 最新消息區塊樣式 */
-
 .news-section {
   clear: both;
   position: relative;
   width: 100%;
   background-image: none;
-  padding: 80px 20px; /* 與其他段落留白統一 */
+  padding: 80px 20px;
   color: #f7f1e5;
   z-index: 0;
 }
@@ -802,30 +801,73 @@ body {
 .news-content {
   display: flex;
   flex-direction: column;
+  gap: 60px; /* 上下區塊間距 */
+}
+
+/* === 左右區塊通用設定 === */
+.news-row {
+  display: flex;
+  align-items: flex-start;
   gap: 40px;
 }
 
+/* === 線下活動：左邊聽筒+標題，右邊資訊 === */
+.news-row.offline .news-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+.news-row.offline .news-right {
+  flex: 1;
+}
+
+/* === 線上活動：左邊資訊，右邊手機+標題 === */
+.news-row.online .news-left {
+  flex: 1;
+}
+.news-row.online .news-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.phone-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;   /* 撐滿版面 */
+  height: 100%;
+  z-index: 0;    /* 在背景層，不擋住文字 */
+  pointer-events: none;
+}
+
+
+
+/* === 裝飾圖片 === */
+.news-left img,
+.news-right img {
+  width: 250px;
+  height: auto;
+  margin-bottom: 15px;
+}
+
 .news-category {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: bold;
   color: #552d07;
-  margin: 40px 0 20px;
+  text-align: center;
 }
 
+/* === 活動卡片 === */
 .news-item {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 20px;
   background-color: rgba(247, 241, 229, 0.05);
-  padding: 20px;
-  border-radius: 12px;
+  padding: 15px;
+  border-radius: 10px;
+  max-width: 600px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.news-item:nth-child(even) {
-  flex-direction: row-reverse;
+  margin-bottom: 20px;
 }
 
 .news-item:hover {
@@ -833,36 +875,30 @@ body {
   box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
 
-.news-item img {
-  flex: 1 1 40%;
-  max-width: 400px;
-  border-radius: 8px;
-  object-fit: cover;
-}
-
-.news-text {
-  flex: 1 1 50%;
-  max-width: 500px;
-}
-
 .news-text h3 {
   font-size: 1.3rem;
-  color: #552d07;
-  margin-bottom: 0.5rem;
   font-weight: bold;
+  color: #552d07;
 }
 
-.news-text .news-date {
-  font-size: 0.9rem;
-  color: #f7f1e5;
-  margin-bottom: 0.5rem;
+/* === 📱 手機版 RWD === */
+@media (max-width: 768px) {
+  .news-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .news-left, .news-right {
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .news-item {
+    max-width: 100%;
+  }
 }
 
-.news-text p {
-  font-size: 1rem;
-  line-height: 1.5;
-  color: #f7f1e5;
-}
+
 
 
 /* 關於我們區塊整體設定 */
