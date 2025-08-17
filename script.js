@@ -441,6 +441,51 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // 扭蛋機互動
+const gashaponBtn = document.querySelector('.gashapon-btn');
+const leftCapsules = document.querySelectorAll('.capsule-side.left .capsule');
+const rightCapsules = document.querySelectorAll('.capsule-side.right .capsule');
+
+let isActive = false;
+
+gashaponBtn.addEventListener('click', () => {
+  isActive = !isActive;
+
+  if (isActive) {
+    // 掉出來
+    leftCapsules.forEach((capsule, index) => {
+      setTimeout(() => {
+        capsule.classList.remove('hide', 'right');
+        capsule.classList.add('show', 'left');
+      }, index * 300);
+    });
+
+    rightCapsules.forEach((capsule, index) => {
+      setTimeout(() => {
+        capsule.classList.remove('hide', 'left');
+        capsule.classList.add('show', 'right');
+      }, index * 300);
+    });
+
+  } else {
+    // 收回
+    leftCapsules.forEach((capsule, index) => {
+      setTimeout(() => {
+        capsule.classList.remove('show');
+        capsule.classList.add('hide', 'left');
+      }, index * 200);
+    });
+
+    rightCapsules.forEach((capsule, index) => {
+      setTimeout(() => {
+        capsule.classList.remove('show');
+        capsule.classList.add('hide', 'right');
+      }, index * 200);
+    });
+  }
+});
+
+
   // ✅ 展覽資訊切換功能
   const posterImage = document.getElementById('poster-image');
   const toggleIcon = document.getElementById('toggle-icon');

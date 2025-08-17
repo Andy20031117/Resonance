@@ -1184,6 +1184,168 @@ body {
   transform: scale(0.6);
 }
 
+/* 資傳介紹子區塊 */
+.com-intro {
+  display: flex;              /* 用 flex 控制 */
+  flex-direction: column;     /* 垂直排列 (標題 → 圖片 → 扭蛋) */
+  align-items: center;        /* 水平置中 */
+  margin-top: 60px;
+}
+
+.com-intro .sub-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #552d07;
+  font-family: 'Noto Serif TC', serif;
+  border-bottom: 2px solid #552d07;
+  display: inline-block;
+  padding-bottom: 8px;
+  margin-bottom: 20px;
+}
+
+.gashapon-layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 80px;
+  margin-top: 30px;
+}
+
+.capsule-side {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  align-items: center;
+}
+
+.capsule {
+  width: 500px;
+  opacity: 0;                 /* 初始隱藏 */
+  transform: translateY(-50px); /* 從上方掉下來 */
+  filter: drop-shadow(3px 3px 6px rgba(0,0,0,0.3));
+}
+
+/* 顯示動畫 */
+.capsule.show {
+  opacity: 1;
+  transform: translateY(0);
+  animation: dropIn 0.8s ease forwards;
+}
+
+@keyframes dropIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.5);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(10px) scale(1.1); /* 彈一下 */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.gashapon-machine {
+  position: relative;
+  display: inline-block;
+}
+
+/* 提示區塊 */
+.tap-hint {
+  position: absolute;
+  bottom: 145px;    /* 跟按鈕水平對齊 */
+  left: 60%;      /* 移到按鈕右邊 */
+  margin-left: 10px; /* 距離按鈕一點點 */
+  display: flex;     /* 使用 flex 讓箭頭和文字對齊 */
+  align-items: center; /* 垂直置中 */
+  animation: bounceX 1s infinite; /* 左右小幅度動 */
+}
+
+.tap-text {
+  font-size: 18px;
+  font-weight: bold;
+  color: #552d07;
+  font-family: 'Noto Serif TC', serif;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+/* 箭頭朝左 */
+.arrow-left {
+  width: 0; 
+  height: 0; 
+  margin-top: 5px;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-right: 10px solid #552d07;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+/* 左右晃動動畫 */
+@keyframes bounceX {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(6px); }
+}
+
+
+
+.gashapon-machine .machine-img {
+  width: 260px;
+  display: block;
+}
+
+.gashapon-machine .gashapon-btn {
+  position: absolute;
+  bottom: 140px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 2;
+}
+
+/* 收回動畫 - 左邊 */
+.capsule.hide.left {
+  animation: retractLeft 0.8s ease forwards;
+}
+
+@keyframes retractLeft {
+  0% {
+    opacity: 1;
+    transform: translateY(0) translateX(-20px) scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-50px) translateX(0) scale(0.5) rotate(-180deg);
+  }
+}
+
+/* 收回動畫 - 右邊 */
+.capsule.hide.right {
+  animation: retractRight 0.8s ease forwards;
+}
+
+@keyframes retractRight {
+  0% {
+    opacity: 1;
+    transform: translateY(0) translateX(20px) scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-50px) translateX(0) scale(0.5) rotate(180deg);
+  }
+}
+
+
 
 /* 展覽資訊 */
 .venue-section {
