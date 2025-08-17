@@ -63,7 +63,7 @@
   width: 100vw;
   height: 100vh;
   pointer-events: none; /* 不擋點擊 */
-  z-index: 999;
+  z-index: 5000;
 }
 
 
