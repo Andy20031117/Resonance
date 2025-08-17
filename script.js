@@ -339,7 +339,6 @@ const categoryData = {
     { name: "咩呷啥", desc: "哩咩呷啥？獻給選擇困難的你" , img: "grouplogo/meijiasha.png" , ig: "https://www.instagram.com/mei.jia.sha?igsh=MnJmMm1ocHJ6NjZs", web: "https://meijiasha.cc/" },
   ],
   clothing: [
-    { name: "Second Han Easy", desc: "一手交易，交二手貨。" , img: "grouplogo/secondhaneasy.png" , ig: "https://www.instagram.com/second_han.easy?igsh=MThnbWlmcHAwMThlcA==", web: "https://www.example.com" },
     { name: "Vintaglo", desc: "每一件舊衣不只是循環利用，而是展現態度與風格的載體" , img: "grouplogo/vintaglo.png" ,ig: "https://www.instagram.com/vintaglo.__?igsh=OW05azV6c2QzZjV6", web: "https://www.example.com" },
   ],
   housing: [
@@ -347,17 +346,18 @@ const categoryData = {
     { name: "未來居所", desc: "讓AI協助你大展身手，創建屬於你自己的房屋。" , img: "grouplogo/futurenest.png" , ig: "https://www.instagram.com/future_nest111?igsh=MWxoNjlocHVhYjBlcw==", web: "https://www.example.com" },
   ],
   transport: [
-    { name: "自律控肉飯", desc: "時間自律是大家的課題，一起加入我們一起自律。" , img: "grouplogo/kongrolab.png" , ig: "https://www.instagram.com/kongro__lab?igsh=azB1Z2l6aG03NHl2", web: "https://www.example.com" },
+    { name: "Second Han Easy", desc: "一手交易，交二手貨。" , img: "grouplogo/secondhaneasy.png" , ig: "https://www.instagram.com/second_han.easy?igsh=MThnbWlmcHAwMThlcA==", web: "https://www.example.com" },
+    { name: "Rightway", desc: "右滑，遇見你的下一站！" , img: "grouplogo/rightway.png" , ig: "https://www.instagram.com/rightway.trip?igsh=MTM2ZXAxc2U1ZGd4Zg==", web: "https://www.example.com" },
   ],
   education: [
     { name: "樂壓talks", desc: "AI陪你聊心事，壓力不再自己扛" , img: "grouplogo/leyatalks.png" , ig: "https://www.instagram.com/le_ya.talks?igsh=a3U3aDgxbTNjNnAx", web: "https://leyatalks.com/" },
     { name: "Lunia", desc: "做一個能記錄夢的地方。在Lunia,夢不只是夢。" , img: "grouplogo/lunia.png" , ig: "https://www.instagram.com/lunia_diary?igsh=czVkdjgzNWI3NWM1", web: "https://www.example.com" },
     { name: "MaMoon", desc: "會說話的好朋友 陪伴孩子的每一天。" , img: "grouplogo/mamoon.png" , ig: "https://www.instagram.com/mamoon_0223?igsh=MTIyZHFpMmc4ZDE2Ng==", web: "https://www.example.com" },
+    { name: "自律控肉飯", desc: "時間自律是大家的課題，一起加入我們一起自律。" , img: "grouplogo/kongrolab.png" , ig: "https://www.instagram.com/kongro__lab?igsh=azB1Z2l6aG03NHl2", web: "https://www.example.com" },
     { name: "彼站彼話", desc: "傳統文化不無聊，帶你進入趣味的閩南圈。" , img: "grouplogo/bizhanbihua.png" , ig: "https://www.instagram.com/hitetsam_game?igsh=YXl2Y3RzeDZ2bTR1", web: "https://www.example.com" },
   ],
   entertainment: [
     { name: "青山", desc: "青山出巡，故事啟程『一次跨越時代的對話，一段重新連結傳統的旅程』" , img: "grouplogo/qingshan.png" , ig: "https://www.instagram.com/qingshan.ics?igsh=MWVzaGhzYzY1N3htNA==", web: "https://www.example.com" },
-    { name: "Rightway", desc: "右滑，遇見你的下一站！" , img: "grouplogo/rightway.png" , ig: "https://www.instagram.com/rightway.trip?igsh=MTM2ZXAxc2U1ZGd4Zg==", web: "https://www.example.com" },
     { name: "光腳工作室", desc: "劇情冒險遊戲熱烈開發中，關注更多我們的開發日常和進度吧！" , img: "grouplogo/lightfoot.png" , ig: "https://www.instagram.com/lightfootgames?igsh=N2JzaHh2c2h2MmRr", web: "https://www.example.com" },
   ]
 };
@@ -440,6 +440,51 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
+
+  // 扭蛋機互動
+const gashaponBtn = document.querySelector('.gashapon-btn');
+const leftCapsules = document.querySelectorAll('.capsule-side.left .capsule');
+const rightCapsules = document.querySelectorAll('.capsule-side.right .capsule');
+
+let isActive = false;
+
+gashaponBtn.addEventListener('click', () => {
+  isActive = !isActive;
+
+  if (isActive) {
+    // 掉出來
+    leftCapsules.forEach((capsule, index) => {
+      setTimeout(() => {
+        capsule.classList.remove('hide', 'right');
+        capsule.classList.add('show', 'left');
+      }, index * 300);
+    });
+
+    rightCapsules.forEach((capsule, index) => {
+      setTimeout(() => {
+        capsule.classList.remove('hide', 'left');
+        capsule.classList.add('show', 'right');
+      }, index * 300);
+    });
+
+  } else {
+    // 收回
+    leftCapsules.forEach((capsule, index) => {
+      setTimeout(() => {
+        capsule.classList.remove('show');
+        capsule.classList.add('hide', 'left');
+      }, index * 200);
+    });
+
+    rightCapsules.forEach((capsule, index) => {
+      setTimeout(() => {
+        capsule.classList.remove('show');
+        capsule.classList.add('hide', 'right');
+      }, index * 200);
+    });
+  }
+});
+
 
   // ✅ 展覽資訊切換功能
   const posterImage = document.getElementById('poster-image');
