@@ -40,10 +40,19 @@ const train = document.getElementById("train-image");
 const mist = document.getElementById("mist-effect");
 
 links.forEach(link => {
-  link.addEventListener("click", function (e) {
-    e.preventDefault();
-    const targetId = this.getAttribute("href");
-    const targetElement = document.querySelector(targetId);
+  link.addEventListener("click", (e) => {
+    const href = link.getAttribute("href");
+
+    if (href.startsWith("#")) {
+      e.preventDefault(); // 只攔截錨點連結
+      const target = document.querySelector(href);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+    // 外部連結就不要攔截，讓瀏覽器自然跳轉
+
+
 
     // 顯示轉場容器
     transition.style.display = "block";
