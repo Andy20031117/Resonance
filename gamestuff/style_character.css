@@ -61,8 +61,8 @@
 }
 
 .card.selected {
-  border-color: #ffee00;
-  box-shadow: 0 0 25px #ffee00;
+  border-color: #ff0000;
+  box-shadow: 0 0 25px #ff0000;
   transform: scale(1.05);
 }
 
