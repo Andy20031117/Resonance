@@ -1,0 +1,76 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.game-section {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: url("Gbg.png") no-repeat center center;
+  background-size: cover;
+}
+
+/* 🟫 平台下移：原本 33vh → 改為約畫面底部 20vh（=下移約 120px） */
+.game-platform {
+  position: absolute;
+  bottom: 5vh;
+  left: 0;
+  width: 100%;
+  height: 10vh;
+  background-color: rgba(20, 20, 20, 0.5);
+  border-top: 2px solid #fff;
+  z-index: 5;
+}
+
+/* 🧍‍♂️ 角色初始位置緊貼平台上方 */
+.player {
+  position: absolute;
+  left: 8vw;
+  bottom: 20vh;
+  width: 6vw;
+  height: auto;
+  transition: bottom 0.05s;
+  z-index: 20;
+}
+
+/* 單一障礙物外框，底對齊平台 */
+.obstacle {
+  position: absolute;
+  bottom: 20vh;        /* 與平台上緣一致 */
+  width: 64px;         /* 可調 */
+  height: 64px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+/* 讓障礙物用「畫布大小」來定位，避免被蓋住或相對錯誤 */
+#obstacle-container {
+  position: absolute;
+  inset: 0;        /* top:0; right:0; bottom:0; left:0 */
+  z-index: 15;
+  pointer-events: none;
+}
+
+
+/* 障礙物貼圖 */
+.obstacle img {
+  width: 64px;
+  height: auto;
+  image-rendering: auto;   /* 若要更像像素風可改為: pixelated */
+  display: block;
+}
+
+/* 玩家角色圖（維持你現在的設定即可） */
+.player {
+  position: absolute;
+  left: 8vw;
+  bottom: 20vh;       /* 與平台上緣一致 */
+  width: 6vw;         /* 可再視需要調整 */
+  height: auto;
+  z-index: 20;
+}
