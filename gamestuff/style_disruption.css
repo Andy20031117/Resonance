@@ -68,10 +68,10 @@
 .modal-content {
   background: #111;
   border: 2px solid #00ccff;
-  padding: 30px 40px;
+  padding: 32px 24px;
   border-radius: 12px;
-  width: 80%;
-  max-width: 720px;
+  width: 85%;
+  max-width: 1000px;
   box-shadow: 0 0 20px #00ccff66;
   color: #00ccff;
   text-align: center;
@@ -103,20 +103,26 @@
 /* ========== 干擾物卡片樣式 ========== */
 .disruption-card-grid {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 28px;
   margin-bottom: 20px;
 }
 
 .disruption-card {
-  background: #222;
-  border: 1.5px dashed #ff6666;
-  padding: 18px;
-  width: 180px;
-  border-radius: 10px;
+  background: #111;
+  width: 220px;
+  height: 300px;
+  border: 1px dashed #ff4d4d;
+  border-radius: 12px;
   box-shadow: 0 0 10px #ff666644;
+  padding: 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: warningPulse 2s infinite ease-in-out;
 }
 
 .disruption-card:hover {
@@ -126,29 +132,59 @@
 
 .disruption-card h3 {
   margin: 10px 0 8px;
-  font-size: 14px;
+  font-size: 16px;
   color: #ff5555;
 }
 
 .disruption-card p {
-  font-size: 11px;
-  line-height: 1.4;
+  font-size: 13px;
+  line-height: 1.6;
   color: #ccc;
+  padding: 0 8px;
 }
 
-/* 干擾物圖標佔位區塊（可替換為實圖或動畫） */
+/* 針對卡片內的圖片加入 hover 震動效果 */
+.disruption-card img:hover {
+  animation: imgShake 0.4s infinite;
+}
+
+@keyframes imgShake {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(1px, -1px); }
+  50%  { transform: translate(-1px, 1px); }
+  75%  { transform: translate(1px, 1px); }
+  100% { transform: translate(0, 0); }
+}
+
+/* 卡片閃爍外框效果 */
+@keyframes warningPulse {
+  0%   { box-shadow: 0 0 6px #ff4d4d55; }
+  50%  { box-shadow: 0 0 12px #ff4d4daa; }
+  100% { box-shadow: 0 0 6px #ff4d4d55; }
+}
+
+/* 干擾物圖標區塊 */
 .glitch-icon {
-  width: 48px;
-  height: 48px;
-  margin: 0 auto 8px;
-  background: repeating-linear-gradient(45deg, #fff, #ccc 2px, #000 3px);
-  border-radius: 8px;
+  width: 100%;
+  max-height: 140px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* 可自定不同樣式 */
-.virus-icon    { background-color: #990000; }
-.tape-icon     { background-color: #444488; }
-.crt-icon      { background-color: #228888; }
+.glitch-icon img {
+  width: 100%;
+  max-width: 110px;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* 可自定不同樣式（保留，但不再使用 background） */
+.virus-icon { }
+.tape-icon { }
+.crt-icon { }
 
 /* ========== Modal 關閉按鈕樣式 ========== */
 .back-btn {

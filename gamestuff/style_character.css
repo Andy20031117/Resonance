@@ -37,10 +37,15 @@
   font-family: 'Courier New', monospace;
 }
 
+/* === 進場動畫：標題 === */
 .select-title {
   font-size: 2.5rem;
   margin-bottom: 40px;
   text-shadow: 0 0 10px #00ffea;
+  opacity: 0;
+  transform: translateY(-40px);
+  animation: slideInTop 0.8s ease forwards;
+  animation-delay: 0.2s;
 }
 
 /* 卡片橫向排列 */
@@ -60,10 +65,71 @@
   transition: transform 0.2s;
 }
 
+/* === 進場動畫：卡片 === */
+.card-container .card {
+opacity: 0;
+}
+
+.card-container .card:nth-child(1) {
+transform: translateX(-80px);
+animation: slideInLeft 0.9s ease forwards;
+animation-delay: 0.5s;
+}
+.card-container .card:nth-child(2) {
+transform: translateY(-80px);
+animation: slideInTop 0.9s ease forwards;
+animation-delay: 0.7s;
+}
+.card-container .card:nth-child(3) {
+transform: translateX(80px);
+animation: slideInRight 0.9s ease forwards;
+animation-delay: 0.9s;
+}
+
+
+@keyframes slideInLeft {
+to {
+opacity: 1;
+transform: translateX(0);
+}
+}
+@keyframes slideInRight {
+to {
+opacity: 1;
+transform: translateX(0);
+}
+}
+@keyframes slideInTop {
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+
+
+/* 卡片選擇 選角後高亮樣式改為邊框動畫 + 聚光圈 */
 .card.selected {
-  border-color: #ff0000;
-  box-shadow: 0 0 25px #ff0000;
-  transform: scale(1.05);
+  border-color: #ffee00;
+  box-shadow: 0 0 30px #ffee00aa, 0 0 60px #ffee0033 inset;
+  position: relative;
+}
+
+.card.selected::after {
+content: "";
+position: absolute;
+top: -10px;
+left: -10px;
+width: calc(100% + 20px);
+height: calc(100% + 20px);
+border: 2px dashed #ffee00aa;
+border-radius: 12px;
+animation: pulseBorder 1.2s infinite;
+}
+
+@keyframes pulseBorder {
+0% { opacity: 0.4; transform: scale(1); }
+50% { opacity: 1; transform: scale(1.05); }
+100% { opacity: 0.4; transform: scale(1); }
 }
 
 /* 卡片內部旋轉體 */
@@ -129,6 +195,83 @@
   font-size: 1rem;
 }
 
+/* ========== 調整卡片正面名稱位置 ========== */
+.card-front h2 {
+  margin-top: 0;
+  margin-bottom: 4px;
+  font-size: 1.5rem;
+  transform: translateY(-40px); /* ❗往上移 */
+}
+
+/* ✅ 卡片背面整體排版填滿空間 */
+.card-back {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* 垂直置中 */
+  align-items: center;
+  text-align: center;
+  padding: 24px 18px;
+  font-size: 1rem;
+  line-height: 1.6;
+  background: radial-gradient(circle at center, rgba(0,255,255,0.15), rgba(0,0,0,0.9));
+}
+  .card[data-character="Dunwen"] .card-back {
+    background: radial-gradient(circle at center, rgba(255, 238, 0, 0.2), rgba(0,0,0,0.85));
+}
+  .card[data-character="Zirui"] .card-back {
+    background: radial-gradient(circle at center, rgba(0, 255, 120, 0.2), rgba(0,0,0,0.85));
+}
+  .card[data-character="Runxo"] .card-back {
+    background: radial-gradient(circle at center, rgba(138, 43, 226, 0.2), rgba(0,0,0,0.85));
+}
+
+
+/* 技能名稱 */
+.card-back h3 {
+  font-size: 1.4rem;
+  margin-bottom: 14px;
+  color: #ffee00;
+  text-shadow: 0 0 5px #ffee00;
+}
+
+/* 技能說明 */
+.card-back p:not(.back-quote) {
+  font-size: 1.1rem;
+  margin-bottom: 18px;
+  color: #ffffff;
+  line-height: 1.5;
+  max-width: 90%;
+}
+
+/* 台詞語錄（更大且突顯） */
+.back-quote {
+  font-size: 1.2rem;
+  font-style: italic;
+  font-weight: bold;
+  animation: fadeInQuote 1.5s ease;
+  max-width: 95%;
+  padding: 10px 0;
+  line-height: 1.6;
+}
+
+/* 每個角色不同風格 */
+.card[data-character="Dunwen"] .back-quote {
+  color: #ff4444;
+  text-shadow: 0 0 8px #ff4444;
+}
+
+.card[data-character="Zirui"] .back-quote {
+  color: #00ff88;
+  text-shadow: 0 0 8px #00ff88;
+}
+
+.card[data-character="Runxo"] .back-quote {
+  color: #cc88ff;
+  text-shadow: 0 0 8px #cc88ff;
+}
+
+
+
 /* 按鈕樣式 */
 .select-btn {
   margin-top: 10px;
@@ -172,13 +315,17 @@
 .start-btn:hover {
   transform: scale(1.08);
   background-color: #00ccdd;
+  animation: pulseGlow 1.4s infinite ease-in-out, fadeInBtn 0.6s ease forwards;
+}
+  @keyframes pulseGlow {
+  0%, 100% {
+  box-shadow: 0 0 15px #00ffee;
+}
+  50% {
+  box-shadow: 0 0 30px #00ffee;
+}
 }
 
-.card.selected {
-  border-color: #ffee00;
-  box-shadow: 0 0 25px #ffee00;
-  transform: scale(1.05);
-}
 
 /* === 警報元件容器 === */
 .alert-button {
@@ -248,4 +395,5 @@
 .alert-button:hover .alert-hint {
   opacity: 1;
 }
+
 
