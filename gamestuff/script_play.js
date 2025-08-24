@@ -1,9 +1,26 @@
+// === DOM & HUD ===
+const game = document.getElementById("game");
 const player = document.getElementById("player");
 const obstacleContainer = document.getElementById("obstacle-container");
+const fragmentContainer = document.getElementById("fragment-container");
 const livesEl = document.getElementById("lives");
 const distanceEl = document.getElementById("distance");
+const fragsEl = document.getElementById("frags");
+const skillPill = document.getElementById("skill-pill");
 
-/* ===== 生命 / HUD ===== */
+// === 角色選擇 & 貼圖 ===
+let selectedChar =
+  new URLSearchParams(location.search).get("character") ||
+  sessionStorage.getItem("selectedCharacter") ||
+  "Dunwen";
+const CHAR_SPRITE = {
+  Dunwen: "Dunwencard.png",
+  Zirui: "ziruicard.png",
+  Runxo: "runxocard.png",
+};
+player.src = CHAR_SPRITE[selectedChar] || "Dunwencard.png";
+
+// === 生命值 HUD ===
 let lives = 3;
 function renderLives() {
   livesEl.innerHTML = "";
@@ -15,85 +32,247 @@ function renderLives() {
 }
 renderLives();
 
-let distancePx = 0; // 以像素累積距離（顯示＋推動速度）
+// === 距離 HUD ===
+let distancePx = 0;
 function renderDistance() {
   const d = Math.floor(distancePx / 8);
   distanceEl.textContent = String(d).padStart(6, "0");
 }
+renderDistance();
 
-/* ===== 物理：可變跳躍（長按高、短按低） =====
-   往上=正；重力為負。放開時「切跳」加大重力，讓跳較矮。
-*/
+// === 平台：以「平台上緣」為基準 ===
+const PLATFORM_BOTTOM_VH = 10; // 平台底 10vh
+const PLATFORM_HEIGHT_VH = 10; // 平台高 10vh
+let groundBottom = Math.round(window.innerHeight * (PLATFORM_BOTTOM_VH / 100));
+let groundTop = Math.round(
+  window.innerHeight * ((PLATFORM_BOTTOM_VH + PLATFORM_HEIGHT_VH) / 100)
+); // ★平台上緣
+
+// === 跳躍（可變） ===
+let y = 0; // 相對平台上緣的位移
+let vy = 0;
 let isJumping = false;
 let jumpHeld = false;
-let vy = 0;                    // 垂直速度（正=往上）
-const GRAVITY = -0.5;          // 你調整的值（滯空較久）
-const JUMP_POWER = 20;         // 你調整的值（跳更高）
-const CUT_MULTIPLIER = 2.5;    // 你調整的值（切跳更明顯）
-let y = 0;                     // 與地面相對位移（0=貼地）
-let groundY = Math.round(window.innerHeight * 0.20); // 對應 20vh（平台上緣）
+const GRAVITY = -0.5;
+const JUMP_POWER = 20;
+const CUT_MULTIPLIER = 2.5;
 
+// === 速度：距離驅動 + 上限 ===
+const BASE_SPEED = 3.5;
+const SPEED_DISTANCE_UNIT = 10000; // 每 10,000px +1 速（註解原文寫20,000；此處採用10,000）
+const MAX_SPEED = 50;
+let speed = BASE_SPEED;
+
+// === 障礙/碎片 基本設定 ===
+const OBSTACLE_SIZE = 64;
+const HEIGHT_OFFSETS = [0, 50, 100]; // 相對平台上緣三段
+const OBSTACLE_IMAGES = ["lazybugshow.png", "castapeshow.png", "twofaceshow.png"];
+
+// Logo 碎片
+const FRAG_TYPES = ["A", "B", "C", "D", "E", "F"];
+const FRAG_IMG = {
+  A: "logo_A.png",
+  B: "logo_B.png",
+  C: "logo_C.png",
+  D: "logo_D.png",
+  E: "logo_E.png",
+  F: "logo_F.png",
+};
+let collected = new Set();
+function renderFragHUD() {
+  fragsEl.querySelectorAll(".frag-slot").forEach((slot) => {
+    const id = slot.dataset.frag;
+    slot.classList.toggle("filled", collected.has(id));
+  });
+}
+renderFragHUD();
+
+// === 技能（E 鍵） ===
+// Dunwen: 無敵 5s，自動保命，CD 15s
+// Zirui : 磁吸+減速 3s，CD 10s
+// Runxo : 瞬移 + 0.6s 虛化，CD 10s
+const skillCfg = {
+  Dunwen: { dur: 5000, cd: 15000 },
+  Zirui: { dur: 3000, cd: 10000 },
+  Runxo: { dur: 600, cd: 10000 },
+};
+let skillActiveUntil = 0;
+let skillCdUntil = 0;
+let invincibleUntil = 0;
+
+// Zirui：磁吸參數
+const MAGNET_RADIUS = 280;
+const MAGNET_STRENGTH = 8;
+
+// === 動態障礙間隔 ===
+const ABS_MIN_GAP_MS = 950;
+const SAFE_GAP_PX = 420;
+const VAR_GAP_PX_BASE = 150;
+const MAX_ONSCREEN_OBS = 3;
+const BURST_COOLDOWN_MS = 20000;
+const BURST_CHANCE = 0.4;
+// ★ 同屏障礙的彼此「水平最小間隔」
+const MIN_SEP_BETWEEN_OBS_PX = 320; // 300~420 越大越安全
+
+// 保底規則（避免幾乎不可能的窄間隔）
+let lastWasHigh = false; // 記錄上一顆是否高位（tier=2）
+const FAIR_MIN_GAP_PX = 380;        // 全域最小像素間距保底
+const MIN_GAP_AFTER_HIGH_PX = 480;  // 高位之後的保底
+
+let nextSpawnAt = 0;
+let prevHeightTier = 0;
+let lastBurstAt = 0;
+
+// === 碎片排程（與障礙錯峰） ===
+let nextFragAt = performance.now() + 1500;
+
+// === FX / HUD 輔助 ===
+function isSkillActive() {
+  return performance.now() < skillActiveUntil;
+}
+function speedScale() {
+  return selectedChar === "Zirui" && isSkillActive() ? 0.85 : 1.0;
+}
+function setWorldSlowFX(on) {
+  game.classList.toggle("slow-world", !!on);
+}
+function setPlayerInvFX(on) {
+  player.classList.toggle("invincible", !!on);
+}
+function setPlayerMagnetFX(on) {
+  player.classList.toggle("magnet", !!on);
+}
+function updateSkillPill() {
+  const now = performance.now();
+  if (now >= skillCdUntil) {
+    skillPill.textContent = "E ▸ READY";
+    skillPill.classList.add("ready");
+  } else {
+    skillPill.textContent = `E ▸ ${Math.ceil((skillCdUntil - now) / 1000)}s`;
+    skillPill.classList.remove("ready");
+  }
+}
+updateSkillPill();
+function isInvincible() {
+  return performance.now() < invincibleUntil;
+}
+
+// === 遊戲狀態 / 計分 & 跳 result.html ===
+let gameStartAt = performance.now();
+let isGameOver = false;
+let loopId = 0;
+let lastCollisionReason = "";
+
+// 你可以自訂分數公式：預設 距離分 + 碎片分
+function calcScore() {
+  const distScore = Math.floor(distancePx / 8); // 與 HUD 顯示一致
+  const fragScore = collected.size * 100;       // 每片 100 分
+  return distScore + fragScore;
+}
+
+function snapshotAndGoResult(causeText) {
+  const score = calcScore();
+  const elapsedMs = Math.max(0, performance.now() - gameStartAt);
+  const maxComboCount = 0; // 如未實作 combo 可先填 0；之後接上你的變數
+
+  // 寫入 LocalStorage（result.js 會讀）
+  localStorage.setItem("finalScore", String(score));
+  localStorage.setItem("timeSurvivedMs", String(elapsedMs));
+  localStorage.setItem("maxCombo", String(maxComboCount));
+  localStorage.setItem("characterName", selectedChar || "—");
+  localStorage.setItem("gameOverCause", causeText || lastCollisionReason || "訊號雜訊過高");
+
+  // 更新 bestScore
+  const best = parseInt(localStorage.getItem("bestScore") || "0", 10);
+  if (score > best) localStorage.setItem("bestScore", String(score));
+
+  // 跳轉結果頁
+  window.location.href = "result.html";
+}
+
+function onGameOver(causeText) {
+  if (isGameOver) return;
+  isGameOver = true;
+  if (loopId) cancelAnimationFrame(loopId);
+  snapshotAndGoResult(causeText);
+}
+
+// === 輸入 ===
 document.addEventListener("keydown", (e) => {
   if (e.code === "Space") {
     if (!isJumping) {
       isJumping = true;
       jumpHeld = true;
-      vy = JUMP_POWER;           // 起跳
+      vy = JUMP_POWER;
     } else {
-      jumpHeld = true;           // 空中按住不觸發雙跳
+      jumpHeld = true;
     }
+  } else if (e.code === "KeyE") {
+    triggerSkill();
+  } else if (e.code.toLowerCase() === "r") {
+    // 方便測試：按 R 直接結束
+    onGameOver("手動測試結束");
   }
 });
 document.addEventListener("keyup", (e) => {
-  if (e.code === "Space") {
-    jumpHeld = false;            // 放開 → 切跳
-  }
+  if (e.code === "Space") jumpHeld = false;
 });
 
-/* ===== 速度：距離驅動 + 上限 =====
-   speed = BASE_SPEED + distancePx / SPEED_DISTANCE_UNIT
-*/
-const BASE_SPEED = 3.5;            // 初速（px/frame）
-const SPEED_DISTANCE_UNIT = 15000;  // 每 ? px 增加 1 速（可調）
-const MAX_SPEED = 30;               // 上限（覺得不夠再上調）
-let speed = BASE_SPEED;
+// === 技能觸發 ===
+function triggerSkill() {
+  const now = performance.now();
+  if (now < skillCdUntil) return;
 
-/* ===== 干擾物：三高度、三圖、像素尺寸 ===== */
-const OBSTACLE_SIZE = 64;
-const HEIGHT_OFFSETS = [0, 48, 96]; // 地面/中/高（相對平台上緣）
-const OBSTACLE_IMAGES = ["lazybugshow.png", "castapeshow.png", "twofaceshow.png"];
+  if (selectedChar === "Dunwen") {
+    invincibleUntil = now + skillCfg.Dunwen.dur;
+    skillActiveUntil = invincibleUntil;
+    skillCdUntil = now + skillCfg.Dunwen.cd;
+    setPlayerInvFX(true);
+  } else if (selectedChar === "Zirui") {
+    skillActiveUntil = now + skillCfg.Zirui.dur;
+    skillCdUntil = now + skillCfg.Zirui.cd;
+    setWorldSlowFX(true);
+    setPlayerMagnetFX(true);
+  } else if (selectedChar === "Runxo") {
+    const safeTier = pickSafeTierNow();
+    teleportToTier(safeTier);
+    invincibleUntil = now + skillCfg.Runxo.dur;
+    skillActiveUntil = invincibleUntil;
+    skillCdUntil = now + skillCfg.Runxo.cd;
+    setPlayerInvFX(true);
+  }
+  updateSkillPill();
+}
 
-/* ===== 依選角換角色貼圖（URL > sessionStorage > 預設） ===== */
-(function initPlayerSprite() {
-  const params = new URLSearchParams(window.location.search);
-  let charName = params.get("character") || sessionStorage.getItem("selectedCharacter");
-  const map = { Dunwen: "Dunwencard.png", Zirui: "ziruicard.png", Runxo: "runxocard.png" };
-  player.src = map[charName] || "Dunwencard.png";
-})();
+// === 物理 ===
+function physicsStep() {
+  if (isJumping) {
+    if (!jumpHeld && vy > 0) vy += GRAVITY * CUT_MULTIPLIER;
+    else vy += GRAVITY;
+    y += vy;
+    if (y <= 0) {
+      y = 0;
+      vy = 0;
+      isJumping = false;
+    }
+  }
+  player.style.bottom = `${groundTop + y}px`;
+}
 
-/* ===== 動態間隔：緊張但公平 =====
-   - 依速度把像素間距換算成時間，速度越快→同像素間距所需時間越短。
-   - 使用指數分佈產生抖動感（有時很緊有時鬆），但有保底最小 ms。
-   - 公平規則：連續高位不會給到過低間距；同屏障礙物數量有上限。
-   - 偶爾 2 連發（有冷卻），提升刺激感。
-*/
-const ABS_MIN_GAP_MS   = 1500;   // 絕對不可低於的間隔（保底反應時間）
-const SAFE_GAP_PX      = 450;   // 熟練玩家穩過的像素間距
-const VAR_GAP_PX_BASE  = 220;   // 變動幅度基礎值（強度越高放大）
-const MAX_ONSCREEN_OBS = 3;     // 同時在畫面上的障礙上限
-const BURST_COOLDOWN_MS= 20000; // 2 連發冷卻 20s
-const BURST_CHANCE     = 0.5;  // 2 連發機率
+// === 速度 & 距離 ===
+function updateSpeedAndDistance() {
+  speed = Math.min(MAX_SPEED, BASE_SPEED + distancePx / SPEED_DISTANCE_UNIT);
+  const scaled = speed * speedScale();
+  distancePx += scaled;
+  renderDistance();
+}
 
-let nextSpawnAt = 0;            // 下一次產生時間（高精度 now）
-let prevHeightTier = 0;         // 上一次障礙高度（0/1/2）
-let lastBurstAt = 0;            // 上次 2 連發的時間
-
+// === 間隔工具 ===
 function intensity() {
-  // 距離越大→強度從 0.8 漸升到 2.0；12萬 px 視為滿
   const t = Math.min(1, distancePx / 120000);
   return 0.8 + 1.2 * t;
 }
-function randExp(mean) { // 指數亂數：-mean * ln(1-u)
+function randExp(mean) {
   const u = Math.random();
   return -mean * Math.log(1 - u);
 }
@@ -101,32 +280,27 @@ function sampleGapPx() {
   const k = intensity();
   const varPx = VAR_GAP_PX_BASE * k;
   let gapPx = SAFE_GAP_PX + randExp(varPx);
-
-  // 公平：若上次是高位，避免下一顆間距過小
-  if (prevHeightTier === 2 && gapPx < SAFE_GAP_PX + varPx * 0.25) {
-    gapPx += varPx * 0.35;
-  }
+  if (prevHeightTier === 2 && gapPx < SAFE_GAP_PX + varPx * 0.25) gapPx += varPx * 0.35;
   return gapPx;
 }
 function gapPxToMs(gapPx) {
-  const pxPerSec = speed * 60;      // 估 60fps：每秒位移像素
+  const pxPerSec = speed * speedScale() * 60;
   const sec = gapPx / Math.max(1, pxPerSec);
   return Math.max(ABS_MIN_GAP_MS, sec * 1000);
 }
 
-/* ===== 產生障礙物（支援指定高度集合；回傳實際高度 tier） ===== */
+// === 生成：障礙 & 碎片 ===
 function spawnObstacle(allowedTiers) {
-  const tiers = Array.isArray(allowedTiers) && allowedTiers.length ? allowedTiers : [0,1,2];
-
+  const tiers =
+    Array.isArray(allowedTiers) && allowedTiers.length ? allowedTiers : [0, 1, 2];
   const imgSrc = OBSTACLE_IMAGES[Math.floor(Math.random() * OBSTACLE_IMAGES.length)];
   const tier = tiers[Math.floor(Math.random() * tiers.length)];
   const dy = HEIGHT_OFFSETS[tier];
 
   const obs = document.createElement("div");
   obs.className = "obstacle";
-  obs.style.position = "absolute";
-  obs.style.left = `${window.innerWidth - (OBSTACLE_SIZE + 16)}px`; // 右緣內 16px
-  obs.style.bottom = `${groundY + dy}px`;
+  obs.style.left = `${window.innerWidth - (OBSTACLE_SIZE + 16)}px`;
+  obs.style.bottom = `${groundTop + dy}px`;
 
   const img = document.createElement("img");
   img.src = imgSrc;
@@ -138,105 +312,339 @@ function spawnObstacle(allowedTiers) {
   obstacleContainer.appendChild(obs);
 
   prevHeightTier = tier;
+  lastWasHigh = (tier === 2);
   return tier;
 }
+function spawnFragment() {
+  const remaining = FRAG_TYPES.filter((t) => !collected.has(t));
+  if (!remaining.length) return;
+  const type = remaining[Math.floor(Math.random() * remaining.length)];
 
-/* ===== 主迴圈 ===== */
-function gameLoop(now) {
-  /* 1) 距離驅動速度（含上限） */
-  speed = Math.min(MAX_SPEED, BASE_SPEED + distancePx / 20000);
+  const tierChoices = prevHeightTier === 2 ? [0, 1] : [0, 1, 2];
+  const tier = tierChoices[Math.floor(Math.random() * tierChoices.length)];
+  const dy = HEIGHT_OFFSETS[tier];
 
-  /* 2) 物理更新（可變跳躍） */
-  if (isJumping) {
-    if (!jumpHeld && vy > 0) {
-      vy += GRAVITY * CUT_MULTIPLIER; // 切跳：更快進入下降
-    } else {
-      vy += GRAVITY;
-    }
-    y += vy;
+  const frag = document.createElement("div");
+  frag.className = "fragment";
+  frag.dataset.type = type;
+  frag.style.left = `${window.innerWidth - (42 + 24)}px`;
+  frag.style.bottom = `${groundTop + dy + 10}px`;
 
-    if (y <= 0) { // 落地
-      y = 0;
-      vy = 0;
-      isJumping = false;
-    }
-  }
-  player.style.bottom = `${groundY + y}px`;
+  const img = document.createElement("img");
+  img.src = FRAG_IMG[type];
+  img.alt = `碎片 ${type}`;
+  frag.appendChild(img);
 
-  /* 3) 干擾物移動 & 碰撞 */
+  fragmentContainer.appendChild(frag);
+}
+
+// === 物件移動 & 碰撞 ===
+function stepObstaclesAndCollisions() {
+  const scaled = speed * speedScale();
+  const playerRect = player.getBoundingClientRect();
+
+  // 障礙
   document.querySelectorAll(".obstacle").forEach((obs) => {
     const leftPx = parseFloat(obs.style.left);
-    obs.style.left = `${leftPx - speed}px`;
+    obs.style.left = `${leftPx - scaled}px`;
 
-    const pr = player.getBoundingClientRect();
     const or = obs.getBoundingClientRect();
-    const collide = !(pr.right < or.left || pr.left > or.right || pr.bottom < or.top || pr.top > or.bottom);
+    const collide = !(
+      playerRect.right < or.left ||
+      playerRect.left > or.right ||
+      playerRect.bottom < or.top ||
+      playerRect.top > or.bottom
+    );
     if (collide) {
-      lives = Math.max(0, lives - 1);
-      renderLives();
-      obs.remove();
-      if (lives <= 0) {
-        alert("Game Over");
-        window.location.reload();
-        return;
+      if (!isInvincible()) {
+        const now = performance.now();
+        if (selectedChar === "Dunwen" && now >= skillCdUntil) {
+          // 自動保命
+          invincibleUntil = now + skillCfg.Dunwen.dur;
+          skillActiveUntil = invincibleUntil;
+          skillCdUntil = now + skillCfg.Dunwen.cd;
+          setPlayerInvFX(true);
+        } else {
+          lives = Math.max(0, lives - 1);
+          renderLives();
+          lastCollisionReason = "碰撞干擾物";
+          if (lives <= 0) {
+            onGameOver(lastCollisionReason); // ★ 跳結果頁
+            return;
+          }
+        }
       }
+      obs.remove();
     }
-    if (leftPx < -(OBSTACLE_SIZE + 40)) obs.remove(); // 出畫面移除
+    if (leftPx < -(OBSTACLE_SIZE + 40)) obs.remove();
   });
 
-  /* 4) 動態排程生成：間隔依速度與強度抽樣，帶公平約束 */
+  // 碎片
+  document.querySelectorAll(".fragment").forEach((frag) => {
+    const leftPx = parseFloat(frag.style.left);
+    let bottomPx = parseFloat(frag.style.bottom);
+
+    // 磁吸
+    if (selectedChar === "Zirui" && isSkillActive()) {
+      const pr = player.getBoundingClientRect();
+      const playerCx = pr.left + pr.width / 2;
+      const playerCy = pr.top + pr.height / 2;
+
+      const fr = frag.getBoundingClientRect();
+      const fragCx = fr.left + fr.width / 2;
+      const fragCy = fr.top + fr.height / 2;
+
+      const dx = playerCx - fragCx;
+      const dy = playerCy - fragCy;
+      const dist = Math.hypot(dx, dy) || 1;
+      if (dist < MAGNET_RADIUS) {
+        const pull = MAGNET_STRENGTH * (1 - dist / MAGNET_RADIUS);
+        frag.style.left = `${leftPx + (dx / dist) * pull}px`;
+        frag.style.bottom = `${bottomPx + (-(dy) / dist) * pull}px`;
+      }
+    }
+
+    // 自身移動（略慢於障礙）
+    frag.style.left = `${parseFloat(frag.style.left) - scaled * 0.9}px`;
+
+    // 收集
+    const fr = frag.getBoundingClientRect();
+    const hit = !(
+      playerRect.right < fr.left ||
+      playerRect.left > fr.right ||
+      playerRect.bottom < fr.top ||
+      playerRect.top > fr.bottom
+    );
+    if (hit) {
+      const type = frag.dataset.type;
+      collected.add(type);
+      renderFragHUD();
+      frag.remove();
+      if (collected.size === FRAG_TYPES.length) {
+        // 你可以在這裡另觸發特殊事件或加分
+        // console.log("Logo 完成！");
+      }
+    }
+    if (parseFloat(frag.style.left) < -100) frag.remove();
+  });
+}
+
+// === 生成排程（動態障礙 + 錯峰碎片） ===
+function clampedGapPx(rawPx) {
+  const needMin = lastWasHigh ? Math.max(FAIR_MIN_GAP_PX, MIN_GAP_AFTER_HIGH_PX)
+                              : FAIR_MIN_GAP_PX;
+  return Math.max(needMin, rawPx);
+}
+
+// 右側生成點（新障礙的 left 值）
+function spawnLeftX() {
+  return window.innerWidth - (OBSTACLE_SIZE + 16);
+}
+
+// 目前畫面中「最靠右」的障礙 right（視窗座標）
+function rightmostObstacleRight() {
+  let maxRight = -Infinity;
+  document.querySelectorAll(".obstacle").forEach((obs) => {
+    const r = obs.getBoundingClientRect();
+    if (r.right > maxRight) maxRight = r.right;
+  });
+  return maxRight; // 若沒有障礙，會是 -Infinity
+}
+
+function scheduleSpawns(now) {
+  // 障礙
   if (nextSpawnAt === 0) {
-    const gpx = sampleGapPx();
-    nextSpawnAt = now + gapPxToMs(gpx);
+    nextSpawnAt = now + gapPxToMs(sampleGapPx());
   } else if (now >= nextSpawnAt) {
     if (document.querySelectorAll(".obstacle").length < MAX_ONSCREEN_OBS) {
-      const canBurst = (now - lastBurstAt) > BURST_COOLDOWN_MS && Math.random() < BURST_CHANCE;
 
+      // ★ 水平間隔保底
+      const needSep = MIN_SEP_BETWEEN_OBS_PX;
+      const sep = spawnLeftX() - rightmostObstacleRight();
+      if (sep < needSep) {
+        nextSpawnAt = now + gapPxToMs(needSep - Math.max(0, sep));
+        return;
+      }
+
+      const canBurst =
+        now - lastBurstAt > BURST_COOLDOWN_MS && Math.random() < BURST_CHANCE;
       if (canBurst) {
-        const tier1 = spawnObstacle(); // 第一顆
-        const miniGapPx = Math.max(160, SAFE_GAP_PX * 0.45); // 連發時更緊
+        const tier1 = spawnObstacle();
+
+        // 二連發也要保底：把「迷你間隔」設為更寬
+        const miniGapPx = Math.max(SAFE_GAP_PX * 0.8, MIN_SEP_BETWEEN_OBS_PX * 1.1);
         const miniDelay = gapPxToMs(miniGapPx);
+
         nextSpawnAt = now + miniDelay;
-
         setTimeout(() => {
-          // 第二顆盡量避免連續高位
-          const tier2 = spawnObstacle((tier1 === 2) ? [0,1] : [0,1,2]);
+          // 第二顆盡量避免高位接高位
+          spawnObstacle(tier1 === 2 ? [0, 1] : [0, 1, 2]);
         }, miniDelay * 0.5);
-
         lastBurstAt = now;
       } else {
-        spawnObstacle(); // 一般單發
-        const gpx = sampleGapPx();
-        nextSpawnAt = now + gapPxToMs(gpx);
+        spawnObstacle();
+        nextSpawnAt = now + gapPxToMs(sampleGapPx());
       }
     } else {
-      // 場上太多：延後下一次（避免炸場）
       nextSpawnAt = now + 200;
     }
   }
 
-  /* 5) 距離累加 & 顯示 */
-  distancePx += speed;
-  renderDistance();
-
-  requestAnimationFrame(gameLoop);
+  // 碎片（放慢 5.4–9s；磁吸期間不排）
+  if (collected.size < FRAG_TYPES.length && now >= nextFragAt) {
+    if (!(selectedChar === "Zirui" && isSkillActive())) {
+      spawnFragment();
+    }
+    const base = 5400 + Math.random() * 3600; // 5.4–9s
+    nextFragAt = now + base / speedScale();
+  }
 }
 
-/* ===== 視窗縮放：同步平台上緣與既有障礙物 ===== */
+// === Runxo：挑安全層 & 瞬移 ===
+function pickSafeTierNow() {
+  const pr = player.getBoundingClientRect();
+  const playerH = pr.height;
+  const candidates = [0, 1, 2];
+
+  // 先找當下立刻安全的層
+  let safeList = [];
+  for (const tier of candidates) {
+    const targetBottom = groundTop + HEIGHT_OFFSETS[tier] + 10;
+    const testTop = window.innerHeight - targetBottom - playerH;
+    const testBottom = window.innerHeight - targetBottom;
+
+    let overlap = false;
+    document.querySelectorAll(".obstacle").forEach((obs) => {
+      const or = obs.getBoundingClientRect();
+      const rectOverlap = !(
+        pr.right < or.left ||
+        pr.left > or.right ||
+        testBottom < or.top ||
+        testTop > or.bottom
+      );
+      if (rectOverlap) overlap = true;
+    });
+    if (!overlap) safeList.push(tier);
+  }
+  if (safeList.length) {
+    return safeList[Math.floor(Math.random() * safeList.length)];
+  }
+
+  // 都不安全：選與最近障礙的最遠垂直距離
+  let bestTier = 0,
+    bestScore = -Infinity;
+  for (const tier of candidates) {
+    const targetBottom = groundTop + HEIGHT_OFFSETS[tier] + 10;
+    const tgtTop = window.innerHeight - targetBottom - playerH;
+    const tgtBottom = window.innerHeight - targetBottom;
+
+    let minVDist = Infinity;
+    document.querySelectorAll(".obstacle").forEach((obs) => {
+      const or = obs.getBoundingClientRect();
+      const vOverlap = !(tgtBottom < or.top || tgtTop > or.bottom);
+      if (vOverlap) {
+        minVDist = Math.min(minVDist, 0);
+      } else {
+        const dist = Math.min(
+          Math.abs(or.top - tgtBottom),
+          Math.abs(tgtTop - or.bottom)
+        );
+        minVDist = Math.min(minVDist, dist);
+      }
+    });
+
+    const score = minVDist === Infinity ? 1e9 : minVDist;
+    if (score > bestScore) {
+      bestScore = score;
+      bestTier = tier;
+    }
+  }
+  return bestTier;
+}
+function teleportToTier(tier) {
+  y = HEIGHT_OFFSETS[tier];
+  player.style.bottom = `${groundTop + y}px`;
+}
+
+// === 視窗縮放 ===
 window.addEventListener("resize", () => {
-  const oldGround = groundY;
-  groundY = Math.round(window.innerHeight * 0.20); // 20vh
+  const oldTop = groundTop;
+  groundBottom = Math.round(window.innerHeight * (PLATFORM_BOTTOM_VH / 100));
+  groundTop = Math.round(
+    window.innerHeight * ((PLATFORM_BOTTOM_VH + PLATFORM_HEIGHT_VH) / 100)
+  );
 
-  // 玩家
-  player.style.bottom = `${groundY + y}px`;
+  player.style.bottom = `${groundTop + y}px`;
 
-  // 既有障礙物維持相對平台高度
   document.querySelectorAll(".obstacle").forEach((obs) => {
-    const currentBottom = parseFloat(obs.style.bottom); // 舊：oldGround + (0/48/96)
-    const dy = currentBottom - oldGround;
-    obs.style.bottom = `${groundY + dy}px`;
+    const currentBottom = parseFloat(obs.style.bottom);
+    obs.style.bottom = `${groundTop + (currentBottom - oldTop)}px`;
+  });
+  document.querySelectorAll(".fragment").forEach((frag) => {
+    const currentBottom = parseFloat(frag.style.bottom);
+    frag.style.bottom = `${groundTop + (currentBottom - oldTop)}px`;
   });
 });
 
-/* ===== 啟動 ===== */
-window.onload = () => requestAnimationFrame(gameLoop);
+// === 軟重開（不 reload） ===
+function resetGame() {
+  obstacleContainer.innerHTML = "";
+  fragmentContainer.innerHTML = "";
+
+  lives = 3;
+  renderLives();
+  distancePx = 0;
+  renderDistance();
+  collected.clear();
+  renderFragHUD();
+
+  speed = BASE_SPEED;
+  y = 0;
+  vy = 0;
+  isJumping = false;
+  jumpHeld = false;
+
+  skillActiveUntil = 0;
+  skillCdUntil = 0;
+  invincibleUntil = 0;
+  setPlayerInvFX(false);
+  setPlayerMagnetFX(false);
+  setWorldSlowFX(false);
+  updateSkillPill();
+
+  nextSpawnAt = 0;
+  lastBurstAt = 0;
+  nextFragAt = performance.now() + 2000;
+
+  player.style.bottom = `${groundTop + y}px`;
+
+  // 重新計時（只在你選擇同頁重玩時會用到）
+  gameStartAt = performance.now();
+}
+
+// === 主迴圈 ===
+function gameLoop(now) {
+  if (isGameOver) return;
+
+  updateSpeedAndDistance();
+  physicsStep();
+  stepObstaclesAndCollisions();
+  scheduleSpawns(now);
+
+  const t = performance.now();
+  if (t >= invincibleUntil) setPlayerInvFX(false);
+  if (!(selectedChar === "Zirui" && t < skillActiveUntil)) {
+    setWorldSlowFX(false);
+    setPlayerMagnetFX(false);
+  }
+  updateSkillPill();
+
+  loopId = requestAnimationFrame(gameLoop);
+}
+
+
+// === 啟動 ===
+window.onload = () => {
+  gameStartAt = performance.now();
+  loopId = requestAnimationFrame(gameLoop);
+};

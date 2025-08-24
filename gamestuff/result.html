@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Result</title>
+  <link rel="stylesheet" href="result.css" />
+</head>
+<body>
+  <main class="layout">
+    <!-- 頁首 -->
+    <header class="head">
+      <h1 class="title">GAME&nbsp;OVER</h1>
+      <p class="subtitle">這一回合的訊號已結束；下一次，讓頻率對齊你。</p>
+    </header>
+
+    <!-- 卡片區（置中、不可捲動；會自動縮放） -->
+    <section class="cards">
+      <!-- 中央大語錄卡 -->
+      <article class="card quote" aria-label="送給你的話">
+        <div class="card-head">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="label">送給你的話</span>
+        </div>
+        <blockquote id="poemText" class="quote-text">
+          當雜訊退去，願你仍記得，心跳也是一種節拍。
+        </blockquote>
+        <div id="poemMeta" class="quote-meta">— 展覽記憶 / Resonance of the era</div>
+      </article>
+
+      <!-- 指標卡們 -->
+      <article class="card metric">
+        <div class="label">本局分數</div>
+        <div class="value" id="score">0</div>
+        <span id="newRecord" class="badge hidden">NEW</span>
+      </article>
+
+      <article class="card metric">
+        <div class="label">最佳分數</div>
+        <div class="value" id="bestScore">0</div>
+      </article>
+
+      <article class="card info">
+        <div class="label">生存時間</div>
+        <div class="small" id="time">00:00</div>
+      </article>
+
+      <article class="card info">
+        <div class="label">最高閃避次數</div>
+        <div class="small" id="maxDodge">0</div>
+      </article>
+
+      <article class="card info">
+        <div class="label">角色</div>
+        <div class="small" id="character">—</div>
+      </article>
+
+      <article class="card cause">
+        <div class="label">訊號失敗原因</div>
+        <div class="cause-text" id="cause">—</div>
+      </article>
+    </section>
+
+    <!-- 底部操作列（固定在視窗內） -->
+    <footer class="actions">
+      <button id="btnRetry" class="btn primary">再玩一次（回選角）</button>
+      <button id="btnMenu" class="btn ghost">返回展覽</button>
+      <button id="btnShare" class="btn outline">分享結果</button>
+    </footer>
+  </main>
+
+  <div class="grain" aria-hidden="true"></div>
+  <script src="result.js"></script>
+</body>
+</html>

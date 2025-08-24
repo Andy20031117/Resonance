@@ -7,19 +7,36 @@
   <link rel="stylesheet" href="style_play.css" />
 </head>
 <body>
-  <section class="game-section">
+  <section class="game-section" id="game">
+    <!-- HUD -->
     <div class="hud">
-  <div class="hud-left">
-    <div id="lives" class="lives"></div>
-  </div>
-  <div class="hud-right">
-    <div id="distance" class="distance">000000</div>
-  </div>
-</div>
+      <div class="hud-left">
+        <div id="lives" class="lives"></div>
+        <div id="skill-pill" class="skill-pill">E ▸ READY</div>
+      </div>
+      <div class="hud-right">
+        <div id="distance" class="distance">000000</div>
+        <div id="frags" class="frags">
+          <!-- 6 個槽位 -->
+          <div class="frag-slot" data-frag="A">A</div>
+          <div class="frag-slot" data-frag="B">B</div>
+          <div class="frag-slot" data-frag="C">C</div>
+          <div class="frag-slot" data-frag="D">D</div>
+          <div class="frag-slot" data-frag="E">E</div>
+          <div class="frag-slot" data-frag="F">F</div>
+        </div>
+      </div>
+    </div>
 
+    <!-- 平台 -->
     <div class="game-platform"></div>
+
+    <!-- 玩家 -->
     <img id="player" class="player" src="Dunwencard.png" alt="角色">
+
+    <!-- 物件容器 -->
     <div id="obstacle-container"></div>
+    <div id="fragment-container"></div>
   </section>
 
   <script src="script_play.js" defer></script>

@@ -1,0 +1,165 @@
+:root{
+  /* 全新色系（與先前不同）：深夜藍 + 青色邊光 */
+  --bg-0:#0a0d12;
+  --bg-1:#0e131b;
+  --ink:#eaf2ff;
+  --muted:#9aa6b2;
+  --accent:#39d6ff;    /* 青藍亮邊 */
+  --accent2:#9a7bff;   /* 紫光點綴 */
+  --border:rgba(255,255,255,.10);
+  --cut:rgba(255,255,255,.06);
+  --card:rgba(16,20,30,.76);
+  --fx-shadow:0 18px 40px rgba(0,0,0,.45);
+  --fx-glow:0 0 0 1px rgba(57,214,255,.30), 0 0 36px rgba(57,214,255,.14);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: ui-rounded, "Inter", "Noto Sans TC", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "PingFang TC", "Microsoft JhengHei", sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(1200px 800px at 50% -20%, #142032 0%, #0b1119 60%, #070b10 100%),
+    linear-gradient(135deg, rgba(57,214,255,.06), rgba(154,123,255,.05));
+  overflow:hidden;             /* ❗ 不可捲動 */
+}
+
+/* 疊一層底噪 */
+.grain{
+  position:fixed; inset:0; pointer-events:none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='table' tableValues='0 0 0 .05 .09 0 0 0'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode:overlay; opacity:.6;
+}
+
+/* 100vh 三段式佈局：頭 / 卡片區(1fr) / 按鈕列 */
+.layout{
+  height:100vh; width:100%;
+  display:grid;
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 100%;
+  padding:18px clamp(12px, 2vw, 24px);
+  gap:12px;
+}
+
+/* 頁首 */
+.head{ text-align:center }
+.title{
+  margin:0;
+  font-weight:800;
+  letter-spacing:.12em;
+  font-size:clamp(22px, 4.4vw, 40px);
+  text-shadow: 0 1px 0 rgba(0,0,0,.5);
+}
+.subtitle{
+  margin:.4rem 0 0 0;
+  color:var(--muted);
+  font-size:clamp(12px, 1.6vw, 14px);
+}
+
+/* 卡片網格（固定高度，內容自我縮放） */
+.cards{
+  display:grid;
+  height:100%;
+  max-width:1200px;
+  margin:0 auto;
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-rows: 1fr;
+  gap:12px;
+}
+
+/* 通用卡片樣式（全新視覺） */
+.card{
+  position:relative;
+  border-radius:18px;
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)) , var(--card);
+  border:1px solid var(--border);
+  box-shadow: var(--fx-shadow);
+  overflow:hidden;
+  display:flex; flex-direction:column; justify-content:center;
+}
+.card::before{
+  /* 角落發光邊條（與舊版完全不同） */
+  content:"";
+  position:absolute; inset:0;
+  background:
+    linear-gradient(135deg, rgba(57,214,255,.35), transparent 40%),
+    linear-gradient(315deg, rgba(154,123,255,.28), transparent 45%);
+  mix-blend-mode:soft-light; opacity:.18; pointer-events:none;
+}
+
+/* 語錄卡（置中最大） */
+.quote{
+  grid-column: 3 / span 8;  /* 中央置中 */
+  padding: clamp(14px, 2vw, 22px);
+}
+.card-head{
+  display:flex; align-items:center; gap:8px; margin-bottom:8px; opacity:.9;
+}
+.dot{ width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.22) }
+.label{ font-size:12px; letter-spacing:.08em; color:var(--muted); text-transform:uppercase }
+.quote-text{
+  margin:0;
+  font-size: clamp(16px, 2.2vw, 22px);
+  line-height:1.7;
+  text-wrap:balance;
+  filter: drop-shadow(0 0 18px rgba(57,214,255,.18));
+}
+.quote-meta{ margin-top:6px; color:var(--muted); font-size:clamp(11px,1.5vw,13px) }
+
+/* 指標卡（左右兩張大值） */
+.metric{
+  grid-column: span 6;
+  padding: clamp(12px, 1.8vw, 18px);
+}
+.value{
+  font-size: clamp(32px, 6vw, 56px);
+  font-weight:900; line-height:1; margin-top:2px;
+  text-shadow: 0 0 18px rgba(57,214,255,.20);
+}
+.badge{
+  position:absolute; top:10px; right:10px;
+  font-size:11px; padding:4px 8px; border-radius:999px;
+  border:1px solid rgba(255,255,255,.18);
+  background: linear-gradient(90deg, rgba(57,214,255,.25), rgba(154,123,255,.22));
+}
+.hidden{ display:none }
+
+/* 小資訊卡（時間/閃避/角色） */
+.info{ grid-column: span 4; padding: clamp(12px, 1.8vw, 18px) }
+.small{ font-size: clamp(18px, 3vw, 28px); font-weight:700; margin-top:2px }
+
+/* 失敗原因：佔滿底列 */
+.cause{ grid-column: 1 / span 12; padding: clamp(12px, 1.8vw, 18px) }
+.cause-text{ margin-top:2px; font-size: clamp(14px, 1.8vw, 16px) }
+
+/* 底部操作列（固定不動） */
+.actions{
+  display:flex; justify-content:center; align-items:center; gap:12px;
+  padding:12px;
+  border-radius:14px;
+  background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+  border:1px solid var(--border);
+  box-shadow: var(--fx-shadow), var(--fx-glow);
+}
+
+.btn{
+  padding:12px 18px; border-radius:12px; cursor:pointer; font-weight:800;
+  border:1px solid var(--border); color:var(--ink); background:var(--bg-1);
+  transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+}
+.btn:hover{ transform: translateY(-1px); box-shadow:0 8px 24px rgba(57,214,255,.20) }
+.btn:active{ transform: translateY(0) }
+.btn.primary{ outline:1px solid rgba(57,214,255,.45) }
+.btn.ghost{ background:transparent }
+.btn.outline{ background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.00)); outline:1px dashed rgba(255,255,255,.18) }
+
+/* 響應：窄螢幕調整語錄卡寬度 */
+@media (max-width: 960px){
+  .quote{ grid-column: 2 / span 10 }
+}
+@media (max-width: 640px){
+  .quote{ grid-column: 1 / span 12 }
+  .metric{ grid-column: span 6 }
+  .info{ grid-column: span 6 }
+}
