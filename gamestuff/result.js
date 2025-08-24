@@ -1,84 +1,191 @@
-(function () {
-  // ===== 導覽路徑 =====
-  const SELECT_PAGE = "character.html";  // ← 角色選擇頁（若檔名不同，改這裡）
-  const EXPO_HOME   = "../resonance.html";
+(() => {
+  const $ = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
 
-  // 角色詩句（可自由微調）
-  const POEMS = {
-    Dunwen:{ text:"我把失敗折成一紙飛行路徑，沿著風的紋理回望，才知道躍起之前，心也需要落地。", meta:"— 盾穩 / 在失速之後，找到穩住的方式" },
-    Zirui:{  text:"磁場散去時，碎片仍會朝你靠近。別急著抓住它們，讓時間把圖案對準。",          meta:"— 磁芮 / 對準頻率，也對準自己" },
-    Runxo:{  text:"穿越是瞬間的，理解是慢慢的。下一次換我不急著飛，只把步伐放進節拍裡。",      meta:"— 亂序 / 對齊節奏，重組次序" },
-    "—":    { text:"當雜訊退去，願你仍記得，心跳也是一種節拍。",                                meta:"— 展覽記憶 / Resonance of the era" }
-  };
+  const qs = new URLSearchParams(location.search);
+  const tiltRoot = $('#tiltRoot');
+  const toast = $('#toast');
 
-  // 讀資料
-  const d = readResult();
-  render(d);
-  bind(d);
-
+  // 讀取成績：優先 URL 參數，其次 localStorage.latestRun，最後 Demo
   function readResult(){
-    const score     = toInt(localStorage.getItem("finalScore"), 0);
-    const bestScore = toInt(localStorage.getItem("bestScore"), 0);
-    const timeMs    = toInt(localStorage.getItem("timeSurvivedMs"), 0);
-    const maxDodge  = toInt(localStorage.getItem("maxDodge"), 0);
-    const character = localStorage.getItem("characterName") || "—";
-    const cause     = localStorage.getItem("gameOverCause") || "訊號雜訊過高";
-
-    if (score > bestScore) localStorage.setItem("bestScore", String(score));
-    return { score, bestScore: Math.max(score, bestScore), timeMs, maxDodge, character, cause };
+    const num = v => (v==null || v==="") ? null : Number(v);
+    let data = {
+      time: qs.get('time'), // 秒
+      score: qs.get('score'),
+      completion: qs.get('completion'), // 0~100
+      combo: qs.get('combo'),
+      evade: qs.get('evade'),
+      hit: qs.get('hit')
+    };
+    if(Object.values(data).every(v => v==null)){
+      try{
+        const fromLS = JSON.parse(localStorage.getItem('latestRun')||'null');
+        if(fromLS){ data = fromLS; }
+      }catch{ /* ignore */ }
+    }
+    // Demo fallback
+    if(Object.values(data).every(v => v==null)){
+      data = { time: 92, score: 4310, completion: 78, combo: 15, evade: 42, hit: 3 };
+    }
+    // 型別正規化
+    data.time = num(data.time) ?? 0;
+    data.score = num(data.score) ?? 0;
+    data.completion = Math.min(100, Math.max(0, num(data.completion) ?? 0));
+    data.combo = num(data.combo) ?? 0;
+    data.evade = num(data.evade) ?? 0;
+    data.hit = num(data.hit) ?? 0;
+    return data;
   }
 
-  function render(x){
-    set("score",      num(x.score));
-    set("bestScore",  num(x.bestScore));
-    set("time",       clock(x.timeMs));
-    set("maxDodge",   num(x.maxDodge));
-    set("character",  x.character);
-    set("cause",      x.cause);
-
-    // NEW 標章
-    const snap = toInt(localStorage.getItem("bestScore_prev"), -1);
-    if (x.score > snap && x.score >= x.bestScore && x.score !== 0) id("newRecord").classList.remove("hidden");
-    localStorage.setItem("bestScore_prev", String(x.bestScore));
-
-    // 詩句
-    const p = POEMS[x.character] || POEMS["—"];
-    id("poemText").textContent = p.text;
-    id("poemMeta").textContent = p.meta;
+  function timeFmt(sec){
+    sec = Math.max(0, Math.round(sec));
+    const m = Math.floor(sec/60).toString().padStart(2,'0');
+    const s = (sec%60).toString().padStart(2,'0');
+    return `${m}:${s}`;
   }
 
-  function bind(x){
-    id("btnRetry").addEventListener("click", () => location.href = SELECT_PAGE);
-    id("btnMenu").addEventListener("click",  () => location.href = EXPO_HOME);
-    id("btnShare").addEventListener("click", async () => {
-      const text = [
-        "《AI×像素科技跑酷》結果",
-        `分數：${num(x.score)}`,
-        `最佳分數：${num(x.bestScore)}`,
-        `生存時間：${clock(x.timeMs)}`,
-        `最高閃避次數：${num(x.maxDodge)}`,
-        `角色：${x.character}`,
-        `失敗原因：${x.cause}`,
-        "",
-        "—— 送你的話 ——",
-        id("poemText").textContent,
-        id("poemMeta").textContent
-      ].join("\n");
+  function rankOf(score, completion){
+    const v = score*0.7 + completion*30; // 簡單權重
+    if(v>=8000) return 'S';
+    if(v>=5500) return 'A';
+    if(v>=3000) return 'B';
+    return 'C';
+  }
 
-      try {
-        if (navigator.share) await navigator.share({ title:"我的遊戲結果", text });
-        else { await navigator.clipboard.writeText(text); flash(id("btnShare")); }
-      } catch {
-        try { await navigator.clipboard.writeText(text); flash(id("btnShare")); } catch {}
-      }
+  function poemFor({time, score, completion}){
+    const linesHigh = [
+      '訊號對準，記憶如潮，',
+      '你在像素海裡把風切開。',
+      '沙漏翻轉，時間向你點頭，',
+      '殘噪靜默，留下清亮的一行。'
+    ];
+    const linesMid = [
+      '頻道偶爾失真，但不再迷航，',
+      '你以穩定節奏穿過霧面光柵。',
+      '微粒般的秒針撒落，',
+      '下一次，就讓閃電更接近掌心。'
+    ];
+    const linesLow = [
+      '失真未盡，訊號仍嘯叫。',
+      '別急，呼吸，讓沙回到漏斗。',
+      '當你再次啟動，',
+      '螢光會記得你的方向。'
+    ];
+
+    const metric = score + completion*40 + time*10;
+    const lines = metric > 12000 ? linesHigh : (metric > 6000 ? linesMid : linesLow);
+    return `【結算詩】\n${lines.join('\n')}`;
+  }
+
+  function applyResult(data){
+    $('#statTime').textContent = timeFmt(data.time);
+    $('#statScore').textContent = data.score.toLocaleString();
+    $('#statCompletion').textContent = `${data.completion}%`;
+    $('#progressBar').style.width = `${data.completion}%`;
+    $('#kpiCombo').textContent = data.combo;
+    $('#kpiEvade').textContent = data.evade;
+    $('#kpiHit').textContent = data.hit;
+    const r = rankOf(data.score, data.completion);
+    $('#statRank').textContent = r;
+    $('#poem').textContent = poemFor(data);
+  }
+
+  function updateLeaderboard(data){
+    const entry = {
+      name: localStorage.getItem('playerName') || 'Explorer',
+      score: data.score|0,
+      time: data.time|0,
+      completion: data.completion|0,
+      ts: Date.now()
+    };
+    let list = [];
+    try{ list = JSON.parse(localStorage.getItem('leaderboard')||'[]') }catch{}
+    list.push(entry);
+    list.sort((a,b)=> b.score - a.score || b.completion - a.completion || a.time - b.time);
+    list = list.slice(0,10);
+    localStorage.setItem('leaderboard', JSON.stringify(list));
+
+    const ul = $('#boardList');
+    ul.innerHTML = '';
+    list.forEach((it, i)=>{
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span class="board-rank">#${(i+1).toString().padStart(2,'0')}</span>
+        <span class="board-name">${it.name}</span>
+        <span class="board-score">${it.score.toLocaleString()} · ${timeFmt(it.time)} · ${it.completion}%</span>
+      `;
+      ul.appendChild(li);
     });
   }
 
-  // Utils
-  function id(s){ return document.getElementById(s) }
-  function set(s,v){ id(s).textContent = v }
-  function toInt(v,def=0){ const n=parseInt(v,10); return Number.isFinite(n)?n:def }
-  function num(n){ return n.toLocaleString("zh-Hant-TW") }
-  function clock(ms){ const s=Math.floor(ms/1000); return `${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}` }
-  function flash(btn){ const t=btn.textContent; btn.textContent="已複製！"; setTimeout(()=>btn.textContent=t, 1000) }
+  function showToast(msg){
+    toast.textContent = msg; toast.classList.add('show');
+    setTimeout(()=> toast.classList.remove('show'), 1800);
+  }
+
+  // 3D Tilt（滑鼠＋陀螺儀）
+  let gyroOn = true;
+  function setTilt(x, y){
+    // x,y: [-1,1]
+    const rotY = x * 10;
+    const rotX = -y * 10;
+    tiltRoot.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+  }
+  window.addEventListener('mousemove', (e)=>{
+    if(!gyroOn) return;
+    const r = tiltRoot.getBoundingClientRect();
+    const nx = (e.clientX - (r.left + r.width/2)) / (r.width/2);
+    const ny = (e.clientY - (r.top + r.height/2)) / (r.height/2);
+    setTilt(nx, ny);
+  });
+  if(window.DeviceOrientationEvent){
+    window.addEventListener('deviceorientation', (e)=>{
+      if(!gyroOn) return;
+      const nx = Math.max(-1, Math.min(1, (e.gamma||0)/30));
+      const ny = Math.max(-1, Math.min(1, (e.beta||0)/30));
+      setTilt(nx, ny);
+    });
+  }
+  window.addEventListener('keydown', (e)=>{
+    if(e.key.toLowerCase()==='g'){
+      gyroOn = !gyroOn;
+      if(!gyroOn){ tiltRoot.style.transform = 'none'; }
+      showToast(gyroOn? '3D 傾斜：開啟' : '3D 傾斜：關閉');
+    }
+  });
+
+  // CTA
+  $('#btnRetry').addEventListener('click', ()=>{
+    const url = tiltRoot.dataset.retry || 'play.html';
+    location.href = url;
+  });
+  $('#btnBack').addEventListener('click', ()=>{
+    const url = tiltRoot.dataset.back || 'index.html';
+    location.href = url;
+  });
+  $('#btnShare').addEventListener('click', async ()=>{
+    const data = readResult();
+    const shareUrl = new URL(location.href.split('#')[0]);
+    shareUrl.search = new URLSearchParams({
+      time: data.time, score: data.score, completion: data.completion
+    }).toString();
+    const title = '我的任務結算（Resonance）';
+    const text = `生存 ${timeFmt(data.time)}｜分數 ${data.score}｜完成度 ${data.completion}%`;
+    try{
+      if(navigator.share){
+        await navigator.share({ title, text, url: shareUrl.toString() });
+      }else{
+        await navigator.clipboard.writeText(`${title}\n${text}\n${shareUrl.toString()}`);
+        showToast('已複製分享連結');
+      }
+    }catch(err){ showToast('取消分享'); }
+  });
+
+  // 初始化
+  const result = readResult();
+  applyResult(result);
+  updateLeaderboard(result);
+
+  // 將本次結果存回（供其他頁面或重新整理使用）
+  try{ localStorage.setItem('latestRun', JSON.stringify(result)); }catch{}
 })();
