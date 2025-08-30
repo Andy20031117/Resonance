@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>任務結算｜Mission Debrief</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- 科技＋像素風字體 -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Press+Start+2P&family=Chakra+Petch:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="result.css" />
+</head>
+<body>
+  <!-- 背景層：可用 Gbg.png，若無則用漸層網格 -->
+  <div class="bg-layer">
+    <div class="grid"></div>
+    <div class="stars stars-a" aria-hidden="true"></div>
+    <div class="stars stars-b" aria-hidden="true"></div>
+    <div class="scanline" aria-hidden="true"></div>
+  </div>
+
+  <main class="wrap" id="tiltRoot" data-retry="play.html" data-back="index.html">
+    <header class="hero">
+      <h1 class="glitch" data-text="MISSION DEBRIEF">MISSION DEBRIEF</h1>
+      <p class="subtitle">任務結算 · Resonance Protocol v1.0</p>
+    </header>
+
+    <section class="card result-card" id="resultCard">
+      <div class="card-inner">
+        <div class="poem" id="poem">
+          <!-- 由 JS 依成績注入詩意總結 -->
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <span class="label">生存時間</span>
+            <span class="value" id="statTime">00:00</span>
+          </div>
+          <div class="stat">
+            <span class="label">分數</span>
+            <span class="value" id="statScore">0</span>
+          </div>
+          <div class="stat">
+            <span class="label">完成度</span>
+            <div class="progress">
+              <div class="bar" id="progressBar" style="width:0%"></div>
+            </div>
+            <span class="value small" id="statCompletion">0%</span>
+          </div>
+          <div class="stat">
+            <span class="label">評級</span>
+            <span class="badge" id="statRank">C</span>
+          </div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi-item">
+            <span class="kpi-label">最佳連擊</span>
+            <span class="kpi-value" id="kpiCombo">—</span>
+          </div>
+          <div class="kpi-item">
+            <span class="kpi-label">干擾物閃避</span>
+            <span class="kpi-value" id="kpiEvade">—</span>
+          </div>
+          <div class="kpi-item">
+            <span class="kpi-label">損傷次數</span>
+            <span class="kpi-value" id="kpiHit">—</span>
+          </div>
+        </div>
+
+        <div class="cta">
+          <button class="btn btn-primary" id="btnRetry">再玩一次</button>
+          <button class="btn btn-ghost" id="btnBack">返回展覽</button>
+          <button class="btn btn-share" id="btnShare">分享結果</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card board" id="leaderboard">
+      <h2 class="board-title">高手榜 Leaderboard</h2>
+      <ol class="board-list" id="boardList">
+        <!-- 由 JS 注入 -->
+      </ol>
+    </section>
+
+    <footer class="tips">
+      <p>💡 提示：此頁支援 <span>裝置陀螺儀</span> 與 <span>滑鼠傾斜</span> 的 3D 透視。若欲關閉，可按 <kbd>G</kbd> 切換。</p>
+    </footer>
+  </main>
+
+  <!-- 輕量提示 -->
+  <div class="toast" id="toast" aria-live="polite"></div>
+
+  <script src="result.js"></script>
+</body>
+</html>

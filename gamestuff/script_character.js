@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
       card.classList.add("selected");
 
       // 顯示冒險按鈕
+      startButton.disabled = false;
       startButton.classList.add("active");
     });
   });
@@ -23,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
   startButton.addEventListener("click", () => {
     const selectedCharacter = sessionStorage.getItem("selectedCharacter");
     if (selectedCharacter) {
-      window.location.href = `game.html?character=${selectedCharacter}`;
+      window.location.href = `play.html?character=${selectedCharacter}`;
     }
   });
 });
