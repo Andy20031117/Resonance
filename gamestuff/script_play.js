@@ -170,32 +170,28 @@ function calcScore() {
   return distScore + fragScore;
 }
 
-function snapshotAndGoResult(causeText) {
-  const score = calcScore();
-  const elapsedMs = Math.max(0, performance.now() - gameStartAt);
-  const maxComboCount = 0; // 如未實作 combo 可先填 0；之後接上你的變數
 
-  // 寫入 LocalStorage（result.js 會讀）
-  localStorage.setItem("finalScore", String(score));
-  localStorage.setItem("timeSurvivedMs", String(elapsedMs));
-  localStorage.setItem("maxCombo", String(maxComboCount));
-  localStorage.setItem("characterName", selectedChar || "—");
-  localStorage.setItem("gameOverCause", causeText || lastCollisionReason || "訊號雜訊過高");
 
-  // 更新 bestScore
-  const best = parseInt(localStorage.getItem("bestScore") || "0", 10);
-  if (score > best) localStorage.setItem("bestScore", String(score));
-
-  // 跳轉結果頁
-  window.location.href = "result.html";
-}
-
+  // 遊戲結束
 function onGameOver(causeText) {
   if (isGameOver) return;
   isGameOver = true;
   if (loopId) cancelAnimationFrame(loopId);
-  snapshotAndGoResult(causeText);
+
+  // 準備結果資料
+  const elapsedSec = Math.max(0, (performance.now() - gameStartAt) / 1000);
+  const payload = {
+    character: selectedChar,                 // 讓橋接模組轉成中文名
+    score: calcScore(),
+    timeSurvived: elapsedSec,                // 秒
+    distance: Math.floor(distancePx / 8),    // 你的 HUD「距離」單位
+    logoPiecesRun: collected.size,           // 本局拿到的碎片數
+    logoPiecesTotal: FRAG_TYPES.length       // 碎片總數（此處為 6）
+  };
+
+  commitRunToResultPage(payload);            // ✔ 寫入並跳轉 result.html
 }
+
 
 // === 輸入 ===
 document.addEventListener("keydown", (e) => {
@@ -641,6 +637,89 @@ function gameLoop(now) {
 
   loopId = requestAnimationFrame(gameLoop);
 }
+
+
+/* ============================================================
+   ▶ 結束資料橋接（play.js → result.html）
+   - 寫入 localStorage.gameResult（result.js 會讀）
+   - 更新 localStorage.leaderboard（不儲存玩家名稱）
+   - 維護碎片累計完成度
+============================================================ */
+(function(){
+  const RESULT_KEY      = "gameResult";
+  const LEADERBOARD_KEY = "leaderboard";
+  const LOGO_CUM_KEY    = "logoPiecesCumulative"; // 跨局累計的碎片數
+  const LOGO_TOTAL_KEY  = "logoPiecesTotal";      // 碎片總數
+
+  // 與 result.js 一致的評級邏輯
+  function computeGrade(score){
+    return score>=15000 ? "S" :
+           score>=12000 ? "A" :
+           score>= 9000 ? "B" :
+           score>= 6000 ? "C" : "D";
+  }
+
+  // （可選）把內部角色代號 → 中文展示名
+  const CHAR_NAME_MAP = { Dunwen:"盾穩", Zirui:"磁芮", Runxo:"亂序" };
+
+  function resolveResultURL(file="result.html"){
+    try { return new URL(file, location.href).toString(); } catch { return file; }
+  }
+
+  // 對外：在 Game Over 時呼叫這個
+  window.commitRunToResultPage = function(payload){
+    // ---- 1) 欄位清理 ----
+    const rawChar     = payload.character ?? "—";
+    const character   = CHAR_NAME_MAP[rawChar] || rawChar; // 轉中文名（若對應不到就用原值）
+    const score       = Math.max(0, Math.round(payload.score || 0));
+    const timeSurvived= Number(payload.timeSurvived || 0); // 秒
+    const distance    = (payload.distance!=null) ? Math.round(payload.distance) : null;
+    const piecesRun   = Math.max(0, Math.round(payload.logoPiecesRun || 0));
+    const piecesTotal = Math.max(1, Math.round(payload.logoPiecesTotal || Number(localStorage.getItem(LOGO_TOTAL_KEY)) || 12));
+
+    // ---- 2) 碎片跨局累積完成度 ----
+    const prevCum = Number(localStorage.getItem(LOGO_CUM_KEY) || 0);
+    const newCum  = Math.min(piecesTotal, prevCum + piecesRun);
+    localStorage.setItem(LOGO_CUM_KEY, String(newCum));
+    localStorage.setItem(LOGO_TOTAL_KEY, String(piecesTotal));
+    const logoCompletionCumulative = Math.round((newCum / piecesTotal) * 100);
+
+    // ---- 3) 更新排行榜（不存玩家名稱）----
+    let board = [];
+    try { board = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || "[]"); } catch {}
+    const entry = { score, time: timeSurvived, date: new Date().toISOString().slice(0,10) };
+    board.push(entry);
+
+    const sorted = board.slice().sort((a,b)=> b.score - a.score || b.time - a.time);
+    const rank = sorted.findIndex(r => r === entry) + 1;
+
+    // 個人最佳（以本機過往最高分判斷）
+    const prevBest = board.slice(0, -1).reduce((m,r)=> Math.max(m, r.score), 0);
+    const isPersonalBest = score >= prevBest;
+
+    // 限制排行榜長度
+    localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(board.slice(-100)));
+
+    // ---- 4) 組結果物件，供 result.js 使用 ----
+    const resultObj = {
+      character,
+      score,
+      grade: computeGrade(score),
+      timeSurvived,
+      distance,
+      logoPiecesRun: piecesRun,
+      logoPiecesTotal: piecesTotal,
+      logoCompletionCumulative,
+      leaderboard: sorted.slice(0,5),
+      rank,
+      isPersonalBest
+    };
+    try { localStorage.setItem(RESULT_KEY, JSON.stringify(resultObj)); } catch {}
+
+    // ---- 5) 跳結果頁 ----
+    location.href = resolveResultURL("result.html");
+  };
+})();
 
 
 // === 啟動 ===
