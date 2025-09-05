@@ -315,145 +315,116 @@ body {
   height: -10vh;
 }
 
-
-
+/* ==== 展覽介紹區塊（泡泡區塊） ==== */
 .intro-section {
   position: relative;
-  width: 100%;
-  height: 100vh;
+  height: 100vh;   /* 限制只佔一個視窗高度 */
   overflow: hidden;
-  background-color: #111;
+  z-index: 0;      /* 確保層級低於後續的 section */
 }
 
+#particle-text-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
 
-/* Reset 限定在區段內 */
-.intro-section * {
-  box-sizing: border-box;
+/* 左側標題 */
+.intro-title {
+  position: absolute;
+  left: 18%;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: clamp(28px, 3vw, 44px);
+  color: #512203;
+  text-shadow: 0 0 12px rgba(249, 227, 137, 0.7);
+  z-index: 2;
+}
+
+/* 泡泡機 */
+.bubble-machine-img {
+  position: absolute;
+  left: 8%;
+  bottom: 28%;
+  width: 150px;
+  max-width: 18vw;
+  z-index: 2;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+}
+
+/* 泡泡動態區域（限制在 intro-section 範圍內） */
+.bubble-area {
+  position: absolute;
+  inset: 0;             /* 填滿 intro-section，不會蓋到外面 */
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* 泡泡外觀 */
+.bubble {
+  position: absolute;
+  left: 120px;          /* 泡泡機出口 X，可微調 */
+  bottom: 130px;        /* 泡泡機出口 Y，可微調 */
+  background-image: url("bubble.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 1;
+  pointer-events: none;
+}
+
+/* 泡泡文字 */
+.bubble span {
+  position: absolute;
+  left: 10%;
+  top: 10%;
+  width: 80%;
+  height: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.2;
+  padding: 4px;
+  word-break: break-word;
+  white-space: normal;
+  overflow: hidden;
+  color: #754c07;
+  font-weight: 300;
+  text-shadow: 0 1px 2px rgba(0,0,0,.35);
+}
+
+/* 泡泡動畫 */
+@keyframes moveRight {
+  from { left: 120px; opacity: 1; }
+  to   { left: 120vw; opacity: 1; }
+}
+@keyframes sway {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-20px); }
+  100% { transform: translateY(0); }
 }
 
 /* === 背景星光 canvas === */
 .intro-section #background-canvas {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   z-index: 0;
   animation: backgroundDrift 10s ease-in-out infinite alternate;
 }
-
-/* 桌面專用粒子聚字 canvas */
 .intro-section #particle-text-canvas {
   display: none;
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   z-index: 1;
 }
 @media (min-width: 768px) {
-  .intro-section #particle-text-canvas {
-    display: block;
-  }
+  .intro-section #particle-text-canvas { display: block; }
 }
-
-/* === 主標題（左側置中）=== */
-.intro-section .intro-title-container {
-  position: absolute;
-  top: 50%;
-  left: 8%;
-  transform: translateY(-50%);
-  z-index: 2;
-}
-.intro-section .intro-title {
-  font-size: 4.5rem;
-  color: #FF6F61; /* 珊瑚紅 */
-  font-weight: normal;
-  text-shadow:
-    1px 1px 2px #d2a744,   /* 金色陰影1 */
-    2px 2px 4px #d2a74499; /* 金色陰影2 較柔 */
-}
-/* === 沙漏與旋轉文字容器（右側）=== */
-.intro-section .sandglass-wrapper {
-  position: absolute;
-  top: 50%;
-  left: 65%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-}
-
-/* 沙漏樣式 */
-.intro-section .sandglass {
-  position: relative;
-  width: 100px;
-  height: 220px;
-  margin: 0 auto;
-}
-.intro-section .top-sand,
-.intro-section .bottom-sand {
-  width: 100px;
-  height: 20px;
-  background-color: #d2a744;
-  border-radius: 50%;
-}
-.intro-section .top-sand {
-  position: absolute;
-  top: 0;
-}
-.intro-section .bottom-sand {
-  position: absolute;
-  bottom: 0;
-}
-.intro-section #sand-canvas {
-  position: absolute;
-  top: 20px;
-  left: 0;
-  width: 100px;
-  height: 180px;
-  z-index: 1;
-}
-
-/* === 圓形 SVG 旋轉文字 === */
-.intro-section #text-svg {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 420px;
-  height: 420px;
-  z-index: 1;
-  animation: rotateText linear infinite;
-  animation-duration: var(--rotate-speed, 60s);
-  transition: animation-duration 0.5s ease;
-  pointer-events: auto;
-}
-
-.intro-section #text-svg:hover {
-  animation-play-state: paused;
-}
-
-.intro-section text {
-  fill: #fce7a4;
-  font-size: 24px;
-  text-shadow: 0 0 5px #fce7a4;
-}
-
-/* === 背景星光動畫 === */
-@keyframes backgroundDrift {
-  from { transform: translateY(0); }
-  to { transform: translateY(10px); }
-}
-
-/* === 圓形旋轉動畫 === */
-@keyframes rotateText {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-
-
-
 
 
 .transition-door {
@@ -466,7 +437,7 @@ body {
   z-index: 9999;
   pointer-events: none;
   transform: translateX(0);
-  transition: transform 1.2s ease-in-out;
+  transition: transform 0.8s ease-in-out;
 }
 
 .left-door {
@@ -1621,11 +1592,12 @@ body {
   }
 }
 
-/* 社群媒體區塊 */
+/* ==== 社群媒體區塊 ==== */
 .media-section {
   position: relative;
-  min-height: 100vh; /* 至少滿一屏，但允許超過 */
-  overflow: visible; /* 讓超出部分顯示 */
+  min-height: 100vh; /* 至少一屏 */
+  overflow: visible;
+  z-index: 5;        /* 確保比 intro-section 高，避免被泡泡蓋掉 */
 }
 
 .title {

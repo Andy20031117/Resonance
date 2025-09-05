@@ -86,10 +86,97 @@ links.forEach(link => {
   });
 });
 
+document.addEventListener("DOMContentLoaded", () => {
+  const bubbleArea = document.querySelector(".bubble-area");
+  let timer = null;
 
+  const texts = [
+    "資訊設計：讓複雜變簡單",
+    "知識加值：讓資訊有脈絡、有意義",
+    "網路傳播：讓內容被聽見、被記住",
+    "把內容轉化為可理解的知識",
+    "讓內容發揮影響力",
+    "找回純真的我們",
+    "AI 與復古的交會點",
+    "跨組串連的敘事結構"
+  ];
 
+  let queue = [];   // 存放打亂後的文字
+  let index = 0;    // 當前文字索引
 
+  // 打亂陣列（Fisher-Yates shuffle）
+  function shuffle(array) {
+    let arr = array.slice();
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
 
+  function getNextText() {
+    if (index >= queue.length) {
+      queue = shuffle(texts); // 新的一輪
+      index = 0;
+    }
+    return queue[index++];
+  }
+
+  // === fitText：讓字自動縮小 ===
+  function fitText(spanEl, diameter){
+    let fs = Math.max(8, Math.min(22, Math.round(diameter * 0.08)));
+    spanEl.style.fontSize = fs + "px";
+    spanEl.style.lineHeight = "1.2";
+
+    let guard = 40;
+    while (
+      guard-- > 0 &&
+      (spanEl.scrollHeight > spanEl.clientHeight ||
+       spanEl.scrollWidth  > spanEl.clientWidth) &&
+      fs > 8
+    ){
+      fs -= 1;
+      spanEl.style.fontSize = fs + "px";
+    }
+  }
+
+  function emitBubble(){
+    const b = document.createElement("div");
+    b.className = "bubble";
+
+    const size = Math.floor(Math.random() * 120) + 120; // 120~240
+    b.style.width  = `${size}px`;
+    b.style.height = `${size}px`;
+
+    const randomTop = Math.random() * 60 + 20; // 20%~80%
+    b.style.top = `${randomTop}%`;
+
+    const t = document.createElement("span");
+    t.textContent = getNextText(); // ✅ 每次依序取文字
+    b.appendChild(t);
+
+    bubbleArea.appendChild(b);
+
+    requestAnimationFrame(() => fitText(t, size));
+
+    const duration = Math.random() * 10 + 12; // 12~22s
+    b.style.animation = `moveRight ${duration}s linear forwards, sway 4s ease-in-out infinite`;
+
+    setTimeout(() => b.remove(), duration * 1000);
+  }
+
+  function start(){ if (!timer) timer = setInterval(emitBubble, 2500); }
+  function stop(){ clearInterval(timer); timer = null; }
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) stop(); else start();
+  });
+
+  // 初始化：先打亂一次
+  queue = shuffle(texts);
+  emitBubble();
+  start();
+});
 
 
 
@@ -132,9 +219,9 @@ function playDoorTransition(openToTV = true) {
             setTimeout(() => {
                 unlockScroll(); // 播放完整解鎖滾動
                 resolve();
-            }, 1200); // 開門動畫時間
+            }, 800); // 開門動畫時間
 
-        }, 1200); // 關門動畫時間
+        }, 800); // 關門動畫時間
     });
 }
 
@@ -219,120 +306,6 @@ window.addEventListener("load", () => {
 
 // GSAP 註冊
 gsap.registerPlugin(ScrollTrigger);
-
-
-
-// ========== 背景星光動畫 ==========
-const bgCanvas = document.getElementById("background-canvas");
-const bgCtx = bgCanvas.getContext("2d");
-let stars = [];
-
-function resizeBGCanvas() {
-  bgCanvas.width = window.innerWidth;
-  bgCanvas.height = window.innerHeight;
-}
-resizeBGCanvas();
-window.addEventListener("resize", resizeBGCanvas);
-
-for (let i = 0; i < 120; i++) {
-  stars.push({
-    x: Math.random() * bgCanvas.width,
-    y: Math.random() * bgCanvas.height,
-    radius: Math.random() * 1.5 + 0.5,
-    speed: Math.random() * 0.3 + 0.1
-  });
-}
-
-function drawStars() {
-  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-  bgCtx.fillStyle = "#fce7a4aa";
-  for (let s of stars) {
-    bgCtx.beginPath();
-    bgCtx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
-    bgCtx.fill();
-    s.y += s.speed;
-    if (s.y > bgCanvas.height) s.y = 0;
-  }
-  requestAnimationFrame(drawStars);
-}
-drawStars();
-
-
-// ========== 沙漏沙粒動畫 ==========
-const sandCanvas = document.getElementById("sand-canvas");
-const sandCtx = sandCanvas.getContext("2d");
-let grains = [];
-
-function initGrains() {
-  grains = [];
-  for (let i = 0; i < 150; i++) {
-    grains.push({
-      x: Math.random() * sandCanvas.width,
-      y: Math.random() * (sandCanvas.height / 2),
-      vy: 0
-    });
-  }
-}
-initGrains();
-
-function drawSand() {
-  sandCtx.clearRect(0, 0, sandCanvas.width, sandCanvas.height);
-  sandCtx.fillStyle = "#fce7a4";
-  for (let g of grains) {
-    g.vy += 0.05; // gravity
-    g.y += g.vy;
-    if (g.y > sandCanvas.height - 5) {
-      g.y = Math.random() * 10;
-      g.vy = 0;
-    }
-    sandCtx.beginPath();
-    sandCtx.arc(g.x, g.y, 1.5, 0, Math.PI * 2);
-    sandCtx.fill();
-  }
-  requestAnimationFrame(drawSand);
-}
-drawSand();
-
-
-// ========== 旋轉文字控制 ==========
-const textSVG = document.getElementById("text-svg");
-let currentSpeed = 40;       // 初始旋轉秒數
-let targetSpeed = 40;        // 目標秒數
-const speedStep = 0.2;       // 平滑調整速度
-const root = document.documentElement;
-
-// hover 停止旋轉
-textSVG.addEventListener("mouseenter", () => {
-  textSVG.style.animationPlayState = "paused";
-});
-textSVG.addEventListener("mouseleave", () => {
-  textSVG.style.animationPlayState = "running";
-});
-
-// 點擊加速（逐漸加快）
-textSVG.addEventListener("click", () => {
-  if (targetSpeed > 5) {
-    targetSpeed -= 5;
-  }
-});
-
-// 平滑更新動畫變數
-function updateSpeed() {
-  if (currentSpeed !== targetSpeed) {
-    currentSpeed += (targetSpeed - currentSpeed) * speedStep;
-    if (Math.abs(currentSpeed - targetSpeed) < 0.1) {
-      currentSpeed = targetSpeed;
-    }
-    root.style.setProperty('--rotate-speed', currentSpeed + "s");
-  }
-  requestAnimationFrame(updateSpeed);
-}
-updateSpeed();
-
-
-
-
-
 
 
 
