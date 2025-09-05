@@ -828,6 +828,9 @@ body {
   font-size: 1.8rem;
   font-weight: bold;
   color: #552d07;
+  background-color: rgba(241, 226, 163, 0.5);
+  padding: 1px 30px;
+  border-radius: 6px;
   text-align: center;
 }
 
@@ -849,7 +852,7 @@ body {
 .news-text h3 {
   font-size: 1.3rem;
   font-weight: bold;
-  color: #552d07;
+  color: #7b1a04;
 }
 
 /* === 📱 手機版 RWD === */
