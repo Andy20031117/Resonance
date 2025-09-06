@@ -5,13 +5,30 @@
   --text-light: #f5f5f5;
 }
 
+html, body {
+  height: 100%;   /* 讓 body 高度等於視窗 */
+  margin: 0;
+}
+
+body {
+  display: flex;             /* 用 flex 做整體排版 */
+  flex-direction: column;
+  min-height: 100vh;         /* 即使內容不足也會撐到整個螢幕 */
+}
+main {
+  flex: 1;                   /* 主內容自動撐開 */
+}
+.footer {
+  margin-top: auto;          /* Footer 黏在最下面 */
+}
+
 body {
   margin: 0;
   background-color: #472c02;
   background-image: url('paper-texture.jpg');
   background-repeat: repeat;
   background-size: auto;
-  background-attachment: fixed;
+  background-attachment: scroll;
   background-position: center center;
   font-family: 'FangSong', '仿宋', 'FangSong_GB2312', 'Source Han Serif TC', 'Noto Serif TC', serif;
   color: var(--text-light);
@@ -151,7 +168,7 @@ body {
 }
 
 .navbar.scrolled {
-  background-color: rgba(46, 58, 52, 0.85);
+  background-color: #473828;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   padding: 4px 32px;
 }
@@ -1598,8 +1615,9 @@ body {
 /* ==== 社群媒體區塊 ==== */
 .media-section {
   position: relative;
-  min-height: 100vh; /* 至少一屏 */
-  overflow: visible;
+  min-height: 100vh;
+  padding: 80px 0 60px;   /* 原本160 → 減少 */
+  overflow: hidden;       /* 把超出容器的高度切掉 */
   z-index: 5;        /* 確保比 intro-section 高，避免被泡泡蓋掉 */
 }
 
@@ -1628,15 +1646,16 @@ body {
   transition: bottom 1.8s ease-out, opacity 0.8s ease-out;
 }
 .kite.float {
-  bottom:-40%; /* 調整這個數字決定停在哪裡 */
+  bottom:-15%; /* 調整這個數字決定停在哪裡 */
   opacity: 1;
 }
 
 /* 社群卡片 */
 .social-cards {
-  position: absolute;
-  right: 15%;
-  top: 30%;
+  position: relative;     /* 回到文件流 */
+  margin-left: auto;      /* 右對齊 */
+  margin-right: 15%;      /* 原本的 right 改成外距 */
+  margin-top: 30vh;
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* 兩欄 */
   gap: 1.5rem 2rem; /* 上下間距 1.5rem，左右間距 2rem */
@@ -1727,5 +1746,169 @@ body {
 #back-to-top:hover {
   opacity: 1;
 }
+
+
+/* ==== 頁尾 Footer 區塊 ==== */
+/* 色票：深棕 / 奶茶 */
+:root{
+  --brown:#a16f41;
+  --cream:#f1e2a3;
+  --cream-2:#f7ecd0;
+  --grid:#c9b58a;
+  --paper:#e8d9b9;
+  --shadow:0 10px 30px rgb(255, 255, 255);
+}
+
+.footer{
+  position: relative;
+  color: var(--cream);
+  overflow: clip;
+  border-top: 8px solid #3e1f05;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* 背景層：紙張 → 網格 */
+.footer-bg{ position:absolute; inset:0; z-index:0; }
+.paper-bg{
+  position:absolute; inset:0;
+  background:
+    radial-gradient(1200px 400px at 50% 120%, rgba(0,0,0,.15), transparent 60%),
+    repeating-linear-gradient(0deg, rgba(0,0,0,.03) 0 2px, transparent 2px 6px),
+    linear-gradient(180deg, var(--paper), #d7c49a);
+  transition: opacity .8s ease;
+  opacity: 1;
+}
+.grid-bg{
+  position:absolute; inset:0;
+  background:
+    linear-gradient(transparent 49%, rgba(255,255,255,.08) 50%, transparent 51%) 0 0/16px 16px,
+    linear-gradient(90deg, transparent 49%, rgba(255,255,255,.08) 50%, transparent 51%) 0 0/16px 16px,
+    linear-gradient(180deg, #3b1d07, var(--brown));
+  mix-blend-mode: screen;
+  opacity: 0; transition: opacity .8s ease .05s;
+}
+
+/* 進入視窗時切換背景 */
+.footer.in-view .paper-bg{ opacity:0; }
+.footer.in-view .grid-bg{ opacity:.9; }
+
+.footer-inner{
+  position: relative; 
+  z-index:1;
+  display:grid; 
+  grid-template-columns: 2fr 2fr auto; /* 三欄：左、中、右 */
+  gap: 2px;
+  padding: 0px clamp(16px, 5vw, 48px); /* 上下留白一樣 */
+  background: linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.35));
+  align-items: center;  /* 🔑 新增這行，讓兩欄內容垂直置中 */
+}
+
+.footer-venue {
+  text-align: right;     /* 靠右對齊 */
+  margin-left: -120px; 
+}
+
+.footer-venue ul {
+  padding-left: 0;
+  list-style: none;
+  margin: 0;
+}
+
+.footer-venue li {
+  margin: 2px 0;
+}
+
+.footer-info {
+  display: flex;
+  justify-content: space-between;  /* 左右兩邊分開 */
+  align-items: flex-start;         /* ⬅ 關鍵：讓兩個 info-block 從頂部對齊 */
+  gap: 40px;
+  margin-left: -300px;       /* 兩塊之間的距離，可以自己調整 */
+}
+
+.footer-info .info-block {
+  flex: 1;                         /* 每塊平均分配寬度 */
+  text-align: left;                /* 確保內容靠左 */
+}
+
+/* 左欄品牌 */
+.footer-logo{ width: 120px; height:auto; display:block; filter: drop-shadow(var(--shadow)); margin-bottom:12px; }
+.footer-title{ margin:8px 0 4px; font-size: clamp(12px, 2.2vw, 20px); letter-spacing:.5px;}
+.footer-tagline{ color: var(--cream-2); opacity:.9; margin-bottom: 16px; font-size:12px;}
+
+/* 右欄資訊 */
+.footer-col h4{ font-size: 1rem; margin: 0 0 4px; color: #ffe9b6; letter-spacing:.5px; text-align: left;  }
+.footer-col ul{ margin: 0; padding-left: 18px;; list-style: none; text-align: left;}
+.footer-col li{ margin: 4px 0; }
+
+.footer-inner a{ color: var(--cream); text-decoration: none; border-bottom: 1px dotted rgba(255,255,255,.35); }
+.footer-inner a:hover{ border-bottom-style: solid; }
+
+.footer-col .info-block:nth-child(3) {
+  margin-left: 20px; /* 這裡的數值可以依需求調整 */
+}
+
+.contact-list {
+  display: flex;
+  flex-direction: column; /* 改成直排 */
+  gap: 12px;              /* 上下行間距，可調整 */
+  padding-left: 80px;  /* 讓 icon 不會貼邊 */
+  list-style: none;
+}
+.contact-list li {
+  text-align: left;               /* 讓右邊那欄也靠左 */
+}
+
+.contact-list a {
+  display: inline-block;
+  align-items: center;
+  justify-content: flex-start; /* icon + 文字靠左 */
+  gap: 6px; /* icon 和文字間距 */
+  text-decoration: none; /* 移除底線 */
+  border-bottom: none;
+}
+
+.i{ inline-size:18px; block-size:18px; display:inline-block; }
+.i-mail{ background: conic-gradient(from 45deg, currentColor 0 25%, transparent 0) no-repeat,
+                    linear-gradient(currentColor,currentColor) center/70% 2px no-repeat;
+         mask: polygon(0 25%,50% 55%,100% 25%,100% 100%,0 100%); }
+.i-ig{ border:2px solid currentColor; border-radius:5px; position:relative; }
+.i-ig::after{ content:""; position:absolute; inset:5px; border:2px solid currentColor; border-radius:50%; }
+
+/* 版權 */
+copyright, .copyright{ margin-top: 16px; opacity:.85; font-size: 10px; }
+
+/* 跑馬燈 */
+.footer-marquee{ position:relative; z-index:1; background: rgba(0,0,0,.35); overflow:hidden; border-top:1px solid rgba(255,255,255,.15); }
+.marquee-track{
+  white-space: nowrap; padding: 10px 0; font-size:.95rem; letter-spacing:.4px;
+  animation: marquee 22s linear infinite;
+}
+.footer-marquee:hover .marquee-track{ animation-play-state: paused; }
+@keyframes marquee{
+  from{ transform: translateX(100%); }
+  to{ transform: translateX(-100%); }
+}
+
+/* 返回頂端 */
+.back-to-top{
+  margin-top: 8px; border: 1px solid rgba(255,255,255,.35);
+  background: transparent; color: var(--cream); padding: 6px 10px; border-radius: 8px;
+  cursor: pointer;
+}
+.back-to-top:hover{ background: rgba(255,255,255,.08); }
+
+/* 無障礙：減少動作時關閉動畫 */
+@media (prefers-reduced-motion: reduce){
+  .paper-bg, .grid-bg, .timeline-progress, .marquee-track{ transition: none !important; animation: none !important; }
+}
+
+/* RWD */
+@media (max-width: 900px){
+  .footer-inner{ grid-template-columns: 1fr; gap: 20px; }
+  .footer-title{ font-size: 20px; }
+}
+
 
 

@@ -628,3 +628,19 @@ backToTopBtn.addEventListener("click", () => {
     behavior: "smooth"
   });
 });
+
+
+// 觀察 footer 進入視窗：切換背景 & 推進時間軸
+  (function(){
+    var footer = document.getElementById('site-footer');
+    if(!('IntersectionObserver' in window) || !footer){ footer.classList.add('in-view'); return; }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          footer.classList.add('in-view');
+          io.disconnect();
+        }
+      });
+    }, {threshold: .25});
+    io.observe(footer);
+  })();
