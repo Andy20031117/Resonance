@@ -382,14 +382,16 @@ body {
 /* 泡泡外觀 */
 .bubble {
   position: absolute;
-  left: 120px;          /* 泡泡機出口 X，可微調 */
-  bottom: 130px;        /* 泡泡機出口 Y，可微調 */
-  background-image: url("bubble.png");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
+  left: 120px;       /* 起始位置：泡泡機出口 */
+  bottom: 130px;     /* 起始位置：泡泡機出口 */
   opacity: 1;
   pointer-events: none;
+}
+
+.bubble img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 /* 泡泡文字 */

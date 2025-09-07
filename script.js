@@ -86,82 +86,53 @@ links.forEach(link => {
   });
 });
 
+// 泡泡動畫
 document.addEventListener("DOMContentLoaded", () => {
   const bubbleArea = document.querySelector(".bubble-area");
   let timer = null;
 
-  const texts = [
-    "資訊設計：讓複雜變簡單",
-    "知識加值：讓資訊有脈絡、有意義",
-    "網路傳播：讓內容被聽見、被記住",
-    "把內容轉化為可理解的知識",
-    "讓內容發揮影響力",
-    "找回純真的我們",
-    "AI 與復古的交會點",
-    "跨組串連的敘事結構"
+  // 換成圖片路徑陣列
+  const images = [
+    "bubble1.png",
+    "bubble2.png",
+    "bubble3.png",
+    "bubble4.png",
+    "bubble5.png",
+    "bubble6.png",
+    "bubble7.png",
+    "bubble8.png"
   ];
 
-  let queue = [];   // 存放打亂後的文字
-  let index = 0;    // 當前文字索引
+  let index = 0; // 當前圖片索引
 
-  // 打亂陣列（Fisher-Yates shuffle）
-  function shuffle(array) {
-    let arr = array.slice();
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
+  function getNextImage() {
+    const img = images[index];
+    index = (index + 1) % images.length; // 循環取下一張
+    return img;
   }
 
-  function getNextText() {
-    if (index >= queue.length) {
-      queue = shuffle(texts); // 新的一輪
-      index = 0;
-    }
-    return queue[index++];
-  }
-
-  // === fitText：讓字自動縮小 ===
-  function fitText(spanEl, diameter){
-    let fs = Math.max(8, Math.min(22, Math.round(diameter * 0.08)));
-    spanEl.style.fontSize = fs + "px";
-    spanEl.style.lineHeight = "1.2";
-
-    let guard = 40;
-    while (
-      guard-- > 0 &&
-      (spanEl.scrollHeight > spanEl.clientHeight ||
-       spanEl.scrollWidth  > spanEl.clientWidth) &&
-      fs > 8
-    ){
-      fs -= 1;
-      spanEl.style.fontSize = fs + "px";
-    }
-  }
-
-  function emitBubble(){
+  function emitBubble() {
     const b = document.createElement("div");
     b.className = "bubble";
 
-    const size = Math.floor(Math.random() * 120) + 120; // 120~240
+    const size = Math.floor(Math.random() * 120) + 120; // 泡泡大小 120~240
     b.style.width  = `${size}px`;
     b.style.height = `${size}px`;
 
-    const randomTop = Math.random() * 60 + 20; // 20%~80%
+    const randomTop = Math.random() * 60 + 20; // 垂直位置 20%~80%
     b.style.top = `${randomTop}%`;
 
-    const t = document.createElement("span");
-    t.textContent = getNextText(); // ✅ 每次依序取文字
-    b.appendChild(t);
+    // 插入圖片
+    const imgEl = document.createElement("img");
+    imgEl.src = getNextImage();
+    b.appendChild(imgEl);
 
     bubbleArea.appendChild(b);
 
-    requestAnimationFrame(() => fitText(t, size));
-
-    const duration = Math.random() * 10 + 12; // 12~22s
+    const duration = Math.random() * 10 + 12; // 飄的時間 12~22s
     b.style.animation = `moveRight ${duration}s linear forwards, sway 4s ease-in-out infinite`;
 
+    // 動畫結束移除
     setTimeout(() => b.remove(), duration * 1000);
   }
 
@@ -172,11 +143,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (document.hidden) stop(); else start();
   });
 
-  // 初始化：先打亂一次
-  queue = shuffle(texts);
+  // 初始化：先跑第一顆
   emitBubble();
   start();
 });
+
 
 
 
