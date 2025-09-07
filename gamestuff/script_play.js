@@ -63,6 +63,16 @@ const SPEED_DISTANCE_UNIT = 10000; // 每 10,000px +1 速（註解原文寫20,00
 const MAX_SPEED = 50;
 let speed = BASE_SPEED;
 
+// === Runxo 時空跳段參數（全域一次即可） ===
+function randInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+// 右上顯示單位（= distancePx / 8）
+const RUNXO_SHIFT_UNITS_MIN = 1200;  // 1000~1800 建議
+const RUNXO_SHIFT_UNITS_MAX = 3500;  // 2500~4000 建議
+const RUNXO_FORWARD_PROB    = 0.65;   // 65% 前進、35% 後退
+
+
 // === 障礙/碎片 基本設定 ===
 const OBSTACLE_SIZE = 64;
 const HEIGHT_OFFSETS = [0, 50, 100]; // 相對平台上緣三段
@@ -170,6 +180,65 @@ function calcScore() {
   return distScore + fragScore;
 }
 
+//跳躍數字展示
+function showDistanceDelta(units) {
+  const el = document.createElement("div");
+  el.className = "float-delta " + (units >= 0 ? "positive" : "negative");
+  // 加上 +/- 與千分位
+  const n = Math.abs(units).toLocaleString("en-US");
+  el.textContent = (units >= 0 ? "+" : "-") + n;
+  game.appendChild(el);
+  setTimeout(() => el.remove(), 1100);
+}
+
+/* === Zirui 視覺輔助層：光束畫布 === */
+const beamLayer = document.createElement("div");
+beamLayer.id = "beam-layer";
+Object.assign(beamLayer.style, {position:"absolute", inset:"0", pointerEvents:"none", zIndex:"24"});
+game.appendChild(beamLayer);
+
+function clearBeams() {
+  beamLayer.innerHTML = "";
+}
+
+/* 依 fragment 與 player 位置畫出一道光束 */
+function drawBeamToPlayer(fragEl) {
+  const gameRect = game.getBoundingClientRect();
+  const pr = player.getBoundingClientRect();
+  const fr = fragEl.getBoundingClientRect();
+
+  const playerCx = pr.left + pr.width/2;
+  const playerCy = pr.top  + pr.height/2;
+  const fragCx   = fr.left + fr.width/2;
+  const fragCy   = fr.top  + fr.height/2;
+
+  const dx = playerCx - fragCx;
+  const dy = playerCy - fragCy;
+  const dist = Math.hypot(dx, dy);
+  const angleDeg = Math.atan2(dy, dx) * 180 / Math.PI;
+
+  const beam = document.createElement("div");
+  beam.className = "beam";
+  // 以 fragment 中心為起點，往玩家方向
+  beam.style.left = `${fragCx - gameRect.left}px`;
+  beam.style.top  = `${fragCy - gameRect.top}px`;
+  beam.style.width = `${dist}px`;
+  beam.style.transform = `rotate(${angleDeg}deg)`;
+  beamLayer.appendChild(beam);
+
+  // 90ms 後自動移除（避免堆積）
+  setTimeout(() => beam.remove(), 90);
+}
+
+/* 技能提示飄字 */
+function showSkillToast(text) {
+  const el = document.createElement("div");
+  el.className = "skill-toast";
+  el.textContent = text;
+  game.appendChild(el);
+  setTimeout(() => el.remove(), 1000);
+}
+
 
 
   // 遊戲結束
@@ -224,19 +293,47 @@ function triggerSkill() {
     skillActiveUntil = invincibleUntil;
     skillCdUntil = now + skillCfg.Dunwen.cd;
     setPlayerInvFX(true);
+
   } else if (selectedChar === "Zirui") {
     skillActiveUntil = now + skillCfg.Zirui.dur;
     skillCdUntil = now + skillCfg.Zirui.cd;
     setWorldSlowFX(true);
     setPlayerMagnetFX(true);
+
+  // ★ 新增：綠色暈圈 + 提示
+  game.classList.add("zirui-aura");
+  showSkillToast("磁場展開！");
+
   } else if (selectedChar === "Runxo") {
-    const safeTier = pickSafeTierNow();
-    teleportToTier(safeTier);
-    invincibleUntil = now + skillCfg.Runxo.dur;
-    skillActiveUntil = invincibleUntil;
-    skillCdUntil = now + skillCfg.Runxo.cd;
-    setPlayerInvFX(true);
-  }
+  const safeTier = pickSafeTierNow();
+  teleportToTier(safeTier);
+
+  const unitsNow  = Math.floor(distancePx / 8);
+  const jumpUnits = randInt(RUNXO_SHIFT_UNITS_MIN, RUNXO_SHIFT_UNITS_MAX);
+  const goForward = Math.random() < RUNXO_FORWARD_PROB;
+
+  const targetUnits = goForward
+    ? (unitsNow + jumpUnits)
+    : Math.max(0, unitsNow - jumpUnits);
+
+  // ★ 顯示飄字（+/-）
+  showDistanceDelta(goForward ? jumpUnits : -jumpUnits);
+
+  distancePx = targetUnits * 8;
+  renderDistance();
+
+  const now2 = performance.now();
+  invincibleUntil = now2 + skillCfg.Runxo.dur;
+  skillActiveUntil = invincibleUntil;
+  skillCdUntil = now2 + skillCfg.Runxo.cd;
+  setPlayerInvFX(true);
+
+  // （可選）數字微跳動
+  distanceEl?.classList?.add("bump");
+  setTimeout(() => distanceEl?.classList?.remove("bump"), 600);
+}
+
+
   updateSkillPill();
 }
 
@@ -397,8 +494,18 @@ function stepObstaclesAndCollisions() {
         const pull = MAGNET_STRENGTH * (1 - dist / MAGNET_RADIUS);
         frag.style.left = `${leftPx + (dx / dist) * pull}px`;
         frag.style.bottom = `${bottomPx + (-(dy) / dist) * pull}px`;
+
+        // ★ 新增：入磁範圍 → 抖動發光 + 畫光束
+    frag.classList.add("magnetizing");
+    drawBeamToPlayer(frag);
+  } else {
+    // ★ 離開磁範圍 → 移除效果
+    frag.classList.remove("magnetizing");
+  }
+} else {
+  // 技能未開 → 確保效果清掉
+  frag.classList.remove("magnetizing");
       }
-    }
 
     // 自身移動（略慢於障礙）
     frag.style.left = `${parseFloat(frag.style.left) - scaled * 0.9}px`;
@@ -496,13 +603,13 @@ function scheduleSpawns(now) {
   }
 }
 
-// === Runxo：挑安全層 & 瞬移 ===
+// === Runxo：挑安全層 ===
 function pickSafeTierNow() {
   const pr = player.getBoundingClientRect();
   const playerH = pr.height;
   const candidates = [0, 1, 2];
 
-  // 先找當下立刻安全的層
+  // 先找立刻安全
   let safeList = [];
   for (const tier of candidates) {
     const targetBottom = groundTop + HEIGHT_OFFSETS[tier] + 10;
@@ -526,9 +633,8 @@ function pickSafeTierNow() {
     return safeList[Math.floor(Math.random() * safeList.length)];
   }
 
-  // 都不安全：選與最近障礙的最遠垂直距離
-  let bestTier = 0,
-    bestScore = -Infinity;
+  // 否則選最遠垂直距離
+  let bestTier = 0, bestScore = -Infinity;
   for (const tier of candidates) {
     const targetBottom = groundTop + HEIGHT_OFFSETS[tier] + 10;
     const tgtTop = window.innerHeight - targetBottom - playerH;
@@ -549,14 +655,12 @@ function pickSafeTierNow() {
       }
     });
 
-    const score = minVDist === Infinity ? 1e9 : minVDist;
-    if (score > bestScore) {
-      bestScore = score;
-      bestTier = tier;
-    }
+    const score = (minVDist === Infinity) ? 1e9 : minVDist;
+    if (score > bestScore) { bestScore = score; bestTier = tier; }
   }
   return bestTier;
 }
+
 function teleportToTier(tier) {
   y = HEIGHT_OFFSETS[tier];
   player.style.bottom = `${groundTop + y}px`;
@@ -632,6 +736,9 @@ function gameLoop(now) {
   if (!(selectedChar === "Zirui" && t < skillActiveUntil)) {
     setWorldSlowFX(false);
     setPlayerMagnetFX(false);
+    game.classList.remove("zirui-aura"); // ★ 關掉綠色暈圈
+    clearBeams();                         // ★ 清光束
+
   }
   updateSkillPill();
 

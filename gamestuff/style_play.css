@@ -209,3 +209,99 @@ html, body {
   50%  { transform: translateY(0)    scale(1.06); opacity: 1; }
   100% { transform: translateY(0)    scale(1.0);  opacity: 1; }
 }
+
+/* 距離跳段飄字 */
+.float-delta {
+  position: absolute;
+  top: 12vh;                /* 安全位置，不擋角色/障礙/HUD */
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(18px, 2.6vw, 28px);
+  font-weight: 800;
+  pointer-events: none;
+  z-index: 30;
+  opacity: 0;
+  text-shadow:
+    0 0 14px rgba(0,0,0,.35),
+    0 0 2px rgba(0,0,0,.55);
+  animation: delta-pop 1s ease-out forwards;
+}
+.float-delta.positive { color: #2fffae; }  /* 往前：綠 */
+.float-delta.negative { color: #ff5a5a; }  /* 後退：紅 */
+
+@keyframes delta-pop {
+  0%   { opacity: 0; transform: translate(-50%, 8px)  scale(0.92); }
+  15%  { opacity: 1; transform: translate(-50%, 0px)  scale(1.06); }
+  100% { opacity: 0; transform: translate(-50%, -30px) scale(1.0); }
+}
+
+/* === Zirui 技能視覺：綠色暈圈 / 慢世界 / 碎片抖動發光 / 飄字 === */
+
+/* 慢世界時，整體稍增亮、微偏綠（不誇張） */
+#game.slow-world {
+  filter: saturate(1.05) hue-rotate(-10deg) brightness(1.06);
+  transition: filter .18s ease;
+}
+
+/* 綠色磁場暈圈：啟動時套在 #game 上（不擋操作） */
+#game.zirui-aura::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 60% at 50% 50%,
+      rgba(47,255,174,0.18) 0%,
+      rgba(47,255,174,0.10) 35%,
+      rgba(47,255,174,0.06) 55%,
+      rgba(0,0,0,0.00) 72%),
+    radial-gradient(140% 100% at 50% 100%,
+      rgba(47,255,174,0.10) 0%, rgba(0,0,0,0) 60%);
+  animation: auraPulse 0.9s ease-in-out infinite alternate;
+  z-index: 20;
+}
+@keyframes auraPulse {
+  from { opacity: .85; }
+  to   { opacity: .65; }
+}
+
+/* 碎片進入磁吸時：輕微抖動＋綠色光暈 */
+.fragment.magnetizing img {
+  filter: drop-shadow(0 0 8px rgba(47,255,174,.9))
+          drop-shadow(0 0 16px rgba(47,255,174,.35));
+  animation: fragJitter .15s steps(2,end) infinite alternate;
+}
+@keyframes fragJitter {
+  from { transform: translateY(-1px) rotate(-1deg) }
+  to   { transform: translateY( 1px) rotate( 1deg) }
+}
+
+/* 連到玩家的綠色光束（用 JS 畫一條線） */
+#beam-layer .beam {
+  position: absolute;
+  height: 2px;
+  background: linear-gradient(to right,
+    rgba(47,255,174,0) 0%,
+    rgba(47,255,174,.95) 35%,
+    rgba(47,255,174,.95) 65%,
+    rgba(47,255,174,0) 100%);
+  box-shadow: 0 0 8px rgba(47,255,174,.7);
+  transform-origin: left center;
+  pointer-events: none;
+  z-index: 25;
+  opacity: .95;
+}
+
+/* 技能提示：上方飄字 */
+.skill-toast {
+  position: absolute; left: 50%; top: 10vh; transform: translateX(-50%);
+  font-size: clamp(16px, 2.4vw, 24px);
+  font-weight: 800; color: #2fffae;
+  text-shadow: 0 0 14px rgba(0,0,0,.45), 0 0 2px rgba(0,0,0,.65);
+  pointer-events: none; z-index: 30;
+  animation: toastPop 1s ease-out forwards;
+}
+@keyframes toastPop {
+  0%   { opacity: 0; transform: translate(-50%, 6px) scale(.92); }
+  15%  { opacity: 1; transform: translate(-50%, 0)  scale(1.06); }
+  100% { opacity: 0; transform: translate(-50%, -18px) scale(1.0); }
+}
