@@ -292,18 +292,18 @@ const categoryData = {
     { name: "咩呷啥", desc: "哩咩呷啥？獻給選擇困難的你" , img: "grouplogo/meijiasha.png" , ig: "https://www.instagram.com/mei.jia.sha?igsh=MnJmMm1ocHJ6NjZs", web: "https://meijiasha.cc/" },
   ],
   clothing: [
-    { name: "Vintaglo", desc: "每一件舊衣不只是循環利用，而是展現態度與風格的載體" , img: "grouplogo/vintaglo.png" ,ig: "https://www.instagram.com/vintaglo.__?igsh=OW05azV6c2QzZjV6", web: "https://www.example.com" },
+    { name: "VintaGlo", desc: "每一件舊衣不只是循環利用，而是展現態度與風格的載體" , img: "grouplogo/vintaglo.png" ,ig: "https://www.instagram.com/vintaglo.__?igsh=OW05azV6c2QzZjV6", web: "https://www.example.com" },
   ],
   housing: [
     { name: "藥嚀管", desc: "藥嚀在手，吃藥不愁。" , img: "grouplogo/yaoningguan.png" , ig: "https://www.instagram.com/yao_ning_guan?igsh=MTN0Mnp6aG9vd25vdg==", web: "https://www.example.com" },
     { name: "未來居所", desc: "讓AI協助你大展身手，創建屬於你自己的房屋。" , img: "grouplogo/futurenest.png" , ig: "https://www.instagram.com/future_nest111?igsh=MWxoNjlocHVhYjBlcw==", web: "https://www.example.com" },
   ],
   transport: [
-    { name: "Second Han Easy", desc: "一手交易，交二手貨。" , img: "grouplogo/secondhaneasy.png" , ig: "https://www.instagram.com/second_han.easy?igsh=MThnbWlmcHAwMThlcA==", web: "https://circolle.xyz" },
-    { name: "Rightway", desc: "右滑，遇見你的下一站！" , img: "grouplogo/rightway.png" , ig: "https://www.instagram.com/rightway.trip?igsh=MTM2ZXAxc2U1ZGd4Zg==", web: "https://www.example.com" },
+    { name: "Circolle", desc: "一手交易，交二手貨。" , img: "grouplogo/secondhaneasy.png" , ig: "https://www.instagram.com/second_han.easy?igsh=MThnbWlmcHAwMThlcA==", web: "https://circolle.xyz" },
+    { name: "RightWay", desc: "右滑，遇見你的下一站！" , img: "grouplogo/rightway.png" , ig: "https://www.instagram.com/rightway.trip?igsh=MTM2ZXAxc2U1ZGd4Zg==", web: "https://www.example.com" },
   ],
   education: [
-    { name: "樂壓talks", desc: "AI陪你聊心事，壓力不再自己扛" , img: "grouplogo/leyatalks.png" , ig: "https://www.instagram.com/le_ya.talks?igsh=a3U3aDgxbTNjNnAx", web: "https://leyatalks.com/" },
+    { name: "樂壓Talk's", desc: "AI陪你聊心事，壓力不再自己扛" , img: "grouplogo/leyatalks.png" , ig: "https://www.instagram.com/le_ya.talks?igsh=a3U3aDgxbTNjNnAx", web: "https://leyatalks.com/" },
     { name: "Lunia", desc: "做一個能記錄夢的地方。在Lunia,夢不只是夢。" , img: "grouplogo/lunia.png" , ig: "https://www.instagram.com/lunia_diary?igsh=czVkdjgzNWI3NWM1", web: "https://apps.apple.com/tw/app/lunia/id6748688251" },
     { name: "MaMoon", desc: "會說話的好朋友 陪伴孩子的每一天。" , img: "grouplogo/mamoon.png" , ig: "https://www.instagram.com/mamoon_0223?igsh=MTIyZHFpMmc4ZDE2Ng==", web: "https://www.example.com" },
     { name: "自律控肉飯", desc: "時間自律是大家的課題，一起加入我們一起自律。" , img: "grouplogo/kongrolab.png" , ig: "https://www.instagram.com/kongro__lab?igsh=azB1Z2l6aG03NHl2", web: "https://www.example.com" },
