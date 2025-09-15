@@ -100,7 +100,9 @@ document.addEventListener("DOMContentLoaded", () => {
     "bubble5.png",
     "bubble6.png",
     "bubble7.png",
-    "bubble8.png"
+    "bubble8.png",
+    "bubble9.png",
+    "bubble10.png"
   ];
 
   let index = 0; // 當前圖片索引
