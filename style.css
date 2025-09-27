@@ -855,7 +855,7 @@ body {
 
 /* === 活動卡片 === */
 .news-item {
-  background-color: rgba(247, 241, 229, 0.05);
+  background-color: rgba(217, 203, 161, 0.25);
   padding: 15px;
   border-radius: 10px;
   max-width: 600px;
