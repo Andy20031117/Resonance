@@ -1546,7 +1546,7 @@ body {
   transition: transform 0.3s ease;
   transform: translateY(-15%);
 }
-.cloud-item:hover .partner-logo {
+.cloud-item:hover {
   transform: scale(1.1);
 }
 .partner-name {
