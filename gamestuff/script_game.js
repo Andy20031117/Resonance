@@ -6,7 +6,7 @@ function startGame() {
 }
 
 function goHome() {
-window.location.href = "../resonance.html"; // 主頁連結
+window.location.href = "../index.html"; // 主頁連結
 }
 
 /* 首頁標題特效 */
