@@ -396,6 +396,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  
+
   // 扭蛋機互動
 const gashaponBtn = document.querySelector('.gashapon-btn');
 const leftCapsules = document.querySelectorAll('.capsule-side.left .capsule');
@@ -468,7 +470,7 @@ gashaponBtn.addEventListener('click', () => {
       posterImage.classList.remove('flipping');
     }, 600); // 動畫結束後移除 class
   });
-  
+
 
   // ✅ 雲朵區塊：淡入動畫 + 上下浮動
   gsap.utils.toArray(".cloud-item").forEach((el) => {

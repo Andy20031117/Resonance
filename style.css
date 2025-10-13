@@ -1160,17 +1160,27 @@ body {
   margin-bottom: 8px;
 }
 
+.links {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
 .links a {
-  margin: 0 6px;
-  text-decoration: none;
-  color: #552d07;
+  color: #fff;
+  background-color: #52370f;
   font-size: 14px;
-  border-bottom: 1px solid transparent;
-  transition: all 0.3s;
+  padding: 6px 14px;
+  border-radius: 20px;
+  text-decoration: none;
+  transition: all 0.3s ease;
 }
 
 .links a:hover {
-  border-color: #552d07;
+  background-color: #d3b184;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
 }
 
 .arrow {
