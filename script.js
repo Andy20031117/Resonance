@@ -468,6 +468,7 @@ gashaponBtn.addEventListener('click', () => {
       posterImage.classList.remove('flipping');
     }, 600); // 動畫結束後移除 class
   });
+  
 
   // ✅ 雲朵區塊：淡入動畫 + 上下浮動
   gsap.utils.toArray(".cloud-item").forEach((el) => {
