@@ -487,15 +487,6 @@ gashaponBtn.addEventListener('click', () => {
       }
     });
 
-    // 上下浮動
-    gsap.to(el, {
-      y: "+=10",
-      duration: 2.5 + Math.random(),
-      ease: "sine.inOut",
-      repeat: -1,
-      yoyo: true,
-      delay: Math.random() * 2
-    });
   });
 
   console.log("✅ 所有功能與動畫已成功載入");
