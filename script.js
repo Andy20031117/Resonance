@@ -374,6 +374,25 @@ backButton.addEventListener('click', () => {
 });
 
 
+// Podcast 走馬燈
+const swiper = new Swiper(".podcast-carousel", {
+    slidesPerView: 3,         // 一次顯示 3 張
+    spaceBetween: 40,         // 每張間距
+    centeredSlides: true,     // 置中顯示
+    loop: true,               // 循環播放
+    grabCursor: true,         // 滑鼠拖曳游標
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+    // 手機友善
+    breakpoints: {
+      0:   { slidesPerView: 1.1, spaceBetween: 16, centeredSlides: true },
+      640: { slidesPerView: 2,   spaceBetween: 24, centeredSlides: true },
+      1024:{ slidesPerView: 3,   spaceBetween: 40, centeredSlides: true },
+    },
+  });
+
 
 // ✅ 所有動畫與功能統一初始化
 document.addEventListener("DOMContentLoaded", () => {

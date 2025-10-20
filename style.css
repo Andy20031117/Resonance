@@ -1079,7 +1079,6 @@ body {
 
 
 
-/* Podcast 區塊樣式 */
 /* === Podcast 輪播樣式 === */
 .about-subtitle {
   text-align: center;
@@ -1094,33 +1093,61 @@ body {
   display: inline-block;
   padding-bottom: 8px;
 }
-.podcast-carousel {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  margin: 60px auto;
-  width: 100%;
-  max-width: 1200px;
+.podcast-carousel { 
+  width: 100%; 
+  max-width: 1200px; 
+  margin: 60px auto; 
+  position: relative; 
+  overflow: visible;          /* 保持裁切，避免整塊內容溢出 */
+  z-index: 5; 
+  
 }
 
-.carousel-track {
-  display: flex;
-  transition: transform 0.5s ease-in-out;
-  gap: 40px;
-  align-items: center;
-}
-
-.episode {
-  flex-shrink: 0;
-  width: 320px;
-  opacity: 0.3;
-  transform: scale(0.6);
-  transition: all 0.5s ease;
+.swiper-slide {
   text-align: center;
-  pointer-events: none;
+  transform: scale(0.75);
+  opacity: 0.45;
+  transition: transform .45s ease, opacity .45s ease, box-shadow .45s ease;
 }
+
+.swiper-slide-active {
+  transform: scale(1);
+  opacity: 1;
+  z-index: 2;
+} 
+
+.podcast-carousel .swiper-button-prev,
+.podcast-carousel .swiper-button-next {
+  width: 44px;
+  height: 44px;
+  color: #fff;
+  filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.55));
+  transition: transform 0.2s ease;
+  z-index: 10;                   /* ✅ 確保在最上層 */
+}
+
+/* 視覺推出去一點 */
+.podcast-carousel .swiper-button-prev {
+  left: -60px !important;        /* ✅ 向左推出外框 */
+}
+.podcast-carousel .swiper-button-next {
+  right: -60px !important;       /* ✅ 向右推出外框 */
+}
+
+/* 外觀 & hover，注意把 translate 一起帶著，避免放大時跳回來 */
+.podcast-carousel .swiper-button-prev,
+.podcast-carousel .swiper-button-next{
+  width: 44px; height: 44px;
+  color:#fff;
+  filter: drop-shadow(0 0 6px rgba(0,0,0,.55));
+  transition: transform .2s ease;
+}
+/* hover 放大效果 */
+.podcast-carousel .swiper-button-prev:hover,
+.podcast-carousel .swiper-button-next:hover {
+  transform: scale(1.2);
+}
+
 
 .episode-image-wrapper {
   position: relative;
@@ -1183,45 +1210,12 @@ body {
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
 }
 
-.arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 32px;
-  background: none;
-  border: none;
-  color: #fff;
-  cursor: pointer;
-  z-index: 10;
-  padding: 10px;
+/* === RWD：小螢幕時略收回 === */
+@media (max-width: 768px) {
+  .podcast-carousel .swiper-button-prev { left: -30px !important; }
+  .podcast-carousel .swiper-button-next { right: -30px !important; }
 }
 
-.arrow.left {
-  left: 20px;
-}
-
-.arrow.right {
-  right: 20px;
-}
-
-/* 放大縮小邏輯：依照 index 設定樣式 */
-.episode.active {
-  opacity: 1;
-  transform: scale(1);
-  pointer-events: auto;
-}
-
-.episode.prev,
-.episode.next {
-  opacity: 0.6;
-  transform: scale(0.8);
-}
-
-.episode.prev2,
-.episode.next2 {
-  opacity: 0.3;
-  transform: scale(0.6);
-}
 
 /* 資傳介紹子區塊 */
 .com-intro {
