@@ -102,13 +102,58 @@
 
 
 
-
-
-
-
-
 <!-- 參展小組區 -->
 <section id="group-section">
+  <!-- 這 6 個是隱形錨點：左邊 id = 我們的 canonical（food/cloth/home/travel/learn/fun）
+     右邊 data-open = 你現有按鈕的 data-category（food/clothing/...） -->
+<div id="food"   class="category-anchor" data-open="food"></div>
+<div id="cloth"  class="category-anchor" data-open="clothing"></div>
+<div id="home"   class="category-anchor" data-open="housing"></div>
+<div id="travel" class="category-anchor" data-open="transport"></div>
+<div id="learn"  class="category-anchor" data-open="education"></div>
+<div id="fun"    class="category-anchor" data-open="entertainment"></div>
+<style>
+  /* 區塊頂端若有固定導覽列，這行避免被蓋住（自行調整 80px） */
+  #group-section { scroll-margin-top: 80px; }
+
+  /* 隱形錨點本身不占高度，但能被 scrollIntoView 定位 */
+  .category-anchor { position: relative; top: -70px; height: 0; }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    openCategoryFromHash();
+
+    // 若使用者在同頁切換 hash（或從別處帶有 hash 回來），即時反應
+    window.addEventListener('hashchange', openCategoryFromHash);
+
+    function openCategoryFromHash(){
+      const hash = location.hash.replace('#',''); // e.g. 'food', 'cloth', 'home'...
+      if(!hash) return;
+
+      // 找到對應的隱形錨點（它知道要開哪個 data-category）
+      const anchor = document.querySelector(`.category-anchor#${hash}`);
+      if(!anchor) return;
+
+      const categoryToOpen = anchor.dataset.open; // e.g. 'clothing'
+      // 用你現有的按鈕 data-category 來觸發
+      const btn = document.querySelector(`.group-btn[data-category="${categoryToOpen}"]`);
+      if(btn) {
+        // 如果你原本有 click 事件，這裡直接觸發
+        btn.click();
+      }
+
+      // 平滑捲到小組區塊
+      const section = document.getElementById('group-section');
+      if(section){
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  });
+</script>
+
+
+
   <div class="group-wrapper">
   <div id="group-screen">
     <h1 class="group-title">參展小組<span>GROUPS</span></h1>
@@ -769,6 +814,31 @@
 
 <script src="script.js"></script>
 <script src="fixed-podcast-carousel.js"></script>
+
+
+<!--測驗系統檢視-->
+<script>
+  (function(){
+    // 是否已完成過完整流程？（避免每次都被導去測驗）
+    var seen = localStorage.getItem('seen_full_flow') === '1';
+    // 是否已有測驗人格結果？
+    var persona = null;
+    try { persona = JSON.parse(localStorage.getItem('resonance_persona') || 'null'); } catch(e){}
+
+    // 可用參數控制：?forceTest=1 強制重導（Demo時很好用）
+    var qs = new URLSearchParams(location.search);
+    var force = qs.get('forceTest') === '1';
+
+    if (force || (!seen && (!persona || !persona.primary))) {
+      // 第一次或尚未測過：導到「獨立測驗頁」的 gate 模式
+      // ※ 你也可改成 /resonance-test.html（同目錄）
+      window.location.replace('/resonance-test.html?mode=gate');
+    }
+
+    // 若有結果，或已看過完整流程，就正常顯示首頁
+  })();
+</script>
+
 
 </body>
 </html>
