@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>你的共振人格 · Resonance Persona</title>
+
+  <!-- 可保留你的外掛CSS；此處為單檔即跑版本 -->
+  <!-- <link rel="stylesheet" href="/assets/css/result.css" /> -->
+
+  <!-- 復古字體（與測驗頁一致） -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <style>
+    :root{
+      --bg-deep:#171412;
+      --fg:#e8e5da;
+      --muted:#cdbfa7;
+      --ink:#d7c4a3;
+      --accent:#e3c15d;
+      --accent-2:#9a8863;
+      --card:#1f1a18e0;
+      --line:#bda57a99;
+      --shadow:0 10px 40px rgba(0,0,0,.45);
+      --r:20px;
+      --ease: cubic-bezier(.22,.61,.36,1);
+    }
+
+    html,body{height:100%}
+    body{
+      margin:0; color:var(--fg);
+      font-family:"Noto Serif TC", ui-serif, serif; letter-spacing:.15px;
+      background:
+        radial-gradient(1200px 800px at 50% 35%, #2d2825 0%, var(--bg-deep) 55%, #0e0c0b 100%);
+      background-blend-mode: multiply;
+      overflow-x:hidden;
+    }
+    .vignette{ position:fixed; inset:0; pointer-events:none; z-index:0;
+      box-shadow: inset 0 0 200px 120px rgba(0,0,0,.7); }
+    #bg-dust{ position:fixed; inset:0; z-index:0; opacity:.35; pointer-events:none;
+      filter: blur(.2px) contrast(105%); mix-blend-mode: screen; }
+
+    .wrap{ min-height:100%; display:grid; place-items:center; padding:24px; position:relative; z-index:1; }
+
+    .panel{
+      max-width:780px; width:100%;
+      background:var(--card);
+      border-radius:var(--r);
+      box-shadow:var(--shadow);
+      padding:32px 26px 24px;
+      position:relative; text-align:center;
+      border:1px solid #00000066; outline:1px solid rgba(255,255,255,.06);
+      animation: fadeIn .42s var(--ease) both;
+    }
+    .panel:before{ content:""; position:absolute; inset:12px;
+      border:1px solid var(--line); border-radius:calc(var(--r) - 4px); pointer-events:none; }
+
+    /* 銅角裝飾（與測驗頁一致） */
+    .corner{ position:absolute; width:28px; height:28px; opacity:.9;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,.6)); }
+    .tl{ left:8px; top:8px } .tr{ right:8px; top:8px; transform:scaleX(-1)}
+    .bl{ left:8px; bottom:8px; transform:scaleY(-1)} .br{ right:8px; bottom:8px; transform:scale(-1,-1)}
+    .corner path{ fill:#b08a4a }
+
+    .eyebrow{ color:var(--muted); font-size:13px; margin:0 0 6px; letter-spacing:.4px }
+    h1{ margin:0 0 12px; font-size:28px; letter-spacing:.6px;
+      font-family:"ZCOOL KuaiLe","Noto Serif TC",serif; color:var(--fg) }
+    .desc{ margin:0 auto 22px; max-width:60ch; color:var(--ink); line-height:1.8; text-wrap:pretty }
+
+    .badge{
+      display:inline-grid; place-items:center; gap:6px;
+      padding:8px 12px; border:1px solid rgba(255,255,255,.12);
+      border-radius:999px; font-size:12px; margin:10px 0 20px;
+      color:#f6e7b2; background:rgba(227,193,93,.08);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+    }
+
+    .cta{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap }
+    .btn{
+      appearance:none; border:1px solid var(--accent-2);
+      background:linear-gradient(#3b342f,#2b2522);
+      color:var(--fg); padding:12px 16px; border-radius:12px; font-size:15px;
+      text-decoration:none; transition: transform .14s var(--ease), box-shadow .14s var(--ease), background .2s var(--ease);
+      box-shadow: 0 4px 10px rgba(0,0,0,.35); letter-spacing:.3px;
+    }
+    .btn:hover{ transform: translateY(-1px); box-shadow:0 6px 14px rgba(0,0,0,.45); background:linear-gradient(#4a403b,#352e2a) }
+    .ghost{ opacity:.92 }
+    .tiny{ margin-top:18px; font-size:12px; color:var(--muted) }
+    .dual{ color:#c9ffe5 }
+
+    /* 分隔條（舊印刷線） */
+    .rule{ height:1px; margin:18px auto 16px; width:min(520px, 90%);
+      background:linear-gradient(90deg, transparent, rgba(255,255,255,.28), transparent);
+      opacity:.35 }
+
+    /* 推薦探索（可關閉） */
+    .recs{ margin-top:10px; display:grid; gap:10px; justify-items:center }
+    .rec{
+      font-size:14px; color:var(--ink); padding:10px 12px; border-radius:10px;
+      background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.06);
+      width:min(560px, 92%); text-align:left;
+    }
+    .rec strong{ color:#f2e3b1 }
+
+    /* 動畫 */
+    @keyframes fadeIn{ from{ opacity:0; transform:translateY(10px) } to{ opacity:1; transform:none } }
+
+    /* 無動畫偏好 */
+    @media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important; } }
+  </style>
+</head>
+<body>
+  <div class="vignette"></div>
+  <canvas id="bg-dust"></canvas>
+
+  <div class="wrap">
+    <div class="panel">
+      <!-- 角落銅飾 -->
+      <svg class="corner tl" viewBox="0 0 64 64" aria-hidden="true"><path d="M0,64 L0,14 Q0,0 14,0 L64,0 L54,10 L14,10 Q10,10 10,14 L10,54 Z"/></svg>
+      <svg class="corner tr" viewBox="0 0 64 64" aria-hidden="true"><path d="M0,64 L0,14 Q0,0 14,0 L64,0 L54,10 L14,10 Q10,10 10,14 L10,54 Z"/></svg>
+      <svg class="corner bl" viewBox="0 0 64 64" aria-hidden="true"><path d="M0,64 L0,14 Q0,0 14,0 L64,0 L54,10 L14,10 Q10,10 10,14 L10,54 Z"/></svg>
+      <svg class="corner br" viewBox="0 0 64 64" aria-hidden="true"><path d="M0,64 L0,14 Q0,0 14,0 L64,0 L54,10 L14,10 Q10,10 10,14 L10,54 Z"/></svg>
+
+      <p class="eyebrow">Resonance Persona</p>
+      <div class="badge" id="badge">頻率校準完成</div>
+      <h1 id="persona-name">——</h1>
+      <p class="desc" id="persona-desc">——</p>
+
+      <div class="rule"></div>
+
+      <div class="cta">
+        <a id="go-channel" class="btn">前往你的頻道</a>
+        <a href="/resonance-test.html" class="btn ghost">再測一次</a>
+        <a href="/index.html" class="btn ghost">返回展覽首頁</a>
+      </div>
+
+      <div class="recs" id="recs" hidden></div>
+
+      <div class="tiny" id="dualHint"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { personaCopy, CHANNEL_ANCHOR } from '/assets/js/test-logic.js';
+
+    // 讀取結果
+    const persona = JSON.parse(localStorage.getItem('resonance_persona') || '{}');
+    const score   = JSON.parse(localStorage.getItem('resonance_score') || '{}');
+
+    if (!persona || !persona.primary) {
+      // 沒資料就導回測驗
+      location.replace('/resonance-test.html');
+    }
+
+    const primary   = persona.primary;
+    const secondary = persona.secondary;
+
+    const nameEl = document.getElementById('persona-name');
+    const descEl = document.getElementById('persona-desc');
+    const badge  = document.getElementById('badge');
+    const goBtn  = document.getElementById('go-channel');
+    const dualHint = document.getElementById('dualHint');
+    const recsEl = document.getElementById('recs');
+
+    // 文案
+    const copy = safePersonaCopy(primary);
+    nameEl.textContent = copy.name;
+    descEl.textContent = copy.desc;
+
+    // 雙頻提示（若有）
+    if (persona.isDual && secondary) {
+      const secCopy = safePersonaCopy(secondary);
+      dualHint.innerHTML = `你的次要頻率為 <span class="dual">【${secCopy.name}】</span>，可一併探索該展區。`;
+    } else {
+      dualHint.textContent = '';
+    }
+
+    // 頻道錨點
+    const anchor = (CHANNEL_ANCHOR && CHANNEL_ANCHOR[primary]) || anchorFallback(primary);
+    goBtn.href = `/index.html${anchor}`;
+
+    // 來源徽章
+    const from = new URLSearchParams(location.search).get('from');
+    badge.textContent = from === 'lite' ? '測驗結果' : (from === 'full' ? '完整體驗 · 測驗結果' : '頻率校準完成');
+
+    // （可選）根據主頻率，顯示 2–3 個「展區導覽建議」
+    const recs = suggestRecs(primary);
+    if (recs.length){
+      recsEl.hidden = false;
+      recsEl.innerHTML = recs.map(r => `<div class="rec">· <strong>${r.title}</strong> — ${r.note}</div>`).join('');
+    }
+
+    // 背景微塵粒子（與測驗頁一致）
+    const canvas = document.getElementById('bg-dust');
+    const ctx = canvas.getContext('2d');
+    let W,H, particles=[];
+    function resize(){
+      W = canvas.width = innerWidth; H = canvas.height = innerHeight;
+      particles = Array.from({length: Math.min(90, Math.floor(W*H/22000))}, () => ({
+        x: Math.random()*W, y: Math.random()*H,
+        r: Math.random()*1.2 + 0.3, a: Math.random()*Math.PI*2, s: Math.random()*0.2 + 0.05
+      }));
+    }
+    function loop(){
+      ctx.clearRect(0,0,W,H); ctx.globalCompositeOperation='lighter';
+      for(const p of particles){
+        p.a += p.s * 0.6;
+        p.x += Math.cos(p.a)*0.08; p.y += Math.sin(p.a)*0.04;
+        if(p.x<-5)p.x=W+5; if(p.x>W+5)p.x=-5; if(p.y<-5)p.y=H+5; if(p.y>H+5)p.y=-5;
+        ctx.globalAlpha = 0.18 + Math.sin(p.a)*0.08;
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle="#e3c15d"; ctx.fill();
+      }
+      requestAnimationFrame(loop);
+    }
+    resize(); loop(); addEventListener('resize', resize);
+
+    // 安全 fallback：若 personaCopy 沒有對應鍵，給保底名稱與描述
+    function safePersonaCopy(key){
+      try{
+        const c = personaCopy(key);
+        if(c && c.name && c.desc) return c;
+      }catch(e){}
+      const map = {
+        food:{name:'味覺旅人', desc:'你以味道記憶世界，在熟悉與驚喜之間找到共鳴的節點。'},
+        cloth:{name:'風格拾遺', desc:'你用穿衣拼貼心情，也保存了時代的紋理與手感。'},
+        home:{name:'安居調律', desc:'你在生活的空隙擺放日常，讓每個角落都有溫度。'},
+        travel:{name:'路徑採集者', desc:'你沿著光影與步伐行走，把風景與故事一併收好。'},
+        learn:{name:'學習釀造者', desc:'你對知識有耐心，喜歡循序浸泡、慢慢發酵。'},
+        fun:{name:'遊樂編目', desc:'你把樂趣當成收藏，把平凡的日子打磨成亮點。'}
+      };
+      return map[key] || {name:'共振旅人', desc:'你熟悉自己的節奏，也願意在未知裡聽見新的回聲。'};
+    }
+
+    // 頻道錨點後備
+    function anchorFallback(key){
+      const m = { food:'#food', cloth:'#cloth', home:'#home', travel:'#travel', learn:'#learn', fun:'#fun' };
+      return m[key] || '';
+    }
+
+    // 依主頻率給 2–3 個導覽建議（文案可再細修或改為動態）
+    function suggestRecs(key){
+      const lib = {
+        food:[
+          {title:'香氣記憶牆', note:'看看大家的味道筆記，挑一張帶走你的今日風味。'},
+          {title:'在地小吃地圖', note:'回到首頁食區，根據你的偏好找一條最順手的路線。'}
+        ],
+        cloth:[
+          {title:'衣角的故事', note:'在展區角落的老照片中，找到與你同頻的那一張。'},
+          {title:'穿搭拍貼亭', note:'把你的風格與展覽的紋理疊在一起，留下一張紀念。'}
+        ],
+        home:[
+          {title:'一平方米的房間', note:'用三個物件拼出你的安居感，貼在互動牆上。'},
+          {title:'光影角落', note:'找一盞最像你心情的燈，拍下來上傳到共同相簿。'}
+        ],
+        travel:[
+          {title:'路徑釘書針', note:'把你最想走的路線從首頁標記事件中加入行程。'},
+          {title:'票根收藏匣', note:'在櫃檯領一張空白票根，寫下下一站的期待。'}
+        ],
+        learn:[
+          {title:'學習慢報', note:'到學習專區看今日的三則小誌，每則 1 分鐘。'},
+          {title:'共讀書籤', note:'選一張你喜愛的書籤，帶回你的閱讀節奏。'}
+        ],
+        fun:[
+          {title:'遊戲互動區', note:'根據你的頻率，先從入門關卡開始暖機。'},
+          {title:'小劇場', note:'聽一段 30 秒的口白，或錄下你的版本。'}
+        ]
+      };
+      return lib[key] || [];
+    }
+  </script>
+</body>
+</html>

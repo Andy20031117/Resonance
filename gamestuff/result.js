@@ -348,12 +348,12 @@ function createCardDOM(card, idx){
 /* ---------- 按鈕／分享 ---------- */
 let btnAgain, btnShare, btnHome;
 
-/** 永遠導向網站根目錄的 resonance.html
+/** 永遠導向網站根目錄的 index.html
  *  例： https://your-domain.com/resonance.html
  *  若未來你放在子路徑（例如 /site/），把 ROOT_PATH 改成 "/site/" 即可。
  */
 const ROOT_PATH = "/"; // ← 若未來部署在 /site/，改成 "/site/"
-function buildExhibitURL(file = "resonance.html") {
+function buildExhibitURL(file = "index.html") {
   const clean = file.replace(/^\/+/, "");
   return `${location.origin}${ROOT_PATH}${clean}`;
 }
@@ -380,7 +380,7 @@ function wireButtons(){
 
   btnHome?.addEventListener("click", ()=>{
     try { localStorage.removeItem("gameResult"); } catch {}
-    location.href = buildExhibitURL("resonance.html"); // → 直接 /resonance.html
+    location.href = buildExhibitURL("index.html"); // → 直接 /index.html
   });
 
   btnShare?.addEventListener("click", shareSnapshot);

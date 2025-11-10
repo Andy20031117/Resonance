@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>共振啟動測驗 Resonance Test</title>
+
+  <!-- 可選：若你有獨立 CSS 檔，可改回外掛 -->
+  <!-- <link rel="stylesheet" href="/assets/css/test.css" /> -->
+
+  <!-- 字體：偏復古印刷感 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+
+  <!-- 可選：預載背景材質（若你有檔案） -->
+  <!-- <link rel="preload" as="image" href="/assets/img/oldpaper_texture.jpg"> -->
+  <!-- <link rel="preload" as="image" href="/assets/img/fabric_noise.png"> -->
+
+  <style>
+    :root{
+      /* 復古暖黑＋米金系統 */
+      --bg-deep:#171412;
+      --bg-warm:#2a2623;
+      --fg:#e8e5da;
+      --muted:#cdbfa7;
+      --ink:#d7c4a3;
+      --accent:#e3c15d;          /* 金色 */
+      --accent-2:#9a8863;        /* 橄欖金 */
+      --rust:#a85b3e;            /* 暖紅銅 */
+      --card:#1f1a18e0;          /* 木櫃檯/舊書封面感 */
+      --line:#bda57a99;
+      --shadow:0 10px 40px rgba(0,0,0,.45);
+      --radius:14px;
+      --radius-sm:8px;
+      --ease: cubic-bezier(.22,.61,.36,1);
+      --speed: 420ms;
+    }
+
+    html,body{height:100%}
+    body{
+      margin:0;
+      color:var(--fg);
+      font-family: "Noto Serif TC", ui-serif, serif;
+      letter-spacing:.15px;
+      background:
+        radial-gradient(1200px 800px at 50% 35%, #2d2825 0%, var(--bg-deep) 55%, #0e0c0b 100%);
+      /* 疊加舊紙噪點，可替換為你的貼圖檔 */
+      background-image:
+        radial-gradient(1200px 800px at 50% 35%, rgba(255,255,255,.02), rgba(0,0,0,0)),
+        /* url('/assets/img/oldpaper_texture.jpg'), */
+        /* url('/assets/img/fabric_noise.png') */;
+      background-blend-mode: multiply;
+      overflow-x:hidden;
+    }
+
+    /* 背景暗角 */
+    .vignette{
+      position:fixed; inset:0; pointer-events:none;
+      box-shadow: inset 0 0 200px 120px rgba(0,0,0,.7);
+      z-index:0;
+    }
+
+    /* 微塵粒子層（Canvas） */
+    #bg-dust{
+      position:fixed; inset:0; z-index:0; opacity:.35; pointer-events:none;
+      filter: blur(.2px) contrast(105%);
+      mix-blend-mode: screen;
+    }
+
+    /* 整體內容殼層 */
+    .shell{
+      min-height:100%;
+      position:relative;
+      z-index:1;
+      display:grid;
+      place-items:center;
+      padding:24px;
+    }
+
+    /* 木框／舊書封面卡片 */
+    .card{
+      max-width:780px; width:100%;
+      background:var(--card);
+      border-radius:20px;
+      box-shadow: var(--shadow);
+      padding:28px 24px 24px;
+      position:relative;
+      transition: transform var(--speed) var(--ease), box-shadow var(--speed) var(--ease);
+      backdrop-filter: blur(2px);
+      border:1px solid #00000066;
+      outline:1px solid rgba(255,255,255,.06);
+    }
+    .card:before{
+      /* 內側金線框 */
+      content:"";
+      position:absolute; inset:12px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      pointer-events:none;
+    }
+
+    /* 裝飾銅角（SVG 路徑） */
+    .corners{
+      pointer-events:none;
+    }
+    .corner{
+      position:absolute; width:28px; height:28px; opacity:.9;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,.6));
+    }
+    .corner.tl{ left:8px; top:8px }
+    .corner.tr{ right:8px; top:8px; transform:scaleX(-1)}
+    .corner.bl{ left:8px; bottom:8px; transform:scaleY(-1)}
+    .corner.br{ right:8px; bottom:8px; transform:scale(-1,-1)}
+
+    .title{
+      font-family:"ZCOOL KuaiLe","Noto Serif TC",serif;
+      font-size:22px; line-height:1; margin:0 0 10px;
+      color:var(--muted);
+      letter-spacing:.8px;
+      display:flex; gap:.6em; align-items:center;
+    }
+    .title .dot{width:6px; height:6px; border-radius:50%; background:var(--accent); box-shadow:0 0 6px rgba(227,193,93,.8)}
+
+    .progress{
+      height:6px; background:rgba(255,255,255,.07); border-radius:999px; overflow:hidden;
+      outline:1px solid rgba(255,255,255,.06);
+    }
+    .bar{
+      height:100%; width:0%;
+      background:linear-gradient(90deg, #e3c15d, #ffd977);
+      transition:width .3s var(--ease);
+    }
+
+    /* 內容主區 */
+    #test-root{ margin-top:18px; min-height:220px; }
+    .q-text{
+      font-size:21px; line-height:1.7; margin:6px 0 18px;
+      color:var(--ink);
+      text-shadow: 0 1px 0 rgba(0,0,0,.35);
+    }
+
+    .opts{ display:grid; gap:12px }
+    .opt{
+      appearance:none; cursor:pointer; text-align:left;
+      padding:14px 16px;
+      font-size:16px; line-height:1.5;
+      color:var(--fg);
+      background:
+        linear-gradient(#3a332f,#2b2522);
+      border:1px solid var(--accent-2);
+      border-radius: var(--radius);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.04),
+        0 4px 10px rgba(0,0,0,.35);
+      transition: transform .14s var(--ease),
+                  box-shadow .14s var(--ease),
+                  background .2s var(--ease),
+                  border-color .2s var(--ease);
+      position:relative;
+    }
+    .opt:after{
+      /* 紙張纖維／亮面 */
+      content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,0) 40%, rgba(0,0,0,0) 60%, rgba(0,0,0,.15));
+      mix-blend-mode: overlay; opacity:.55;
+    }
+    .opt:hover{
+      transform: translateY(-1.5px);
+      box-shadow: 0 6px 14px rgba(0,0,0,.45);
+      background: linear-gradient(#4a403b,#332b27);
+      border-color: #d1bf8a;
+    }
+    .opt:focus-visible{
+      outline:2px solid var(--accent); outline-offset:2px;
+    }
+
+    .meta{
+      margin-top:16px; color:var(--muted); font-size:13px;
+      display:flex; justify-content:space-between; align-items:center;
+    }
+    .link{ color:var(--accent); text-decoration:none; border-bottom:1px dotted rgba(227,193,93,.7) }
+    .link:hover{ filter:brightness(1.1) }
+
+    /* 進場與切題動畫 */
+    .fade-in{ animation: fadeIn .36s var(--ease) both }
+    @keyframes fadeIn{ from{ opacity:0; transform: translateY(6px)} to{opacity:1; transform:none}}
+
+    .page-out{ animation: pageOut .24s var(--ease) both }
+    @keyframes pageOut{ to{ opacity:0; transform: translateY(-6px) scale(.995) } }
+
+    .page-in{ animation: pageIn .28s var(--ease) both }
+    @keyframes pageIn{
+      from{ opacity:0; transform: translateY(8px) scale(1.005); filter: blur(2px)}
+      to{ opacity:1; transform:none; filter:none}
+    }
+
+    /* 首屏序章（拉幕） */
+    .prologue{
+      position: fixed; inset:0; z-index:2;
+      display:grid; place-items:center;
+      background: radial-gradient(60% 60% at 50% 40%, #231f1d 0%, #0f0c0b 60%, #000 100%);
+      transition: opacity .6s var(--ease), visibility .6s var(--ease);
+    }
+    .prologue.hide{ opacity:0; visibility:hidden }
+    .prologue-card{
+      width:min(760px, calc(100% - 48px));
+      background: #221c19e6;
+      border:1px solid rgba(255,255,255,.06);
+      outline:1px solid rgba(255,255,255,.06);
+      border-radius:20px;
+      padding:28px 24px 20px;
+      box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
+      animation: prologuePop .42s var(--ease) both;
+    }
+    @keyframes prologuePop{
+      from{opacity:0; transform: translateY(6px) scale(.98)}
+      to{opacity:1; transform:none}
+    }
+    .prologue-card:before,
+    .prologue-card:after{
+      content:""; position:absolute; inset:0; pointer-events:none;
+      background:
+        radial-gradient(600px 220px at 50% -10%, rgba(227,193,93,.18), transparent 60%),
+        radial-gradient(500px 200px at 50% 110%, rgba(227,193,93,.12), transparent 65%);
+    }
+    .prologue h1{
+      font-family:"ZCOOL KuaiLe","Noto Serif TC",serif;
+      font-size:26px; margin:0 0 10px; color:var(--ink); letter-spacing:.8px;
+      display:flex; align-items:center; gap:.6em;
+    }
+    .prologue p{ margin:0 0 16px; color:var(--ink); line-height:1.8; }
+    .prologue .actions{ display:flex; gap:12px; flex-wrap:wrap }
+    .btn{
+      appearance:none; cursor:pointer; user-select:none;
+      padding:12px 16px; border-radius: var(--radius-sm);
+      border:1px solid var(--accent-2);
+      background: linear-gradient(#3b342f,#2b2522);
+      color:var(--fg); font-size:15px; letter-spacing:.3px;
+      box-shadow: 0 4px 10px rgba(0,0,0,.35);
+      transition: transform .14s var(--ease), box-shadow .14s var(--ease), background .2s var(--ease);
+    }
+    .btn:hover{ transform: translateY(-1px); box-shadow:0 6px 14px rgba(0,0,0,.45) }
+    .btn.primary{ border-color:#d1bf8a; background: linear-gradient(#4a403b,#352e2a) }
+
+    /* 無動畫偏好：關閉大多數轉場 */
+    @media (prefers-reduced-motion: reduce){
+      *{ animation:none !important; transition:none !important; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 暗角 & 粒子 -->
+  <div class="vignette"></div>
+  <canvas id="bg-dust"></canvas>
+
+  <!-- 序章（可略過） -->
+  <div class="prologue" id="prologue" aria-modal="true" role="dialog">
+    <div class="prologue-card">
+      <h1><span class="dot" style="display:inline-block;width:8px;height:8px;background:var(--accent);border-radius:50%;box-shadow:0 0 8px rgba(227,193,93,.9)"></span> 共振啟動測驗</h1>
+      <p>請依直覺作答。每一題都像翻過老相簿的一頁，帶你回到某個熟悉的角落。</p>
+      <p style="opacity:.8">提示：你可以直接按鍵盤 <strong>1–6</strong> 選項作答。</p>
+      <div class="actions">
+        <button class="btn primary" id="startBtn">開始測驗</button>
+        <button class="btn" id="skipBtn">略過序章</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="shell">
+    <div class="card fade-in" id="card">
+      <!-- 內框裝飾角 -->
+      <svg class="corners corner tl" viewBox="0 0 64 64" aria-hidden="true"><path fill="#b08a4a" d="M0,64 L0,14 Q0,0 14,0 L64,0 L54,10 L14,10 Q10,10 10,14 L10,54 Z"/></svg>
+      <svg class="corners corner tr" viewBox="0 0 64 64" aria-hidden="true"><path fill="#b08a4a" d="M0,64 L0,14 Q0,0 14,0 L64,0 L54,10 L14,10 Q10,10 10,14 L10,54 Z"/></svg>
+      <svg class="corners corner bl" viewBox="0 0 64 64" aria-hidden="true"><path fill="#b08a4a" d="M0,64 L0,14 Q0,0 14,0 L64,0 L54,10 L14,10 Q10,10 10,14 L10,54 Z"/></svg>
+      <svg class="corners corner br" viewBox="0 0 64 64" aria-hidden="true"><path fill="#b08a4a" d="M0,64 L0,14 Q0,0 14,0 L64,0 L54,10 L14,10 Q10,10 10,14 L10,54 Z"/></svg>
+
+      <p class="title"><span class="dot"></span> 共振啟動測驗 · Resonance Initiation</p>
+
+      <div class="progress" aria-hidden="true"><div class="bar" id="bar"></div></div>
+
+      <div id="test-root" style="margin-top:16px;"></div>
+
+      <div class="meta">
+        <span id="stepLabel">第 1 / 6 題</span>
+        <a class="link" href="/index.html">回到展覽首頁</a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import {
+      QUESTIONS,
+      INITIAL_SCORE,
+      applyAnswer,
+      computePersona,
+      CHANNEL_ANCHOR
+    } from '/assets/js/test-logic.js';
+
+    const root = document.getElementById('test-root');
+    const bar  = document.getElementById('bar');
+    const stepLabel = document.getElementById('stepLabel');
+    const prologue = document.getElementById('prologue');
+    const startBtn = document.getElementById('startBtn');
+    const skipBtn  = document.getElementById('skipBtn');
+    const card     = document.getElementById('card');
+
+    // URL 參數（決定完成後 gate 回首頁或一般去結果頁）
+    const qs   = new URLSearchParams(location.search);
+    const mode = qs.get('mode'); // 'gate' | null
+
+    let score = { ...INITIAL_SCORE };
+    let step  = 0;
+    let acceptingInput = false; // 控制切題時的節流
+
+    // ===== 背景微塵粒子（極輕量） =====
+    const canvas = document.getElementById('bg-dust');
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [];
+    function resize(){
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+      particles = Array.from({length: Math.min(90, Math.floor(W*H/22000))}, () => ({
+        x: Math.random()*W,
+        y: Math.random()*H,
+        r: Math.random()*1.2 + 0.3,
+        a: Math.random()*Math.PI*2,
+        s: Math.random()*0.2 + 0.05
+      }));
+    }
+    function loop(){
+      ctx.clearRect(0,0,W,H);
+      ctx.globalCompositeOperation = 'lighter';
+      for(const p of particles){
+        p.a += p.s * 0.6;
+        p.x += Math.cos(p.a) * 0.08;
+        p.y += Math.sin(p.a) * 0.04;
+        if(p.x < -5) p.x = W+5; if(p.x > W+5) p.x = -5;
+        if(p.y < -5) p.y = H+5; if(p.y > H+5) p.y = -5;
+        ctx.globalAlpha = 0.18 + Math.sin(p.a)*0.08;
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle = "#e3c15d"; ctx.fill();
+      }
+      requestAnimationFrame(loop);
+    }
+    resize(); loop(); addEventListener('resize', resize);
+
+    // ===== 進度條 & 標籤 =====
+    function updateProgress() {
+      const pct = Math.round(((step) / QUESTIONS.length) * 100);
+      bar.style.width = pct + '%';
+      stepLabel.textContent = `第 ${Math.min(step+1, QUESTIONS.length)} / ${QUESTIONS.length} 題`;
+    }
+
+    // ===== 完成流程 =====
+    function finishFlow() {
+      const persona = computePersona(score);
+      // 寫入本地結果
+      localStorage.setItem('resonance_score', JSON.stringify(score));
+      localStorage.setItem('resonance_persona', JSON.stringify(persona));
+
+      if (mode === 'gate') {
+        // 首次進站流程：標記完整體驗過、依主頻率回首頁對應頻道
+        localStorage.setItem('seen_full_flow', '1');
+        const primary = persona.primary || 'food';
+        const anchor  = (CHANNEL_ANCHOR && CHANNEL_ANCHOR[primary]) ? CHANNEL_ANCHOR[primary] : '';
+        window.location.replace('/index.html' + anchor);
+      } else {
+        // 一般社群／獨立測驗
+        window.location.href = '/test-result.html?from=lite';
+      }
+    }
+
+    // ===== 題目渲染（含轉場） =====
+    function renderQuestion(i){
+      updateProgress();
+      const q = QUESTIONS[i];
+      // 退出動畫
+      if(root.firstChild){
+        acceptingInput = false;
+        root.classList.remove('page-in');
+        root.classList.add('page-out');
+        setTimeout(()=> renderNow(q), 180);
+      } else {
+        renderNow(q);
+      }
+    }
+
+    function renderNow(q){
+      root.classList.remove('page-out');
+      root.innerHTML = `
+        <p class="q-text">${q.text}</p>
+        <div class="opts">
+          ${q.options.map((opt, idx)=>`
+            <button class="opt" data-idx="${idx}" aria-label="${opt.label}">
+              <strong style="opacity:.85;margin-right:.4em">${idx+1}.</strong> ${opt.label}
+            </button>
+          `).join('')}
+        </div>
+      `;
+      root.classList.add('page-in');
+
+      // 綁定行為
+      root.querySelectorAll('.opt').forEach(btn=>{
+        btn.addEventListener('click', ()=> chooseOption(q, Number(btn.dataset.idx)));
+      });
+
+      // 啟用鍵盤 1–6
+      acceptingInput = true;
+    }
+
+    function chooseOption(q, idx){
+      if(!acceptingInput) return;
+      const optEl = root.querySelector(`.opt[data-idx="${idx}"]`);
+      if(!optEl) return;
+
+      // 輕量回饋
+      optEl.style.transform = 'translateY(-1px) scale(0.997)';
+      optEl.style.boxShadow = '0 10px 18px rgba(0,0,0,.5)';
+      setTimeout(()=>{ optEl.style.transform=''; optEl.style.boxShadow=''; }, 140);
+
+      const chosen = q.options[idx];
+      const optionWithMultiplier = { ...chosen, multiplier: q.multiplier || 1 };
+      applyAnswer(score, optionWithMultiplier);
+
+      step++;
+      if(step < QUESTIONS.length){
+        renderQuestion(step);
+      } else {
+        finishFlow();
+      }
+    }
+
+    // 鍵盤快捷：1–6
+    addEventListener('keydown', (e)=>{
+      if(!acceptingInput) return;
+      const n = parseInt(e.key, 10);
+      if(!Number.isNaN(n) && n>=1 && n<=6){
+        const q = QUESTIONS[step];
+        // 若此題選項數不足，自動忽略超出
+        if(q && q.options && q.options[n-1]){
+          chooseOption(q, n-1);
+        }
+      }
+    });
+
+    // ===== 首屏序章控制 =====
+    function hidePrologue(){
+      prologue.classList.add('hide');
+      // 若希望自動開始第一題，這裡直接 render
+      renderQuestion(step);
+    }
+    startBtn?.addEventListener('click', hidePrologue);
+    skipBtn?.addEventListener('click', hidePrologue);
+
+    // 若使用者上次已看過序章，可直接略過（看你要不要啟用）
+    // if(localStorage.getItem('seen_full_flow') === '1'){ hidePrologue(); }
+
+    // 安全保險：3 秒後允許點選（避免進場時誤觸）
+    setTimeout(()=> acceptingInput = true, 300);
+
+    // ===== 初始標記與提示 =====
+    updateProgress();
+  </script>
+</body>
+</html>
