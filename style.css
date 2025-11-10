@@ -25,7 +25,7 @@ main {
 body {
   margin: 0;
   background-color: #472c02;
-  background-image: url('paper-texture.jpg');
+  background-image: url('paper-texture.png');
   background-repeat: repeat;
   background-size: auto;
   background-attachment: scroll;
@@ -753,6 +753,33 @@ body {
     height: auto;
   }
 }
+
+.group-instruction {
+  position: absolute;
+  bottom: 8%; /* 根據地毯位置可微調，例如 10%、12% */
+  left: 50%;
+  transform: translateX(-50%);
+  color: #f9e8c6;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 20px;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.5);
+  letter-spacing: 2px;
+  animation: fadeInUp 1.8s ease forwards;
+  opacity: 0;
+}
+
+/* 簡單的淡入浮現動畫 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
 
 
 /* 最新消息區塊樣式 */
