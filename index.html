@@ -20,6 +20,17 @@
 </head>
 <body>
 
+<!-- 共振測驗浮動入口 v2 -->
+<a href="resonance-test.html"
+   class="resonance-floating-tag"
+   aria-label="前往共振測驗">
+  <div class="tag-inner">
+    <span class="tag-icon">⌛</span>
+    <span class="tag-en">RESONANCE<br>TEST</span>
+    <span class="tag-zh">共振測驗</span>
+  </div>
+</a>
+
 <!-- 三合院門轉場 -->
 <div class="transition-door left-door"></div>
 <div class="transition-door right-door"></div>
@@ -739,6 +750,7 @@
   </div>
 </section>
 
+
 <!-- Footer -->
 <footer id="site-footer" class="footer">
   <!-- 背景層 -->
@@ -815,30 +827,6 @@
 
 <script src="script.js"></script>
 <script src="fixed-podcast-carousel.js"></script>
-
-
-<!--測驗系統檢視-->
-<script>
-  (function(){
-    // 是否已完成過完整流程？（避免每次都被導去測驗）
-    var seen = localStorage.getItem('seen_full_flow') === '1';
-    // 是否已有測驗人格結果？
-    var persona = null;
-    try { persona = JSON.parse(localStorage.getItem('resonance_persona') || 'null'); } catch(e){}
-
-    // 可用參數控制：?forceTest=1 強制重導（Demo時很好用）
-    var qs = new URLSearchParams(location.search);
-    var force = qs.get('forceTest') === '1';
-
-    if (force || (!seen && (!persona || !persona.primary))) {
-      // 第一次或尚未測過：導到「獨立測驗頁」的 gate 模式
-      // ※ 你也可改成 /resonance-test.html（同目錄）
-      window.location.replace('/resonance-test.html?mode=gate');
-    }
-
-    // 若有結果，或已看過完整流程，就正常顯示首頁
-  })();
-</script>
 
 
 </body>

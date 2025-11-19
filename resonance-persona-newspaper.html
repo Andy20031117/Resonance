@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <title>共振人格專刊 · Resonance Gazette</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0b0908;
+      --paper: #f2e5cf;
+      --ink: #2b1b14;
+      --ink-soft: #725845;
+      --accent: #c4892d;
+      --line: #d0c2aa;
+      --muted: #8b725e;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: radial-gradient(120% 160% at 10% 0%, #33261b 0%, #0b0908 50%, #000 100%);
+      font-family: "Noto Serif TC", "Times New Roman", serif;
+      color: var(--ink);
+    }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .page {
+      width: 100%;
+      max-width: 1040px;
+      background: var(--paper);
+      border-radius: 10px;
+      box-shadow:
+        0 30px 80px rgba(0,0,0,0.85),
+        0 0 0 1px rgba(255,255,255,0.35);
+      padding: 18px 18px 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    @media (max-width: 900px) {
+      body {
+        align-items: stretch;
+        padding: 10px;
+      }
+      .page {
+        border-radius: 0;
+        max-width: 100%;
+        box-shadow: none;
+      }
+    }
+
+    .page::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 10% 0, rgba(255,255,255,0.7) 0, transparent 55%),
+        repeating-linear-gradient(90deg, rgba(0,0,0,0.03) 0, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 3px);
+      opacity: 0.6;
+      mix-blend-mode: multiply;
+      pointer-events: none;
+    }
+
+    .inner {
+      position: relative;
+      z-index: 1;
+      border: 1px solid rgba(0,0,0,0.14);
+      padding: 10px 12px 10px;
+    }
+
+    /* 報頭 */
+    .masthead {
+      border-bottom: 2px solid #000;
+      padding-bottom: 6px;
+      margin-bottom: 8px;
+      display: grid;
+      grid-template-columns: 1.6fr auto 1.6fr;
+      gap: 8px;
+      align-items: center;
+    }
+    @media (max-width: 768px) {
+      .masthead {
+        grid-template-columns: 1fr;
+        text-align: center;
+        row-gap: 2px;
+      }
+    }
+    .mast-left {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .mast-center {
+      text-align: center;
+    }
+    .mast-title-zh {
+      font-size: 1.3rem;
+      letter-spacing: 0.45em;
+      text-indent: 0.45em;
+      margin-bottom: 2px;
+    }
+    .mast-title-en {
+      font-size: 0.75rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+    }
+    .mast-right {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: right;
+    }
+    @media (max-width: 768px) {
+      .mast-right { text-align: center; }
+    }
+
+    .mast-kicker {
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+      padding-top: 4px;
+      border-top: 1px solid var(--line);
+      margin-bottom: 6px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* 版面格線 */
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 2.3fr) minmax(0, 1.5fr);
+      gap: 12px;
+    }
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* 頭條區 */
+    .lead-article {
+      border-right: 1px solid var(--line);
+      padding-right: 10px;
+    }
+    @media (max-width: 900px) {
+      .lead-article {
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+        padding-right: 0;
+        padding-bottom: 8px;
+        margin-bottom: 6px;
+      }
+    }
+    .lead-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .headline {
+      font-size: 1.15rem;
+      font-weight: 700;
+      line-height: 1.5;
+      margin-bottom: 4px;
+    }
+    .subheadline {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--ink-soft);
+      margin-bottom: 8px;
+    }
+    .lead {
+      font-size: 0.86rem;
+      line-height: 1.7;
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin: 6px 0 2px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .para {
+      font-size: 0.84rem;
+      line-height: 1.7;
+      margin: 0 0 4px;
+    }
+    .list {
+      margin: 0 0 4px 0;
+      padding-left: 1em;
+      font-size: 0.84rem;
+      line-height: 1.7;
+    }
+    .list li { margin-bottom: 1px; }
+
+    .box-note {
+      border: 1px solid var(--line);
+      padding: 4px 6px;
+      margin-top: 6px;
+      font-size: 0.8rem;
+      background: rgba(240,230,210,0.9);
+    }
+
+    /* 側欄：其他人格 */
+    .side {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .side-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 3px;
+      margin-bottom: 2px;
+      color: var(--ink-soft);
+    }
+    .persona-card {
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      padding-bottom: 4px;
+      margin-bottom: 2px;
+      font-size: 0.8rem;
+    }
+    .persona-card:last-child {
+      border-bottom: none;
+    }
+    .persona-name {
+      font-weight: 700;
+      font-size: 0.86rem;
+      margin-bottom: 2px;
+    }
+    .persona-tags {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+    .persona-summary {
+      font-size: 0.78rem;
+      line-height: 1.5;
+    }
+
+    /* 下方：速查表與按鈕區 */
+    .bottom-grid {
+      border-top: 1px solid #000;
+      margin-top: 8px;
+      padding-top: 6px;
+      display: grid;
+      grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.4fr);
+      gap: 10px;
+    }
+    @media (max-width: 900px) {
+      .bottom-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .dict-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .dict-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+    }
+    .dict-table th,
+    .dict-table td {
+      border-bottom: 1px solid rgba(0,0,0,0.12);
+      padding: 2px 4px;
+      text-align: left;
+    }
+    .dict-table th {
+      background: rgba(0,0,0,0.03);
+      font-weight: 700;
+    }
+
+    .cta-area {
+      font-size: 0.76rem;
+      color: var(--ink-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: flex-start;
+    }
+    .cta-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .btn-outline {
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 0.76rem;
+      background: transparent;
+      border: 1px solid rgba(0,0,0,0.5);
+      cursor: pointer;
+      font-family: "Noto Sans TC","Microsoft JhengHei",sans-serif;
+    }
+    .btn-outline.primary {
+      border-color: var(--accent);
+      color: #fff;
+      background: linear-gradient(135deg, #c4892d, #8f5b18);
+    }
+
+    .foot {
+      margin-top: 4px;
+      font-size: 0.7rem;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      padding-top: 4px;
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+  <article class="page">
+    <div class="inner">
+      <!-- 報頭 -->
+      <header class="masthead">
+        <div class="mast-left">
+          世新大學 資訊傳播學系 ｜ 111 級 畢業展特刊
+        </div>
+        <div class="mast-center">
+          <div class="mast-title-zh">時代共振 專刊</div>
+          <div class="mast-title-en">Resonance Gazette · Personality Issue</div>
+        </div>
+        <div class="mast-right" id="mastMeta">
+          民國 114 年　共振號<br>
+          共振導向系統 人格特集
+        </div>
+      </header>
+      <div class="mast-kicker" id="mastKicker">
+        六種共振人格 · 一份臺味十足的小報，替你標記自己在時代裡的位置。
+      </div>
+
+      <!-- 主要版面 -->
+      <section class="grid" id="mainGrid">
+        <!-- 左：頭條文章 -->
+        <section class="lead-article">
+          <div class="lead-label" id="leadLabel">封面故事 · Cover Story</div>
+          <h1 class="headline" id="headline"></h1>
+          <div class="subheadline" id="subheadline"></div>
+          <p class="lead" id="lead"></p>
+
+          <h2 class="section-title">在日常中，你常常這樣做…</h2>
+          <ul class="list" id="dailyList"></ul>
+
+          <h2 class="section-title">在團隊裡，你默默扛起的角色…</h2>
+          <ul class="list" id="teamList"></ul>
+
+          <h2 class="section-title">共振提醒</h2>
+          <ul class="list" id="warnList"></ul>
+
+          <div class="box-note" id="routeBox">
+            <strong>逛展小建議：</strong>
+            <span id="routeText"></span>
+          </div>
+        </section>
+
+        <!-- 右：其他人格 -->
+        <aside class="side">
+          <div class="side-title">其他共振角色一覽</div>
+          <div id="sideList">
+            <!-- JS 注入 -->
+          </div>
+        </aside>
+      </section>
+
+      <!-- 下方速查表與按鈕 -->
+      <section class="bottom-grid">
+        <div>
+          <div class="dict-title">共振人格小字典</div>
+          <table class="dict-table" id="dictTable">
+            <thead>
+              <tr>
+                <th>人格名稱</th>
+                <th>關鍵字</th>
+                <th>一句話總結</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- JS 注入 -->
+            </tbody>
+          </table>
+        </div>
+        <div class="cta-area">
+          <div id="ctaText">
+            這份小報是依照你的測驗結果排版而成。你可以把它當成逛展前的小地圖，
+            也可以在看完展後，再回來對照自己在哪些場景裡特別有共鳴。
+          </div>
+          <div class="cta-buttons">
+            <button class="btn-outline primary" id="btnBackResult">
+              回到測驗結果頁
+            </button>
+            <button class="btn-outline" id="btnGoRoute">
+              依照這個人格逛展 / 進入遊戲
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <footer class="foot">
+        <div>本專刊由「共振導向系統」與「時代共振策展組」共同出刊。</div>
+        <div>© Resonance of the Era · Shih Hsin University</div>
+      </footer>
+    </div>
+  </article>
+
+  <script>
+    // 這邊放完整六人格資料（報紙版）。
+    const PERSONA_FULL = {
+      temp: {
+        id: 'temp',
+        name: '溫度的收集者',
+        tags: ['感受力','細膩','溫度感'],
+        headline: '溫度的收集者：把世界情緒悄悄放進口袋的人',
+        subheadline: '你先感受，再行動；你先理解，再說出口。',
+        lead: '在快速變動、資訊紛雜的時代，溫度的收集者像行走的人體「感應器」。你能從細微的表情、氣氛的流動、聲音的起伏中捕捉別人忽略的情緒訊號。你不急著決定，而是先確定「這裡是不是安全的地方」。',
+        daily: [
+          '比起說話，你更常用「感覺」來判斷事情。',
+          '你會注意大家的情緒起伏，特別是有人不太對勁時。',
+          '你在陌生環境會先觀察氛圍，再慢慢融入。'
+        ],
+        team: [
+          '你是大家之間的「情緒緩衝層」，能化解緊張氣氛。',
+          '你能察覺到未說出口的問題，並提前調整方向。',
+          '你對人很敏銳，因此成為默默穩定團隊的核心力量。'
+        ],
+        warn: [
+          '太在意別人的感受，而忽略自己的需求。',
+          '因為不想造成壓力，而延後說出真正的想法。'
+        ],
+        route: '建議你從故事感比較強、氛圍較沉浸的展間開始，讓自己慢慢進入狀態，再去看需要互動或思辨的作品，你會感受到很多細膩的情緒變化。',
+        short: '你用情緒與細節理解世界，是溫度最敏銳的共振者。'
+      },
+      freq: {
+        id: 'freq',
+        name: '頻率的校準者',
+        tags: ['穩定','節奏','控場'],
+        headline: '頻率的校準者：讓混亂重新對齊的一條穩定音軌',
+        subheadline: '你不吵、也不急；你只是始終維持在「對的節奏」。',
+        lead: '當周遭節奏混亂、步調失衡時，你的穩定就像是一條能把所有頻率帶回正軌的主旋律。你的存在本身就能讓事情不至於失控。你善於抓節奏、控步調，不是因為你保守，而是你知道「什麼時候該穩、什麼時候該快」。',
+        daily: [
+          '行動前，你會先觀察現況、評估風險。',
+          '遇到突發狀況，你通常比別人更冷靜。',
+          '你對「節奏」有感覺：該慢、該快，你都知道。'
+        ],
+        team: [
+          '你是穩定器，讓所有人可以在你旁邊放心。',
+          '當方向不明時，你能將焦點拉回「該先做什麼」。',
+          '你不華麗，但你是每個團隊的底線支柱。'
+        ],
+        warn: [
+          '太謹慎，錯過一些嘗試性的機會。',
+          '一直幫大家穩住，但自己卻累積很多壓力。'
+        ],
+        route: '你可以順著展覽主動線一步一步往前走，先看說明型、脈絡型的展間，再慢慢進入實驗性或互動性較強的作品，你會很享受那種被好好安排過的節奏感。',
+        short: '你是讓所有頻率重新安定、悄悄幫大家對齊步伐的那條主軌。'
+      },
+      sig: {
+        id: 'sig',
+        name: '訊號的開拓者',
+        tags: ['探索','好奇','突破'],
+        headline: '訊號的開拓者：永遠在下一個新頻段等你的人',
+        subheadline: '你被未知吸引，被新事物點燃，是時代的探測器。',
+        lead: '你看見別人沒看到的可能性。你喜歡探索、嘗鮮、突破框架；對你來說，「沒試過」比「失敗」更可怕。你不是魯莽，你只是比這個時代更早一步行動。',
+        daily: [
+          '多半第一個對新事物感到興奮。',
+          '很快上手，然後很快想試下一個。',
+          '你比別人更能在混亂中找到趣味。'
+        ],
+        team: [
+          '你是「開第一刀」的人，讓事情開始動起來。',
+          '你能指出大家沒注意的突破口。',
+          '你把團隊從停滯中拉到「前進」的狀態。'
+        ],
+        warn: [
+          '開始太快，但後續容易分心。',
+          '對流程不耐煩，想要「直接開始」。'
+        ],
+        route: '建議你先直奔需要操作、實驗或互動的展件，在「動手」和試玩中感受展覽的核心，再回頭看文字與敘事，你會對這些作品有更多連結。',
+        short: '你永遠走在新的訊號前端，是替大家開路的人。'
+      },
+      mem: {
+        id: 'mem',
+        name: '記憶的編排者',
+        tags: ['整理','敘事','分析'],
+        headline: '記憶的編排者：把混亂編成故事的人',
+        subheadline: '你喜歡讓世界變得有邏輯、有順序、有章法。',
+        lead: '你像是時代的「編輯」。當資訊太多、太亂，你會把它拆開、整理，再排成有脈絡的故事。你習慣分析、分類、整理，把抽象的東西變得具體、能看懂。',
+        daily: [
+          '做筆記、做分類、做彙整是你的日常。',
+          '聽完故事會自動把它「改寫」成你能理解的版本。',
+          '喜歡把複雜的事情講簡單。'
+        ],
+        team: [
+          '你找出混亂中的「主線」。',
+          '你能整理大家的意見，做成明確方向。',
+          '你是一種穩定的「資訊導航」。'
+        ],
+        warn: [
+          '想得太多，行動變慢。',
+          '太追求整齊，而少了即興彈性。'
+        ],
+        route: '你可以先從敘事線比較完整的展區開始，把故事脈絡串起來，再去看實驗性或碎片感較強的作品，你會特別享受解讀與重組的過程。',
+        short: '你能把資訊變成故事，是時代的編排者。'
+      },
+      noise: {
+        id: 'noise',
+        name: '噪點的解構者',
+        tags: ['質疑','分析','破解'],
+        headline: '噪點的解構者：在縫隙中看見真相的人',
+        subheadline: '你不害怕質疑，你只是習慣看清楚。',
+        lead: '當大多數人被表象吸引，你會往下看兩層。你擅長拆解、質疑、分析，能看到制度的漏洞、流程的破口與矛盾點。你不是唱反調，你只是希望事情可以「更好、更合理」。',
+        daily: [
+          '對不合理的事情非常敏感。',
+          '聽到模糊的說法，會立刻想追問細節。',
+          '你比任何人都容易發現「邏輯怪怪的地方」。'
+        ],
+        team: [
+          '你能擋掉重大錯誤，避免大家踩坑。',
+          '你會把模糊想法拆成能執行的要求。',
+          '你是團隊的「品質控制」。'
+        ],
+        warn: [
+          '看到太多問題，而忽略當下的步伐。',
+          '因為想得太清楚，反而增加溝通壓力。'
+        ],
+        route: '建議你多停留在有思辨、隱喻或結構設計感很強的作品前，去拆解它們的選擇與限制，你會在「為什麼要這樣做」的提問裡找到樂趣。',
+        short: '你能看見縫隙，是拆解噪點的敏銳觀察者。'
+      },
+      echo: {
+        id: 'echo',
+        name: '回聲的放大者',
+        tags: ['分享','傳遞','連結'],
+        headline: '回聲的放大者：把好東西傳得更遠的人',
+        subheadline: '你喜歡分享、講故事、連結人與人之間的頻率。',
+        lead: '你像一個溫暖的訊號擴散塔。只要你喜歡，你就會想讓更多人知道；你的熱情能把資訊傳出去，把感動傳出去，把世界連接起來。你是傳播者、故事講述者、連結的橋梁。',
+        daily: [
+          '看到有趣的東西，就想轉傳、分享。',
+          '常常是朋友群裡的資訊發電站。',
+          '你用故事與情緒讓別人感興趣。'
+        ],
+        team: [
+          '你讓團隊資訊更透明、更流動。',
+          '你能把複雜內容講成大家聽得懂的版本。',
+          '你是情緒與資訊的「雙向擴音器」。'
+        ],
+        warn: [
+          '太急於分享，而忽略確認內容是否準確。',
+          '情緒太投入而容易受環境影響。'
+        ],
+        route: '從好拍、好講、有亮點的展區開始，讓你有東西可以立刻分享，再回頭去看需要靜下心閱讀的作品，你會在「轉述」中得到第二次共鳴。',
+        short: '你是共振世界裡的訊號擴散者。'
+      }
+    };
+
+    function getQueryType() {
+      const params = new URLSearchParams(window.location.search);
+      const t = params.get('type');
+      return t && PERSONA_FULL[t] ? t : null;
+    }
+
+    function renderPersonaPage() {
+      const type = getQueryType();
+      const mainEl = document.getElementById('mainGrid');
+      const headLabelEl = document.getElementById('leadLabel');
+      const kickerEl = document.getElementById('mastKicker');
+      const ctaTextEl = document.getElementById('ctaText');
+
+      if (!type) {
+        // 總覽版：沒有特定 type
+        headLabelEl.textContent = '特集導言 · Feature Overview';
+        document.getElementById('headline').textContent =
+          '六種共振人格：在臺味報紙裡，看見你在時代裡的位置';
+        document.getElementById('subheadline').textContent =
+          '這不是要把你歸類，而是給你一個閱讀自己的角度。';
+        document.getElementById('lead').textContent =
+          '在「時代共振」裡，我們以六種不同的共振方式，整理了人與資訊、記憶、噪點、情緒之間的關係。你可以先快速瀏覽這六種人格，感覺自己比較靠近哪一邊，再回到測驗裡，看看系統幫你排出的那一份專屬小報。';
+
+        // 左側不再顯示細部清單
+        document.getElementById('dailyList').innerHTML = '';
+        document.getElementById('teamList').innerHTML = '';
+        document.getElementById('warnList').innerHTML = '';
+        document.getElementById('routeText').textContent =
+          '建議你先隨意翻閱這一版專刊，把自己覺得「有點像自己」的句子圈起來，再帶著這些句子走進實體展間，看看哪些作品會和這些描述互相呼應。';
+
+        kickerEl.textContent = '這一版是總覽版小報，你可以先認識六種共振人格，再回到測驗試試看自己是哪一型。';
+        ctaTextEl.textContent =
+          '目前你正瀏覽的是「共振人格專刊」的總覽版。建議你在做測驗之前，可以先感覺一下自己比較偏向哪幾種描述，之後再帶著測驗結果回到這裡對照，會更有趣。';
+
+      } else {
+        const p = PERSONA_FULL[type];
+        headLabelEl.textContent = '封面故事 · Cover Story';
+        document.getElementById('headline').textContent = p.headline;
+        document.getElementById('subheadline').textContent = p.subheadline;
+        document.getElementById('lead').textContent = p.lead;
+
+        const dl = document.getElementById('dailyList');
+        const tl = document.getElementById('teamList');
+        const wl = document.getElementById('warnList');
+        dl.innerHTML = '';
+        tl.innerHTML = '';
+        wl.innerHTML = '';
+
+        p.daily.forEach(t => {
+          const li = document.createElement('li');
+          li.textContent = t;
+          dl.appendChild(li);
+        });
+        p.team.forEach(t => {
+          const li = document.createElement('li');
+          li.textContent = t;
+          tl.appendChild(li);
+        });
+        p.warn.forEach(t => {
+          const li = document.createElement('li');
+          li.textContent = t;
+          wl.appendChild(li);
+        });
+
+        document.getElementById('routeText').textContent = p.route;
+        kickerEl.textContent =
+          `你目前是本期的封面人物：「${p.name}」。這一版小報替你整理了你的共振習慣，也收錄其他五種人格，讓你在展覽裡對照自己與他人的位置。`;
+      }
+
+      // 右側卡片：其他人格（或全部）
+      const sideList = document.getElementById('sideList');
+      sideList.innerHTML = '';
+      Object.values(PERSONA_FULL).forEach(p => {
+        if (type && p.id === type) return; // 當前人格不用再出現在右側
+        const card = document.createElement('div');
+        card.className = 'persona-card';
+        card.innerHTML = `
+          <div class="persona-name">${p.name}</div>
+          <div class="persona-tags">${p.tags.join('・')}</div>
+          <div class="persona-summary">${p.short}</div>
+        `;
+        sideList.appendChild(card);
+      });
+
+      // 速查表
+      const tbody = document.querySelector('#dictTable tbody');
+      tbody.innerHTML = '';
+      Object.values(PERSONA_FULL).forEach(p => {
+        const tr = document.createElement('tr');
+        const tdName = document.createElement('td');
+        tdName.textContent = p.name;
+        const tdTags = document.createElement('td');
+        tdTags.textContent = p.tags.join('、');
+        const tdShort = document.createElement('td');
+        tdShort.textContent = p.short;
+        tr.appendChild(tdName);
+        tr.appendChild(tdTags);
+        tr.appendChild(tdShort);
+        tbody.appendChild(tr);
+      });
+
+      // 按鈕事件
+      document.getElementById('btnBackResult').onclick = () => {
+        if (type) {
+          window.location.href = 'resonance-result.html?type=' + encodeURIComponent(type);
+        } else {
+          window.location.href = 'resonance-test-start.html';
+        }
+      };
+      document.getElementById('btnGoRoute').onclick = () => {
+        alert('之後可以在這裡接「依人格推薦逛展 / 進遊戲」的路線頁面喔！目前先預留。');
+      };
+    }
+
+    renderPersonaPage();
+  </script>
+</body>
+</html>

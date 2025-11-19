@@ -2,466 +2,575 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="utf-8" />
+  <title>共振導向系統 · 復古場景測驗</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>共振啟動測驗 Resonance Test</title>
-
-  <!-- 可選：若你有獨立 CSS 檔，可改回外掛 -->
-  <!-- <link rel="stylesheet" href="/assets/css/test.css" /> -->
-
-  <!-- 字體：偏復古印刷感 -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-
-  <!-- 可選：預載背景材質（若你有檔案） -->
-  <!-- <link rel="preload" as="image" href="/assets/img/oldpaper_texture.jpg"> -->
-  <!-- <link rel="preload" as="image" href="/assets/img/fabric_noise.png"> -->
-
   <style>
-    :root{
-      /* 復古暖黑＋米金系統 */
-      --bg-deep:#171412;
-      --bg-warm:#2a2623;
-      --fg:#e8e5da;
-      --muted:#cdbfa7;
-      --ink:#d7c4a3;
-      --accent:#e3c15d;          /* 金色 */
-      --accent-2:#9a8863;        /* 橄欖金 */
-      --rust:#a85b3e;            /* 暖紅銅 */
-      --card:#1f1a18e0;          /* 木櫃檯/舊書封面感 */
-      --line:#bda57a99;
-      --shadow:0 10px 40px rgba(0,0,0,.45);
-      --radius:14px;
-      --radius-sm:8px;
-      --ease: cubic-bezier(.22,.61,.36,1);
-      --speed: 420ms;
+    :root {
+      --bg: #0b0908;
+      --fg: #f5ecdd;
+      --muted: #b3a38b;
+      --accent: #e3c15d;
+      --accent-soft: rgba(227,193,93,0.16);
+      --card: rgba(13,9,7,0.9);
+      --border: #3a3027;
     }
+    * { box-sizing: border-box; }
 
-    html,body{height:100%}
-    body{
-      margin:0;
-      color:var(--fg);
-      font-family: "Noto Serif TC", ui-serif, serif;
-      letter-spacing:.15px;
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont,
+        "Noto Sans TC","Microsoft JhengHei", sans-serif;
       background:
-        radial-gradient(1200px 800px at 50% 35%, #2d2825 0%, var(--bg-deep) 55%, #0e0c0b 100%);
-      /* 疊加舊紙噪點，可替換為你的貼圖檔 */
-      background-image:
-        radial-gradient(1200px 800px at 50% 35%, rgba(255,255,255,.02), rgba(0,0,0,0)),
-        /* url('/assets/img/oldpaper_texture.jpg'), */
-        /* url('/assets/img/fabric_noise.png') */;
-      background-blend-mode: multiply;
-      overflow-x:hidden;
+        radial-gradient(120% 160% at 10% 0%, #2a2018 0%, #0b0908 50%, #000 100%);
+      color: var(--fg);
     }
 
-    /* 背景暗角 */
-    .vignette{
-      position:fixed; inset:0; pointer-events:none;
-      box-shadow: inset 0 0 200px 120px rgba(0,0,0,.7);
-      z-index:0;
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
     }
 
-    /* 微塵粒子層（Canvas） */
-    #bg-dust{
-      position:fixed; inset:0; z-index:0; opacity:.35; pointer-events:none;
-      filter: blur(.2px) contrast(105%);
-      mix-blend-mode: screen;
-    }
-
-    /* 整體內容殼層 */
-    .shell{
-      min-height:100%;
-      position:relative;
-      z-index:1;
-      display:grid;
-      place-items:center;
-      padding:24px;
-    }
-
-    /* 木框／舊書封面卡片 */
-    .card{
-      max-width:780px; width:100%;
-      background:var(--card);
-      border-radius:20px;
-      box-shadow: var(--shadow);
-      padding:28px 24px 24px;
-      position:relative;
-      transition: transform var(--speed) var(--ease), box-shadow var(--speed) var(--ease);
-      backdrop-filter: blur(2px);
-      border:1px solid #00000066;
-      outline:1px solid rgba(255,255,255,.06);
-    }
-    .card:before{
-      /* 內側金線框 */
-      content:"";
-      position:absolute; inset:12px;
-      border:1px solid var(--line);
-      border-radius:16px;
-      pointer-events:none;
-    }
-
-    /* 裝飾銅角（SVG 路徑） */
-    .corners{
-      pointer-events:none;
-    }
-    .corner{
-      position:absolute; width:28px; height:28px; opacity:.9;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,.6));
-    }
-    .corner.tl{ left:8px; top:8px }
-    .corner.tr{ right:8px; top:8px; transform:scaleX(-1)}
-    .corner.bl{ left:8px; bottom:8px; transform:scaleY(-1)}
-    .corner.br{ right:8px; bottom:8px; transform:scale(-1,-1)}
-
-    .title{
-      font-family:"ZCOOL KuaiLe","Noto Serif TC",serif;
-      font-size:22px; line-height:1; margin:0 0 10px;
-      color:var(--muted);
-      letter-spacing:.8px;
-      display:flex; gap:.6em; align-items:center;
-    }
-    .title .dot{width:6px; height:6px; border-radius:50%; background:var(--accent); box-shadow:0 0 6px rgba(227,193,93,.8)}
-
-    .progress{
-      height:6px; background:rgba(255,255,255,.07); border-radius:999px; overflow:hidden;
-      outline:1px solid rgba(255,255,255,.06);
-    }
-    .bar{
-      height:100%; width:0%;
-      background:linear-gradient(90deg, #e3c15d, #ffd977);
-      transition:width .3s var(--ease);
-    }
-
-    /* 內容主區 */
-    #test-root{ margin-top:18px; min-height:220px; }
-    .q-text{
-      font-size:21px; line-height:1.7; margin:6px 0 18px;
-      color:var(--ink);
-      text-shadow: 0 1px 0 rgba(0,0,0,.35);
-    }
-
-    .opts{ display:grid; gap:12px }
-    .opt{
-      appearance:none; cursor:pointer; text-align:left;
-      padding:14px 16px;
-      font-size:16px; line-height:1.5;
-      color:var(--fg);
-      background:
-        linear-gradient(#3a332f,#2b2522);
-      border:1px solid var(--accent-2);
-      border-radius: var(--radius);
+    .shell {
+      width: 100%;
+      max-width: 960px;
+      min-height: 520px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.04),
-        0 4px 10px rgba(0,0,0,.35);
-      transition: transform .14s var(--ease),
-                  box-shadow .14s var(--ease),
-                  background .2s var(--ease),
-                  border-color .2s var(--ease);
-      position:relative;
-    }
-    .opt:after{
-      /* 紙張纖維／亮面 */
-      content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,0) 40%, rgba(0,0,0,0) 60%, rgba(0,0,0,.15));
-      mix-blend-mode: overlay; opacity:.55;
-    }
-    .opt:hover{
-      transform: translateY(-1.5px);
-      box-shadow: 0 6px 14px rgba(0,0,0,.45);
-      background: linear-gradient(#4a403b,#332b27);
-      border-color: #d1bf8a;
-    }
-    .opt:focus-visible{
-      outline:2px solid var(--accent); outline-offset:2px;
-    }
-
-    .meta{
-      margin-top:16px; color:var(--muted); font-size:13px;
-      display:flex; justify-content:space-between; align-items:center;
-    }
-    .link{ color:var(--accent); text-decoration:none; border-bottom:1px dotted rgba(227,193,93,.7) }
-    .link:hover{ filter:brightness(1.1) }
-
-    /* 進場與切題動畫 */
-    .fade-in{ animation: fadeIn .36s var(--ease) both }
-    @keyframes fadeIn{ from{ opacity:0; transform: translateY(6px)} to{opacity:1; transform:none}}
-
-    .page-out{ animation: pageOut .24s var(--ease) both }
-    @keyframes pageOut{ to{ opacity:0; transform: translateY(-6px) scale(.995) } }
-
-    .page-in{ animation: pageIn .28s var(--ease) both }
-    @keyframes pageIn{
-      from{ opacity:0; transform: translateY(8px) scale(1.005); filter: blur(2px)}
-      to{ opacity:1; transform:none; filter:none}
-    }
-
-    /* 首屏序章（拉幕） */
-    .prologue{
-      position: fixed; inset:0; z-index:2;
-      display:grid; place-items:center;
-      background: radial-gradient(60% 60% at 50% 40%, #231f1d 0%, #0f0c0b 60%, #000 100%);
-      transition: opacity .6s var(--ease), visibility .6s var(--ease);
-    }
-    .prologue.hide{ opacity:0; visibility:hidden }
-    .prologue-card{
-      width:min(760px, calc(100% - 48px));
-      background: #221c19e6;
-      border:1px solid rgba(255,255,255,.06);
-      outline:1px solid rgba(255,255,255,.06);
-      border-radius:20px;
-      padding:28px 24px 20px;
-      box-shadow: var(--shadow);
-      position:relative;
-      overflow:hidden;
-      animation: prologuePop .42s var(--ease) both;
-    }
-    @keyframes prologuePop{
-      from{opacity:0; transform: translateY(6px) scale(.98)}
-      to{opacity:1; transform:none}
-    }
-    .prologue-card:before,
-    .prologue-card:after{
-      content:""; position:absolute; inset:0; pointer-events:none;
+        0 24px 60px rgba(0,0,0,0.85),
+        0 0 0 1px rgba(250,250,250,0.03);
       background:
-        radial-gradient(600px 220px at 50% -10%, rgba(227,193,93,.18), transparent 60%),
-        radial-gradient(500px 200px at 50% 110%, rgba(227,193,93,.12), transparent 65%);
+        radial-gradient(140% 200% at 50% 0%, #221813 0%, #120e0c 55%, #070606 100%);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 2.2fr);
+      position: relative;
     }
-    .prologue h1{
-      font-family:"ZCOOL KuaiLe","Noto Serif TC",serif;
-      font-size:26px; margin:0 0 10px; color:var(--ink); letter-spacing:.8px;
-      display:flex; align-items:center; gap:.6em;
-    }
-    .prologue p{ margin:0 0 16px; color:var(--ink); line-height:1.8; }
-    .prologue .actions{ display:flex; gap:12px; flex-wrap:wrap }
-    .btn{
-      appearance:none; cursor:pointer; user-select:none;
-      padding:12px 16px; border-radius: var(--radius-sm);
-      border:1px solid var(--accent-2);
-      background: linear-gradient(#3b342f,#2b2522);
-      color:var(--fg); font-size:15px; letter-spacing:.3px;
-      box-shadow: 0 4px 10px rgba(0,0,0,.35);
-      transition: transform .14s var(--ease), box-shadow .14s var(--ease), background .2s var(--ease);
-    }
-    .btn:hover{ transform: translateY(-1px); box-shadow:0 6px 14px rgba(0,0,0,.45) }
-    .btn.primary{ border-color:#d1bf8a; background: linear-gradient(#4a403b,#352e2a) }
 
-    /* 無動畫偏好：關閉大多數轉場 */
-    @media (prefers-reduced-motion: reduce){
-      *{ animation:none !important; transition:none !important; }
+    @media (max-width: 840px) {
+      body {
+        padding: 10px;
+      }
+      .shell {
+        grid-template-columns: 1fr;
+        min-height: 0;
+      }
+    }
+
+    .shell::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background-image:
+        radial-gradient(circle at 0% 0%, rgba(227,193,93,0.21) 0, transparent 55%),
+        radial-gradient(circle at 90% 0, rgba(227,193,93,0.13) 0, transparent 55%);
+      mix-blend-mode: screen;
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    /* 左邊：場景背景（之後可換成實際照片） */
+    .scene-pane {
+      position: relative;
+      overflow: hidden;
+      border-right: 1px solid rgba(255,255,255,0.06);
+    }
+
+    @media (max-width: 840px) {
+      .scene-pane {
+        min-height: 200px;
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+      }
+    }
+
+    .scene-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      filter: grayscale(0.4) contrast(1.05);
+      opacity: 0.25;
+    }
+
+    .scene-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 60%),
+        radial-gradient(circle at 90% 100%, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.9) 70%);
+    }
+
+    .scene-inner {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      padding: 18px 18px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .eyebrow {
+      font-size: 0.78rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .scene-title {
+      margin-top: 6px;
+      font-family: "Noto Serif TC","Times New Roman",serif;
+      font-size: 1.2rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .scene-sub {
+      margin-top: 6px;
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .progress-wrap {
+      margin-top: auto;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .progress-bar {
+      margin-top: 4px;
+      height: 4px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-bar-inner {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--accent), #ffefaa);
+      transition: width 0.4s ease;
+    }
+
+    /* 右邊：作答卡片 */
+    .question-pane {
+      position: relative;
+      padding: 18px 18px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 520px;
+      background: var(--card);
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 16px 16px 14px;
+      box-shadow:
+        0 16px 40px rgba(0,0,0,0.75),
+        0 0 0 1px rgba(250,250,250,0.03);
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "Q";
+      position: absolute;
+      top: 6px;
+      right: 10px;
+      font-size: 2.8rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.03);
+      pointer-events: none;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .card-step {
+      font-size: 0.8rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .card-step strong {
+      color: var(--accent);
+    }
+
+    .card-hint {
+      font-size: 0.76rem;
+      color: var(--muted);
+    }
+
+    .question-text {
+      margin: 2px 0 10px;
+      font-size: 0.98rem;
+      line-height: 1.6;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    @media (max-width: 540px) {
+      .options {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .option-btn {
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(15,11,8,0.9);
+      padding: 7px 12px;
+      font-size: 0.86rem;
+      color: var(--fg);
+      text-align: left;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .option-btn span.bullet {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    .option-btn span.label {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .option-btn::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 0 0, rgba(227,193,93,0.25), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+    }
+
+    .option-btn:hover::after {
+      opacity: 1;
+    }
+
+    .option-btn:hover {
+      border-color: rgba(227,193,93,0.9);
+    }
+
+    .nav-hint {
+      margin-top: 10px;
+      font-size: 0.76rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-hint button {
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.76rem;
+      padding: 4px 10px;
+      cursor: pointer;
+    }
+
+    .fade-in {
+      animation: fadeInUp 0.4s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
 <body>
-  <!-- 暗角 & 粒子 -->
-  <div class="vignette"></div>
-  <canvas id="bg-dust"></canvas>
-
-  <!-- 序章（可略過） -->
-  <div class="prologue" id="prologue" aria-modal="true" role="dialog">
-    <div class="prologue-card">
-      <h1><span class="dot" style="display:inline-block;width:8px;height:8px;background:var(--accent);border-radius:50%;box-shadow:0 0 8px rgba(227,193,93,.9)"></span> 共振啟動測驗</h1>
-      <p>請依直覺作答。每一題都像翻過老相簿的一頁，帶你回到某個熟悉的角落。</p>
-      <p style="opacity:.8">提示：你可以直接按鍵盤 <strong>1–6</strong> 選項作答。</p>
-      <div class="actions">
-        <button class="btn primary" id="startBtn">開始測驗</button>
-        <button class="btn" id="skipBtn">略過序章</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="shell">
-    <div class="card fade-in" id="card">
-      <!-- 內框裝飾角 -->
-      <svg class="corners corner tl" viewBox="0 0 64 64" aria-hidden="true"><path fill="#b08a4a" d="M0,64 L0,14 Q0,0 14,0 L64,0 L54,10 L14,10 Q10,10 10,14 L10,54 Z"/></svg>
-      <svg class="corners corner tr" viewBox="0 0 64 64" aria-hidden="true"><path fill="#b08a4a" d="M0,64 L0,14 Q0,0 14,0 L64,0 L54,10 L14,10 Q10,10 10,14 L10,54 Z"/></svg>
-      <svg class="corners corner bl" viewBox="0 0 64 64" aria-hidden="true"><path fill="#b08a4a" d="M0,64 L0,14 Q0,0 14,0 L64,0 L54,10 L14,10 Q10,10 10,14 L10,54 Z"/></svg>
-      <svg class="corners corner br" viewBox="0 0 64 64" aria-hidden="true"><path fill="#b08a4a" d="M0,64 L0,14 Q0,0 14,0 L64,0 L54,10 L14,10 Q10,10 10,14 L10,54 Z"/></svg>
-
-      <p class="title"><span class="dot"></span> 共振啟動測驗 · Resonance Initiation</p>
-
-      <div class="progress" aria-hidden="true"><div class="bar" id="bar"></div></div>
-
-      <div id="test-root" style="margin-top:16px;"></div>
-
-      <div class="meta">
-        <span id="stepLabel">第 1 / 6 題</span>
-        <a class="link" href="/index.html">回到展覽首頁</a>
-      </div>
-    </div>
-  </div>
-
-  <script type="module">
-    import {
-      QUESTIONS,
-      INITIAL_SCORE,
-      applyAnswer,
-      computePersona,
-      CHANNEL_ANCHOR
-    } from '/assets/js/test-logic.js';
-
-    const root = document.getElementById('test-root');
-    const bar  = document.getElementById('bar');
-    const stepLabel = document.getElementById('stepLabel');
-    const prologue = document.getElementById('prologue');
-    const startBtn = document.getElementById('startBtn');
-    const skipBtn  = document.getElementById('skipBtn');
-    const card     = document.getElementById('card');
-
-    // URL 參數（決定完成後 gate 回首頁或一般去結果頁）
-    const qs   = new URLSearchParams(location.search);
-    const mode = qs.get('mode'); // 'gate' | null
-
-    let score = { ...INITIAL_SCORE };
-    let step  = 0;
-    let acceptingInput = false; // 控制切題時的節流
-
-    // ===== 背景微塵粒子（極輕量） =====
-    const canvas = document.getElementById('bg-dust');
-    const ctx = canvas.getContext('2d');
-    let W, H, particles = [];
-    function resize(){
-      W = canvas.width  = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-      particles = Array.from({length: Math.min(90, Math.floor(W*H/22000))}, () => ({
-        x: Math.random()*W,
-        y: Math.random()*H,
-        r: Math.random()*1.2 + 0.3,
-        a: Math.random()*Math.PI*2,
-        s: Math.random()*0.2 + 0.05
-      }));
-    }
-    function loop(){
-      ctx.clearRect(0,0,W,H);
-      ctx.globalCompositeOperation = 'lighter';
-      for(const p of particles){
-        p.a += p.s * 0.6;
-        p.x += Math.cos(p.a) * 0.08;
-        p.y += Math.sin(p.a) * 0.04;
-        if(p.x < -5) p.x = W+5; if(p.x > W+5) p.x = -5;
-        if(p.y < -5) p.y = H+5; if(p.y > H+5) p.y = -5;
-        ctx.globalAlpha = 0.18 + Math.sin(p.a)*0.08;
-        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle = "#e3c15d"; ctx.fill();
-      }
-      requestAnimationFrame(loop);
-    }
-    resize(); loop(); addEventListener('resize', resize);
-
-    // ===== 進度條 & 標籤 =====
-    function updateProgress() {
-      const pct = Math.round(((step) / QUESTIONS.length) * 100);
-      bar.style.width = pct + '%';
-      stepLabel.textContent = `第 ${Math.min(step+1, QUESTIONS.length)} / ${QUESTIONS.length} 題`;
-    }
-
-    // ===== 完成流程 =====
-    function finishFlow() {
-      const persona = computePersona(score);
-      // 寫入本地結果
-      localStorage.setItem('resonance_score', JSON.stringify(score));
-      localStorage.setItem('resonance_persona', JSON.stringify(persona));
-
-      if (mode === 'gate') {
-        // 首次進站流程：標記完整體驗過、依主頻率回首頁對應頻道
-        localStorage.setItem('seen_full_flow', '1');
-        const primary = persona.primary || 'food';
-        const anchor  = (CHANNEL_ANCHOR && CHANNEL_ANCHOR[primary]) ? CHANNEL_ANCHOR[primary] : '';
-        window.location.replace('/index.html' + anchor);
-      } else {
-        // 一般社群／獨立測驗
-        window.location.href = '/test-result.html?from=lite';
-      }
-    }
-
-    // ===== 題目渲染（含轉場） =====
-    function renderQuestion(i){
-      updateProgress();
-      const q = QUESTIONS[i];
-      // 退出動畫
-      if(root.firstChild){
-        acceptingInput = false;
-        root.classList.remove('page-in');
-        root.classList.add('page-out');
-        setTimeout(()=> renderNow(q), 180);
-      } else {
-        renderNow(q);
-      }
-    }
-
-    function renderNow(q){
-      root.classList.remove('page-out');
-      root.innerHTML = `
-        <p class="q-text">${q.text}</p>
-        <div class="opts">
-          ${q.options.map((opt, idx)=>`
-            <button class="opt" data-idx="${idx}" aria-label="${opt.label}">
-              <strong style="opacity:.85;margin-right:.4em">${idx+1}.</strong> ${opt.label}
-            </button>
-          `).join('')}
+  <main class="shell">
+    <!-- 左側：場景區（之後可加照片） -->
+    <section class="scene-pane">
+      <div class="scene-bg" id="sceneBg"></div>
+      <div class="scene-overlay"></div>
+      <div class="scene-inner">
+        <div>
+          <div class="eyebrow">共振導向系統 · Resonance Test</div>
+          <h1 class="scene-title" id="sceneTitle">場景</h1>
+          <p class="scene-sub" id="sceneDesc">
+            你正走進一個復古年代的小場景，請靠直覺選出第一個吸引你的東西。
+          </p>
         </div>
-      `;
-      root.classList.add('page-in');
+        <div class="progress-wrap">
+          <div id="progressLabel">問題 1 / 6</div>
+          <div class="progress-bar">
+            <div class="progress-bar-inner" id="progressBarInner"></div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-      // 綁定行為
-      root.querySelectorAll('.opt').forEach(btn=>{
-        btn.addEventListener('click', ()=> chooseOption(q, Number(btn.dataset.idx)));
+    <!-- 右側：題目卡片 -->
+    <section class="question-pane">
+      <div class="card fade-in" id="card">
+        <header class="card-header">
+          <div class="card-step" id="stepLabel">Q01 · 直覺選擇</div>
+          <div class="card-hint">選出你「第一個想靠近」的東西即可。</div>
+        </header>
+        <div class="question-text" id="questionText">
+          你第一個注意到的是？
+        </div>
+        <div class="options" id="optionsContainer">
+          <!-- JS 填入 -->
+        </div>
+        <div class="nav-hint">
+          <span>總共有 6 題，整個過程約 30 秒。</span>
+          <button type="button" id="btnRestart">重新開始</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // 六題題庫（之後你可以搬到獨立 data.js）
+    const QUESTIONS = [
+      {
+        id: 1,
+        scene: "老房子的客廳",
+        desc: "你打開木門走進客廳，陽光從花窗撒進來。你第一個注意到的是？",
+        img: "img/scene-livingroom.jpg", // 之後放實際圖
+        options: [
+          { text: "老電扇的暖風", type: "temp" },
+          { text: "掛鐘的滴答聲", type: "freq" },
+          { text: "電視白噪點", type: "sig" },
+          { text: "泛黃的記事本", type: "mem" },
+          { text: "收音機雜訊", type: "noise" },
+          { text: "錄音機錄音鍵", type: "echo" }
+        ]
+      },
+      {
+        id: 2,
+        scene: "老式廚房",
+        desc: "鍋蓋輕敲、蒸氣上升，你走進廚房。你身體最先被吸引的是？",
+        img: "img/scene-kitchen.jpg",
+        options: [
+          { text: "熱湯蒸氣", type: "temp" },
+          { text: "切菜節奏", type: "freq" },
+          { text: "爐火亮起", type: "sig" },
+          { text: "貼滿的食譜", type: "mem" },
+          { text: "金屬鍋氣味", type: "noise" },
+          { text: "油亮食物", type: "echo" }
+        ]
+      },
+      {
+        id: 3,
+        scene: "街口",
+        desc: "你來到巷口，小販聲與車聲交錯。下一秒你注意到的是？",
+        img: "img/scene-street.jpg",
+        options: [
+          { text: "陽光味", type: "temp" },
+          { text: "機車聲", type: "freq" },
+          { text: "奇怪小物件", type: "sig" },
+          { text: "公告牆", type: "mem" },
+          { text: "怪怪的招牌", type: "noise" },
+          { text: "追逐笑聲", type: "echo" }
+        ]
+      },
+      {
+        id: 4,
+        scene: "文具行",
+        desc: "鐵門半開的文具行，空氣裡是紙香與塑膠味。你第一個走向哪裡？",
+        img: "img/scene-stationery.jpg",
+        options: [
+          { text: "暖色蠟筆", type: "temp" },
+          { text: "整齊鉛筆", type: "freq" },
+          { text: "新奇筆", type: "sig" },
+          { text: "分類紙張", type: "mem" },
+          { text: "卡鍵計算機", type: "noise" },
+          { text: "貼紙牆", type: "echo" }
+        ]
+      },
+      {
+        id: 5,
+        scene: "舊書房",
+        desc: "書房裡充滿木頭與舊紙味。你最先靠近的是？",
+        img: "img/scene-study.jpg",
+        options: [
+          { text: "相簿信件", type: "temp" },
+          { text: "筆筒與時鐘", type: "freq" },
+          { text: "奇怪封面", type: "sig" },
+          { text: "分類資料", type: "mem" },
+          { text: "粗糙邊緣書本", type: "noise" },
+          { text: "插圖雜誌", type: "echo" }
+        ]
+      },
+      {
+        id: 6,
+        scene: "夜晚屋頂",
+        desc: "夜風帶著城市聲，你站在屋頂。抬頭時，你最先感受到？",
+        img: "img/scene-rooftop.jpg",
+        options: [
+          { text: "風的溫度", type: "temp" },
+          { text: "遠方燈號", type: "freq" },
+          { text: "亮光劃過", type: "sig" },
+          { text: "心裡的線索", type: "mem" },
+          { text: "怪異燈光", type: "noise" },
+          { text: "城市回聲", type: "echo" }
+        ]
+      }
+    ];
+
+    const ORDER = ["temp", "freq", "sig", "mem", "noise", "echo"];
+
+    let currentIndex = 0;
+    let scores = {
+      temp: 0,
+      freq: 0,
+      sig: 0,
+      mem: 0,
+      noise: 0,
+      echo: 0
+    };
+
+    const sceneBgEl = document.getElementById("sceneBg");
+    const sceneTitleEl = document.getElementById("sceneTitle");
+    const sceneDescEl = document.getElementById("sceneDesc");
+    const progressLabelEl = document.getElementById("progressLabel");
+    const progressBarInnerEl = document.getElementById("progressBarInner");
+
+    const cardEl = document.getElementById("card");
+    const stepLabelEl = document.getElementById("stepLabel");
+    const questionTextEl = document.getElementById("questionText");
+    const optionsContainerEl = document.getElementById("optionsContainer");
+    const btnRestart = document.getElementById("btnRestart");
+
+    function renderQuestion() {
+      const q = QUESTIONS[currentIndex];
+      const total = QUESTIONS.length;
+      const step = currentIndex + 1;
+
+      // 場景文字
+      sceneTitleEl.textContent = q.scene;
+      sceneDescEl.textContent = q.desc || "請依直覺選擇。";
+
+      // 背景圖（未來你放真圖就會套用）
+      sceneBgEl.style.backgroundImage = q.img ? `url('${q.img}')` : "none";
+
+      // 進度
+      progressLabelEl.textContent = `問題 ${step} / ${total}`;
+      const percent = (step / total) * 100;
+      progressBarInnerEl.style.width = `${percent}%`;
+
+      // 卡片標頭
+      stepLabelEl.textContent = `Q${String(step).padStart(2, "0")} · 直覺選擇`;
+
+      // 題目文字（保留一個簡短句子）
+      questionTextEl.textContent = "選出你第一個想靠近的東西。";
+
+      // 選項
+      optionsContainerEl.innerHTML = "";
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "option-btn";
+        btn.innerHTML = `
+          <span class="bullet">${String.fromCharCode(65 + idx)}</span>
+          <span class="label">${opt.text}</span>
+        `;
+        btn.addEventListener("click", () => handleChoice(opt.type));
+        optionsContainerEl.appendChild(btn);
       });
 
-      // 啟用鍵盤 1–6
-      acceptingInput = true;
+      // 動畫 reset
+      cardEl.classList.remove("fade-in");
+      void cardEl.offsetWidth; // reflow
+      cardEl.classList.add("fade-in");
     }
 
-    function chooseOption(q, idx){
-      if(!acceptingInput) return;
-      const optEl = root.querySelector(`.opt[data-idx="${idx}"]`);
-      if(!optEl) return;
+    function handleChoice(type) {
+      if (!type || !scores.hasOwnProperty(type)) return;
+      scores[type] += 1;
 
-      // 輕量回饋
-      optEl.style.transform = 'translateY(-1px) scale(0.997)';
-      optEl.style.boxShadow = '0 10px 18px rgba(0,0,0,.5)';
-      setTimeout(()=>{ optEl.style.transform=''; optEl.style.boxShadow=''; }, 140);
-
-      const chosen = q.options[idx];
-      const optionWithMultiplier = { ...chosen, multiplier: q.multiplier || 1 };
-      applyAnswer(score, optionWithMultiplier);
-
-      step++;
-      if(step < QUESTIONS.length){
-        renderQuestion(step);
+      if (currentIndex < QUESTIONS.length - 1) {
+        currentIndex += 1;
+        renderQuestion();
       } else {
-        finishFlow();
+        // 全部答完 → 計算結果
+        const resultType = getResultType();
+        // 導到結果頁（你之前那個 resonance-result.html）
+        window.location.href = `resonance-result.html?type=${encodeURIComponent(resultType)}`;
       }
     }
 
-    // 鍵盤快捷：1–6
-    addEventListener('keydown', (e)=>{
-      if(!acceptingInput) return;
-      const n = parseInt(e.key, 10);
-      if(!Number.isNaN(n) && n>=1 && n<=6){
-        const q = QUESTIONS[step];
-        // 若此題選項數不足，自動忽略超出
-        if(q && q.options && q.options[n-1]){
-          chooseOption(q, n-1);
+    function getResultType() {
+      let max = -Infinity;
+      let bestTypes = [];
+      for (const key of ORDER) {
+        const val = scores[key];
+        if (val > max) {
+          max = val;
+          bestTypes = [key];
+        } else if (val === max) {
+          bestTypes.push(key);
         }
       }
-    });
-
-    // ===== 首屏序章控制 =====
-    function hidePrologue(){
-      prologue.classList.add('hide');
-      // 若希望自動開始第一題，這裡直接 render
-      renderQuestion(step);
+      // 有平手就依 ORDER 順序選第一個
+      if (bestTypes.length === 0) return "temp";
+      for (const k of ORDER) {
+        if (bestTypes.includes(k)) return k;
+      }
+      return bestTypes[0];
     }
-    startBtn?.addEventListener('click', hidePrologue);
-    skipBtn?.addEventListener('click', hidePrologue);
 
-    // 若使用者上次已看過序章，可直接略過（看你要不要啟用）
-    // if(localStorage.getItem('seen_full_flow') === '1'){ hidePrologue(); }
+    function resetTest() {
+      currentIndex = 0;
+      scores = { temp:0, freq:0, sig:0, mem:0, noise:0, echo:0 };
+      renderQuestion();
+    }
 
-    // 安全保險：3 秒後允許點選（避免進場時誤觸）
-    setTimeout(()=> acceptingInput = true, 300);
+    btnRestart.addEventListener("click", resetTest);
 
-    // ===== 初始標記與提示 =====
-    updateProgress();
+    // 初始化
+    renderQuestion();
   </script>
 </body>
 </html>

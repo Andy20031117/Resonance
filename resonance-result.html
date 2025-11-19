@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <title>共振導向系統 · 測驗結果</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0b0908;
+      --bg-soft: #15100f;
+      --fg: #f4ecdd;
+      --muted: #b3a38b;
+      --accent: #e3c15d;
+      --accent-soft: rgba(227,193,93,0.18);
+      --border: #3a3027;
+      --chip-bg: rgba(20,14,8,0.9);
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont,
+                   "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      color: var(--fg);
+      background:
+        radial-gradient(120% 160% at 10% 0%, #2a2018 0%, #0b0908 50%, #000 100%);
+    }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .wrap {
+      width: 100%;
+      max-width: 960px;
+      background: radial-gradient(120% 160% at 50% 0%, #221813 0%, #120e0c 55%, #070606 100%);
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      box-shadow:
+        0 24px 60px rgba(0,0,0,0.85),
+        0 0 0 1px rgba(250,250,250,0.03);
+      padding: 24px 22px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+    @media (max-width: 768px) {
+      body { padding: 12px; }
+      .wrap { padding: 20px 14px 16px; }
+    }
+    .wrap::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background-image:
+        radial-gradient(circle at 0% 0%, rgba(227,193,93,0.22) 0, transparent 45%),
+        radial-gradient(circle at 80% 10%, rgba(227,193,93,0.15) 0, transparent 50%);
+      mix-blend-mode: screen;
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .header-row {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+    .eyebrow {
+      font-size: 0.78rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .badge {
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(227,193,93,0.7);
+      color: var(--accent);
+      background: rgba(0,0,0,0.45);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 10px rgba(227,193,93,0.8);
+    }
+
+    .result-main {
+      position: relative;
+      z-index: 1;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(227,193,93,0.25), transparent 55%),
+        rgba(5,4,3,0.92);
+      padding: 18px 16px 16px;
+      margin-bottom: 16px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.9fr) minmax(0, 1.5fr);
+      gap: 16px;
+    }
+    @media (max-width: 768px) {
+      .result-main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .title-block h1 {
+      font-family: "Noto Serif TC", "Times New Roman", serif;
+      margin: 0 0 4px;
+      font-weight: 600;
+      font-size: clamp(1.4rem, 2.1vw, 1.9rem);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .persona-name {
+      font-family: "Noto Serif TC", "Times New Roman", serif;
+      font-size: 1.2rem;
+      margin-bottom: 6px;
+    }
+    .persona-sub {
+      font-size: 0.94rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .tag-chip {
+      font-size: 0.78rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: var(--chip-bg);
+      color: var(--fg);
+    }
+
+    .summary {
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: var(--fg);
+    }
+
+    .cta-block {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .cta-main-text {
+      font-size: 0.86rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .btn-primary {
+      margin-top: 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(227,193,93,0.9);
+      background: radial-gradient(circle at 30% 0%, rgba(227,193,93,0.45), rgba(227,193,93,0.18));
+      color: #120f08;
+      padding: 9px 18px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 0 22px rgba(227,193,93,0.45);
+    }
+    .btn-primary span.icon {
+      font-size: 1.1rem;
+    }
+
+    .btn-ghost {
+      margin-top: 4px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: transparent;
+      color: var(--muted);
+      padding: 7px 14px;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .foot-note {
+      position: relative;
+      z-index: 1;
+      margin-top: 4px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="header-row">
+      <div class="eyebrow">Resonance Navigation · Result</div>
+      <div class="badge">
+        <span class="dot"></span>
+        本期封面人物
+      </div>
+    </header>
+
+    <section class="result-main" id="resultArea">
+      <div class="title-block">
+        <h1 id="resultTitle">你的共振人格</h1>
+        <div class="persona-name" id="personaName">溫度的收集者</div>
+        <div class="persona-sub" id="personaSubtitle">
+          把世界情緒悄悄放進口袋的人。
+        </div>
+        <div class="tags" id="tagList">
+          <!-- JS 填入 -->
+        </div>
+        <p class="summary" id="personaSummary">
+          你習慣先感受氛圍，再決定要不要發聲。
+          在展覽裡，你會留意那些不大聲、卻讓整個空間變得更柔軟的細節。
+        </p>
+      </div>
+
+      <aside class="cta-block">
+        <div class="cta-main-text">
+          我們已經替你排版好一份
+          <strong>「共振人格報紙」</strong>，
+          把你的封面故事、六種人格圖鑑，以及逛展小建議通通收在一張報紙裡。
+          <br><br>
+          你可以先打開專刊看看「你在這個時代的共振位置」，也可以直接依照人格推薦
+          的方式，走進展場或遊戲世界。
+        </div>
+        <div>
+          <button class="btn-primary" id="btnOpenPaper">
+            <span class="icon">➤</span>
+            <span>打開我的共振人格報紙</span>
+          </button>
+          <button class="btn-ghost" id="btnRoute">
+            依照這個人格逛展 / 進入遊戲
+          </button>
+        </div>
+      </aside>
+    </section>
+
+    <footer class="foot-note">
+      <div>※ 這份結果不評分、不貼標，只是提供你一個閱讀自己的角度。</div>
+      <div>你可以稍後再回到「共振人格專刊」頁面複習六種角色。</div>
+    </footer>
+  </main>
+
+  <script>
+    // 六種人格資料（和報紙頁共用）
+    const PERSONAS = {
+      temp: {
+        id: 'temp',
+        name: '溫度的收集者',
+        tags: ['感受力', '細膩', '溫度感'],
+        sub: '你先感受，再行動；你先理解，再說出口。',
+        summary: '在快速變動的時代裡，你像行走的情緒感應器。你會先確認「這裡安不安全」，再決定要不要發聲。你不一定說得多，但你通常聽得比別人更仔細。'
+      },
+      freq: {
+        id: 'freq',
+        name: '頻率的校準者',
+        tags: ['穩定', '節奏', '控場'],
+        sub: '你不吵、也不急；你只是始終維持在「對的節奏」。',
+        summary: '當周遭節奏混亂時，你會下意識幫大家把步調拉回來。你習慣先看清楚狀況，再推動下一步，是團隊裡的穩定音軌。'
+      },
+      sig: {
+        id: 'sig',
+        name: '訊號的開拓者',
+        tags: ['探索', '好奇', '突破'],
+        sub: '你被未知吸引，被新事物點燃，是時代的探測器。',
+        summary: '你常常是第一個先踩出去的人。你喜歡嘗試沒試過的東西，比起「做對」，你更在意「有沒有先去看看」。'
+      },
+      mem: {
+        id: 'mem',
+        name: '記憶的編排者',
+        tags: ['整理', '敘事', '分析'],
+        sub: '你喜歡讓世界變得有邏輯、有順序、有章法。',
+        summary: '資訊一多，你的大腦就開始自動分類、標註、排版。你擅長把複雜的東西整理成一條清楚的故事線。'
+      },
+      noise: {
+        id: 'noise',
+        name: '噪點的解構者',
+        tags: ['質疑', '分析', '破解'],
+        sub: '你不害怕質疑，你只是習慣看清楚。',
+        summary: '你天生對「哪裡怪怪的」特別敏感。你會拆解說法、檢查漏洞，幫團隊避免踩進明顯的坑。'
+      },
+      echo: {
+        id: 'echo',
+        name: '回聲的放大者',
+        tags: ['分享', '傳遞', '連結'],
+        sub: '你喜歡分享、講故事、連結人與人之間的頻率。',
+        summary: '只要你覺得好，你就會想讓更多人知道。你擅長把作品、故事、情緒轉成大家聽得懂、看得見的訊號。'
+      }
+    };
+
+    function getQueryType() {
+      const params = new URLSearchParams(window.location.search);
+      const t = params.get('type');
+      if (t && PERSONAS[t]) return t;
+      // 沒帶參數時，先用 temp 當預設方便測試
+      return 'temp';
+    }
+
+    function renderResult() {
+      const type = getQueryType();
+      const p = PERSONAS[type];
+
+      document.getElementById('personaName').textContent = p.name;
+      document.getElementById('personaSubtitle').textContent = p.sub;
+      document.getElementById('personaSummary').textContent = p.summary;
+
+      const tagList = document.getElementById('tagList');
+      tagList.innerHTML = '';
+      p.tags.forEach(tag => {
+        const span = document.createElement('span');
+        span.className = 'tag-chip';
+        span.textContent = tag;
+        tagList.appendChild(span);
+      });
+
+      // 按鈕帶著 type 去報紙頁
+      document.getElementById('btnOpenPaper').onclick = () => {
+        window.location.href = 'resonance-persona-newspaper.html?type=' + encodeURIComponent(type);
+      };
+      document.getElementById('btnRoute').onclick = () => {
+        // TODO: 之後可以改成實際的逛展 / 遊戲路線 URL
+        alert('之後可以在這裡接「依人格推薦逛展 / 進遊戲」的路線頁面喔！目前先預留。');
+      };
+    }
+
+    renderResult();
+  </script>
+</body>
+</html>

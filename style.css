@@ -1979,4 +1979,172 @@ copyright, .copyright{ margin-top: 16px; opacity:.85; font-size: 10px; }
 }
 
 
+/* === 共振測驗浮動入口：位置 & 視覺精簡版 === */
+
+.resonance-floating-tag {
+  position: fixed !important;      /* 一定要 fixed，並強制蓋掉其它設定 */
+  top: 50%;
+  right: 2.5rem;                   /* 貼在右邊 */
+  transform: translateY(-50%);
+  z-index: 9999;                   /* 蓋過主視覺與 header */
+
+  width: 80px;
+  padding: 18px 10px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer;
+
+  /* 深紅＋金邊 */
+  background: radial-gradient(circle at 30% 0%,
+      #742626 0%, #330d0d 45%, #120707 100%);
+  border-radius: 999px;
+  border: 1px solid rgba(227, 193, 93, 0.9);
+  box-shadow:
+    0 0 22px rgba(255, 0, 0, 0.45),
+    0 0 3px rgba(0, 0, 0, 0.522);
+  
+  /* ★ 新增：整顆按鈕的浮動＋晃動＋光暈 */
+  animation:
+    tagFloatWiggle 2.4s ease-in-out infinite,
+    tagGlow 2.2s ease-in-out infinite;
+}
+
+.resonance-floating-tag::before {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 230, 170, 0.6);
+  box-shadow: 0 0 18px rgba(255, 230, 170, 0.5);
+  pointer-events: none;
+}
+
+.resonance-floating-tag .tag-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+
+  font-family: "Noto Sans TC", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #fdf2cf;
+  letter-spacing: 0.12em;
+}
+
+.resonance-floating-tag .tag-icon {
+  font-size: 20px;
+  line-height: 1;
+  color: #f7d27a;
+  text-shadow: 0 0 8px rgba(247, 210, 122, 0.9);
+}
+
+.resonance-floating-tag .tag-en {
+  font-size: 9px;
+  line-height: 1.4;
+  opacity: 0.9;
+  text-align: center;
+}
+
+.resonance-floating-tag .tag-zh {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: 15px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+/* hover 再稍微拉出來 */
+.resonance-floating-tag:hover .tag-inner {
+  transform: translateX(-3px) scale(1.06);
+}
+
+.resonance-floating-tag:hover {
+  animation-duration: 1.6s, 1.8s;  /* 浮動＋光暈都稍微加快 */
+}
+
+
+/* 上下輕微浮動 */
+@keyframes tagFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}
+
+/* 上下輕微浮動＋中間一小段快速晃動 */
+@keyframes tagFloatWiggle {
+  0% {
+    transform: translateY(-50%) rotate(0deg);
+  }
+  15% {
+    transform: translateY(calc(-50% - 3px)) rotate(0deg);
+  }
+  /* 這一段是快速小晃，頻率比較高但角度很小 */
+  30% {
+    transform: translateY(calc(-50% - 4px)) rotate(-2deg);
+  }
+  35% {
+    transform: translateY(calc(-50% - 3px)) rotate(2deg);
+  }
+  40% {
+    transform: translateY(calc(-50% - 4px)) rotate(-1.5deg);
+  }
+  45% {
+    transform: translateY(calc(-50% - 3px)) rotate(1.5deg);
+  }
+  55% {
+    transform: translateY(calc(-50% - 2px)) rotate(0deg);
+  }
+  /* 回到比較平穩的上下浮動 */
+  75% {
+    transform: translateY(calc(-50% - 1px)) rotate(0deg);
+  }
+  100% {
+    transform: translateY(-50%) rotate(0deg);
+  }
+}
+
+/* 光暈呼吸可以沿用原本概念 */
+@keyframes tagGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 4px rgba(227, 193, 93, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 10px rgba(255, 226, 140, 0.9));
+  }
+}
+
+
+/* 手機版：改右下角橫向 */
+@media (max-width: 768px) {
+  .resonance-floating-tag {
+    top: auto;
+    bottom: 1.6rem;
+    right: 1.2rem;
+    transform: none;
+    width: auto;
+    padding: 10px 14px;
+  }
+
+  .resonance-floating-tag .tag-inner {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .resonance-floating-tag .tag-zh {
+    writing-mode: horizontal-tb;
+    font-size: 14px;
+  }
+
+  .resonance-floating-tag .tag-en {
+    font-size: 10px;
+  }
+}
+
+
+
+
+
 
