@@ -565,6 +565,25 @@ body {
   filter: drop-shadow(0 0 12px rgba(230, 201, 103, 0.8));
 }
 
+
+/* 共振人格導過來時，整個區塊有一圈淡淡高光 */
+.group-section.persona-focus {
+  position: relative;
+  box-shadow: 0 0 0 2px rgba(227,193,93,0.65);
+  border-radius: 20px;
+  scroll-margin-top: 80px; /* 如果上面有固定導覽列，避免被蓋住 */
+}
+
+/* 導過來後，對應的那顆圖示再亮一下 */
+.group-btn.is-highlighted {
+  outline: 2px solid rgba(227,193,93,0.9);
+  outline-offset: 4px;
+  filter: brightness(1.15);
+  transform: translateY(-3px);
+  transition: all 0.25s ease;
+}
+
+
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }

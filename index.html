@@ -21,7 +21,7 @@
 <body>
 
 <!-- 共振測驗浮動入口 v2 -->
-<a href="resonance-test.html"
+<a href="resonance-start.html"
    class="resonance-floating-tag"
    aria-label="前往共振測驗">
   <div class="tag-inner">
@@ -114,79 +114,33 @@
 
 
 <!-- 參展小組區 -->
-<section id="group-section">
-  <!-- 這 6 個是隱形錨點：左邊 id = 我們的 canonical（food/cloth/home/travel/learn/fun）
-     右邊 data-open = 你現有按鈕的 data-category（food/clothing/...） -->
-<div id="food"   class="category-anchor" data-open="food"></div>
-<div id="cloth"  class="category-anchor" data-open="clothing"></div>
-<div id="home"   class="category-anchor" data-open="housing"></div>
-<div id="travel" class="category-anchor" data-open="transport"></div>
-<div id="learn"  class="category-anchor" data-open="education"></div>
-<div id="fun"    class="category-anchor" data-open="entertainment"></div>
-<style>
-  /* 區塊頂端若有固定導覽列，這行避免被蓋住（自行調整 80px） */
-  #group-section { scroll-margin-top: 80px; }
-
-  /* 隱形錨點本身不占高度，但能被 scrollIntoView 定位 */
-  .category-anchor { position: relative; top: -70px; height: 0; }
-</style>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    openCategoryFromHash();
-
-    // 若使用者在同頁切換 hash（或從別處帶有 hash 回來），即時反應
-    window.addEventListener('hashchange', openCategoryFromHash);
-
-    function openCategoryFromHash(){
-      const hash = location.hash.replace('#',''); // e.g. 'food', 'cloth', 'home'...
-      if(!hash) return;
-
-      // 找到對應的隱形錨點（它知道要開哪個 data-category）
-      const anchor = document.querySelector(`.category-anchor#${hash}`);
-      if(!anchor) return;
-
-      const categoryToOpen = anchor.dataset.open; // e.g. 'clothing'
-      // 用你現有的按鈕 data-category 來觸發
-      const btn = document.querySelector(`.group-btn[data-category="${categoryToOpen}"]`);
-      if(btn) {
-        // 如果你原本有 click 事件，這裡直接觸發
-        btn.click();
-      }
-
-      // 平滑捲到小組區塊
-      const section = document.getElementById('group-section');
-      if(section){
-        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }
-  });
-</script>
-
-
-
+<section id="group-section" class="group-section">
   <div class="group-wrapper">
-  <div id="group-screen">
-    <h1 class="group-title">參展小組<span>GROUPS</span></h1>
-    <div class="group-buttons">
-      <img src="food.png" alt="食" class="group-btn" data-category="food" id="btn-food">
-      <img src="clothing.png" alt="衣" class="group-btn" data-category="clothing" id="btn-clothing">
-      <img src="housing.png" alt="住" class="group-btn"  data-category="housing" id="btn-housing">
-      <img src="transport.png" alt="行" class="group-btn"  data-category="transport" id="btn-transport">
-      <img src="education.png" alt="育" class="group-btn"  data-category="education" id="btn-education">
-      <img src="entertainment.png" alt="樂" class="group-btn"  data-category="entertainment" id="btn-entertainment">
-    </div>
-    <p class="group-instruction">↑↑ 點擊圖示了解你有興趣的主題 ↑↑</p>
-  </div>
+    <div id="group-screen">
+      <h1 class="group-title">參展小組<span>GROUPS</span></h1>
 
-<div id="category-display">
-  <button id="back-button">
-    <img src="arrowback.png" alt="返回" id="back-icon">
-  </button>
-  <div id="category-title"></div>
-  <div id="groups-container"></div>
-</div>
+      <div class="group-buttons">
+        <img src="food.png" alt="食" class="group-btn" data-category="food" id="btn-food">
+        <img src="clothing.png" alt="衣" class="group-btn" data-category="clothing" id="btn-clothing">
+        <img src="housing.png" alt="住" class="group-btn" data-category="housing" id="btn-housing">
+        <img src="transport.png" alt="行" class="group-btn" data-category="transport" id="btn-transport">
+        <img src="education.png" alt="育" class="group-btn" data-category="education" id="btn-education">
+        <img src="entertainment.png" alt="樂" class="group-btn" data-category="entertainment" id="btn-entertainment">
+      </div>
+
+      <p class="group-instruction">↑↑ 點擊圖示了解你有興趣的主題 ↑↑</p>
+    </div>
+
+    <div id="category-display">
+      <button id="back-button">
+        <img src="arrowback.png" alt="返回" id="back-icon">
+      </button>
+      <div id="category-title"></div>
+      <div id="groups-container"></div>
+    </div>
+  </div>
 </section>
+
 
 <!--#news 區塊 -->
 <section id="news" class="news-section">
@@ -827,6 +781,63 @@
 
 <script src="script.js"></script>
 <script src="fixed-podcast-carousel.js"></script>
+
+
+<script>
+  (function () {
+    // ① 讀網址上的 ?persona=xxx
+    const params = new URLSearchParams(window.location.search);
+    const persona = params.get('persona');
+    if (!persona) return; // 沒帶參數就當一般訪客
+
+    // ② 共振人格代碼 → 六大主題的對應
+    // 這裡的 key 要跟你結果頁那邊的 persona.id 一致
+    // value 要對應到 data-category 的字串
+    const personaToCategory = {
+      temp:  'food',          // 溫度的收集者  → 食
+      freq:  'clothing',      // 頻率的校準者  → 衣
+      sig:   'housing',       // 訊號的開拓者  → 住
+      noise: 'transport',     // 噪點的解構者  → 行
+      mem:   'education',     // 記憶的編排者  → 育
+      echo:  'entertainment'  // 回聲的放大者  → 樂
+    };
+
+    const category = personaToCategory[persona];
+    if (!category) return; // 不認識的代碼就不動作
+
+    // ③ 等頁面載完，再做捲動與點擊
+    window.addEventListener('load', function () {
+      const section = document.getElementById('group-section');
+      if (section) {
+        // 捲到參展小組區
+        section.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+
+        // 區塊暫時高亮 3 秒
+        section.classList.add('persona-focus');
+        setTimeout(function () {
+          section.classList.remove('persona-focus');
+        }, 3000);
+      }
+
+      // 找到對應那顆主題 icon
+      const btn = document.querySelector('.group-btn[data-category="' + category + '"]');
+      if (btn) {
+        // 如果你原本有寫 click 邏輯（打開右邊 groups-container）
+        // 這裡直接觸發，就會顯示那個主題
+        btn.click();
+
+        // 再幫它加個小小高亮效果
+        btn.classList.add('is-highlighted');
+        setTimeout(function () {
+          btn.classList.remove('is-highlighted');
+        }, 2500);
+      }
+    });
+  })();
+</script>
 
 
 </body>

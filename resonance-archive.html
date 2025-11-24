@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <title>共振人格手冊 · Persona Archive</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0b0908;
+      --fg: #f5ecdd;
+      --muted: #b3a38b;
+      --accent: #e3c15d;
+      --accent-soft: rgba(227,193,93,0.16);
+      --card: #15100d;
+      --border: #3a3027;
+    }
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont,
+        "Noto Sans TC","Microsoft JhengHei", sans-serif;
+      background:
+        radial-gradient(120% 160% at 10% 0%, #2a2018 0%, #0b0908 50%, #000 100%);
+      color: var(--fg);
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+      /* shell：不要太貼滿上下一定高度，留一點呼吸 */
+.shell {
+  position: relative;
+  width: 100%;
+  max-width: 1040px;
+  min-height: 0;
+  border-radius: 22px;
+  border: 1px solid var(--border);
+  background:
+    radial-gradient(140% 200% at 50% 0%, #221813 0%, #120e0c 55%, #070606 100%);
+  box-shadow:
+    0 26px 80px rgba(0,0,0,0.9),
+    0 0 0 1px rgba(250,250,250,0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 14px 16px;
+  overflow: hidden;
+}
+
+    .shell::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background-image:
+        radial-gradient(circle at 0% 0%, rgba(227,193,93,0.22) 0, transparent 55%),
+        radial-gradient(circle at 90% 100%, rgba(227,193,93,0.18) 0, transparent 55%);
+      mix-blend-mode: screen;
+      opacity: 0.85;
+      pointer-events: none;
+    }
+
+    /* 書本：寬度跟高度綁在視窗裡，不會超出去 */
+.book-wrap {
+  position: relative;
+  z-index: 1;
+  width: min(720px, 100%);
+  max-height: calc(100vh - 140px);
+  border-radius: 20px;
+  background: radial-gradient(circle at 10% 0%, #3a2b1e 0, #1a130d 30%, #120d0a 65%);
+  box-shadow:
+    0 26px 60px rgba(0,0,0,0.9),
+    0 0 0 1px rgba(255,255,255,0.04);
+  padding: 18px 20px 14px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* 整本書不會超出 */
+}
+
+/* 小螢幕時不要硬塞固定比例，高度優先 */
+@media (max-width: 720px) {
+  .book-wrap {
+    width: 100%;
+    max-height: calc(100vh - 120px);
+  }
+}
+
+    .book-wrap::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.06);
+      pointer-events: none;
+    }
+
+    .book-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .book-head span.code {
+      font-family: "Noto Serif TC","Times New Roman",serif;
+      letter-spacing: 0.2em;
+    }
+
+    /* 內頁可稍微捲動，避免內容超長 */
+.book-main {
+  margin-top: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+    .persona-name {
+      font-size: 1.2rem;
+      font-family: "Noto Serif TC","Times New Roman",serif;
+      margin-bottom: 4px;
+    }
+
+    .persona-en {
+      font-size: 0.86rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .divider {
+      margin: 10px 0 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .summary {
+      font-size: 0.92rem;
+      color: var(--fg);
+    }
+
+    .keywords {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .keyword-pill {
+      font-size: 0.78rem;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(25,17,12,0.9);
+      color: var(--muted);
+    }
+
+    .section {
+      margin-top: 12px;
+      font-size: 0.84rem;
+      color: var(--fg);
+      line-height: 1.7;
+    }
+
+    .section-title {
+      font-size: 0.8rem;
+      color: var(--muted);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .section p {
+      margin: 0 0 4px;
+    }
+
+    .section p:last-child {
+      margin-bottom: 0;
+    }
+
+    .book-foot {
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.76rem;
+      color: var(--muted);
+    }
+
+    .foot-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .foot-right {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+
+    .btn-nav, .btn-link {
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(12,8,6,0.9);
+      color: var(--muted);
+      font-size: 0.76rem;
+      padding: 4px 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn-nav[disabled] {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    .btn-nav:not([disabled]):hover,
+    .btn-link:hover {
+      border-color: rgba(227,193,93,0.7);
+      color: var(--accent);
+    }
+
+    .page-number {
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="book-wrap" id="book">
+      <header class="book-head">
+        <span>共振人格手冊 · Persona Archive</span>
+        <span class="code" id="pageCode">T-01</span>
+      </header>
+
+      <div class="book-main">
+        <div>
+          <div class="persona-name" id="personaName">溫度的收集者</div>
+          <div class="persona-en" id="personaEn">Collector of Warmth</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="summary" id="personaSummary">
+          你靠「感覺的暖度」認識世界。
+        </div>
+
+        <div class="keywords" id="keywords">
+          <!-- JS 填入 -->
+        </div>
+
+        <section class="section">
+          <div class="section-title">老時光裡的你</div>
+          <div id="personaStory">
+            <p>在老台灣的日常裡，你會先注意到一盞燈、一個眼神、一句輕聲的問候。</p>
+            <p>你記住的是當時那種「舒服、被理解」的感覺。</p>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-title">逛展建議</div>
+          <p id="personaSuggest">先去有故事、有人物、能讓你慢慢停留的作品區。</p>
+        </section>
+      </div>
+
+      <footer class="book-foot">
+        <div class="foot-left">
+          <span>時代共振 · 檔案保管所</span>
+          <span class="page-number" id="pageNumber">PAGE 01 / 06</span>
+        </div>
+        <div class="foot-right">
+          <button type="button" class="btn-nav" id="btnPrev">
+            ◀ 上一頁
+          </button>
+          <button type="button" class="btn-nav" id="btnNext">
+            下一頁 ▶
+          </button>
+          <a href="index.html" class="btn-link">回到展覽首頁</a>
+          <a href="#" id="btnBackResult" class="btn-link">回到測驗結果</a>
+          <a href="resonance-start.html" class="btn-link">回到測驗開始</a>
+        </div>
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    const PAGES = [
+      {
+        id: "temp",
+        code: "T-01",
+        pageIndex: 1,
+        title: "溫度的收集者",
+        en: "Collector of Warmth",
+        summary: "你靠「感覺的暖度」認識世界。",
+        tags: ["暖意", "直覺", "靠近感"],
+        story: [
+          "在老台灣的日常裡，你會先注意到一盞燈、一個眼神、一句輕聲的問候。",
+          "你記住的是當時那種「舒服、被理解」的感覺。"
+        ],
+        suggest: "先去有故事、有人物、能讓你慢慢停留的作品區。"
+      },
+      {
+        id: "freq",
+        code: "F-02",
+        pageIndex: 2,
+        title: "頻率的校準者",
+        en: "Rhythm Tuner",
+        summary: "你追尋節奏、規律與微妙的秩序。",
+        tags: ["節奏", "規律", "穩定感"],
+        story: [
+          "你會留意掛鐘的滴答、街上車流的速度、隊伍前進的步調。",
+          "只要節奏對了，你就能安穩地待在那個空間裡。"
+        ],
+        suggest: "先從動線清楚、結構完整、節奏感強的作品開始逛。"
+      },
+      {
+        id: "sig",
+        code: "S-03",
+        pageIndex: 3,
+        title: "訊號的開拓者",
+        en: "Signal Pioneer",
+        summary: "你總能第一個看到新方向。",
+        tags: ["靈光", "直覺跳點", "新路徑"],
+        story: [
+          "在老街的轉角，你總是會注意到大家還沒發現的小東西。",
+          "一個怪招牌、一台新機器、一句奇怪的廣告詞，都可能讓你停下來。"
+        ],
+        suggest: "優先走向實驗性強、看起來「有點不一樣」的作品區。"
+      },
+      {
+        id: "mem",
+        code: "M-04",
+        pageIndex: 4,
+        title: "記憶的編排者",
+        en: "Memory Curator",
+        summary: "你在細節裡整理世界的故事。",
+        tags: ["細節", "整理", "片段意義"],
+        story: [
+          "你會收集票根、便條紙、老照片，慢慢排成自己的時間線。",
+          "別人只覺得是小東西，你卻能從中讀出很多訊息。"
+        ],
+        suggest: "花一點時間在文字、註解、資料型的作品旁邊，你會看得特別開心。"
+      },
+      {
+        id: "noise",
+        code: "N-05",
+        pageIndex: 5,
+        title: "噪點的解構者",
+        en: "Noise Decoder",
+        summary: "你能從雜訊中找出有趣的真相。",
+        tags: ["反向思考", "不完美", "亂中找序"],
+        story: [
+          "收音機失真、電視畫面跑掉、印刷錯位，你反而會看得更認真。",
+          "對你來說，錯誤本身就是一種線索。"
+        ],
+        suggest: "尋找那些「看起來不太順眼」或故意做壞的作品，它們會讓你很有感。"
+      },
+      {
+        id: "echo",
+        code: "E-06",
+        pageIndex: 6,
+        title: "回聲的放大者",
+        en: "Echo Amplifier",
+        summary: "你被情緒、人聲與共鳴所牽引。",
+        tags: ["共鳴", "感受力", "情緒流動"],
+        story: [
+          "你會記得的是誰笑得最大聲、哪一句話讓空氣安靜下來。",
+          "聲音背後的情緒，比內容本身更抓住你。"
+        ],
+        suggest: "優先看看有「聲音、訪談、故事分享」的作品區，你會很容易投入其中。"
+      }
+    ];
+
+    function getQueryParam(name) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+
+    const type = getQueryParam("type");
+    const resultType = type && PAGES.some(p => p.id === type) ? type : null;
+
+    let currentIndex = 0;
+    if (resultType) {
+      const foundIndex = PAGES.findIndex(p => p.id === resultType);
+      if (foundIndex !== -1) currentIndex = foundIndex;
+    }
+
+    const personaNameEl = document.getElementById("personaName");
+    const personaEnEl = document.getElementById("personaEn");
+    const personaSummaryEl = document.getElementById("personaSummary");
+    const keywordsEl = document.getElementById("keywords");
+    const personaStoryEl = document.getElementById("personaStory");
+    const personaSuggestEl = document.getElementById("personaSuggest");
+    const pageCodeEl = document.getElementById("pageCode");
+    const pageNumberEl = document.getElementById("pageNumber");
+    const btnPrev = document.getElementById("btnPrev");
+    const btnNext = document.getElementById("btnNext");
+    const btnBackResult = document.getElementById("btnBackResult");
+
+    function renderPage() {
+      const page = PAGES[currentIndex];
+
+      pageCodeEl.textContent = page.code;
+      personaNameEl.textContent = page.title;
+      personaEnEl.textContent = page.en;
+      personaSummaryEl.textContent = page.summary;
+
+      keywordsEl.innerHTML = "";
+      page.tags.forEach(tag => {
+        const span = document.createElement("span");
+        span.className = "keyword-pill";
+        span.textContent = tag;
+        keywordsEl.appendChild(span);
+      });
+
+      personaStoryEl.innerHTML = "";
+      page.story.forEach(line => {
+        const p = document.createElement("p");
+        p.textContent = line;
+        personaStoryEl.appendChild(p);
+      });
+
+      personaSuggestEl.textContent = page.suggest;
+      pageNumberEl.textContent =
+        `PAGE ${String(page.pageIndex).padStart(2, "0")} / ${String(PAGES.length).padStart(2, "0")}`;
+
+      // 導回測驗結果（如果有 type）
+      if (resultType) {
+        btnBackResult.href = `resonance-result.html?type=${encodeURIComponent(page.id)}`;
+      } else {
+        btnBackResult.href = "resonance-result.html";
+      }
+
+      // 上一頁 / 下一頁按鈕狀態
+      btnPrev.disabled = currentIndex === 0;
+      btnNext.disabled = currentIndex === PAGES.length - 1;
+    }
+
+    btnPrev.addEventListener("click", () => {
+      if (currentIndex > 0) {
+        currentIndex -= 1;
+        renderPage();
+      }
+    });
+
+    btnNext.addEventListener("click", () => {
+      if (currentIndex < PAGES.length - 1) {
+        currentIndex += 1;
+        renderPage();
+      }
+    });
+
+    renderPage();
+  </script>
+</body>
+</html>

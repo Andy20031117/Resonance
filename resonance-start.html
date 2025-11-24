@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <title>共振導向系統 · 開始測驗</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0b0908;
+      --fg: #f5ecdd;
+      --muted: #b3a38b;
+      --accent: #e3c15d;
+      --accent-soft: rgba(227,193,93,0.18);
+      --card: rgba(15,11,9,0.96);
+      --border: #3a3027;
+    }
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont,
+        "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      background:
+        radial-gradient(120% 160% at 10% 0%, #2a2018 0%, #0b0908 50%, #000 100%);
+      color: var(--fg);
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .shell {
+      position: relative;
+      width: 100%;
+      max-width: 1040px;
+      min-height: 460px;
+      border-radius: 22px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      background:
+        radial-gradient(120% 180% at 50% 0%, #211812 0%, #120f0d 55%, #070606 100%);
+      box-shadow:
+        0 28px 80px rgba(0,0,0,0.9),
+        0 0 0 1px rgba(250,250,250,0.03);
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 2fr);
+    }
+
+    @media (max-width: 840px) {
+      .shell {
+        grid-template-columns: 1fr;
+        min-height: 0;
+      }
+    }
+
+    .shell::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background-image:
+        radial-gradient(circle at 0% 0%, rgba(227,193,93,0.24) 0, transparent 55%),
+        radial-gradient(circle at 90% 100%, rgba(227,193,93,0.16) 0, transparent 55%);
+      mix-blend-mode: screen;
+      opacity: 0.85;
+      pointer-events: none;
+    }
+
+    .left-pane {
+      position: relative;
+      padding: 20px 20px 18px;
+      border-right: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      backdrop-filter: blur(2px);
+    }
+
+    @media (max-width: 840px) {
+      .left-pane {
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+      }
+    }
+
+    .logo-mark {
+      font-size: 0.8rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .title-main {
+      margin-top: 10px;
+      font-family: "Noto Serif TC","Times New Roman",serif;
+      font-size: 1.8rem;
+      letter-spacing: 0.28em;
+      text-indent: 0.28em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .title-sub {
+      margin-top: 6px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .stamp-link {
+      margin-top: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px dashed rgba(227,193,93,0.5);
+      background: rgba(12,9,7,0.9);
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .stamp-dot {
+      width: 6px; height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .stamp-link:hover {
+      background: rgba(20,14,10,0.95);
+      border-color: rgba(227,193,93,0.8);
+    }
+
+    .left-bottom {
+      font-size: 0.78rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .left-bottom span {
+      opacity: 0.9;
+    }
+
+    .left-bottom small {
+      opacity: 0.7;
+    }
+
+    .right-pane {
+      position: relative;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      position: relative;
+      width: 100%;
+      max-width: 560px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: var(--card);
+      padding: 20px 18px 16px;
+      box-shadow:
+        0 20px 60px rgba(0,0,0,0.8),
+        0 0 0 1px rgba(250,250,250,0.03);
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "RESO";
+      position: absolute;
+      top: 8px; right: 12px;
+      font-size: 2.2rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.03);
+      pointer-events: none;
+    }
+
+    .card-eyebrow {
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .card-title {
+      margin-top: 8px;
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .card-title strong {
+      color: var(--accent);
+    }
+
+    .card-body {
+      margin-top: 14px;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: var(--fg);
+    }
+
+    .card-body p {
+      margin: 0 0 8px;
+    }
+
+    .card-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    .card-actions {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .btn-primary, .btn-ghost {
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 0.86rem;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: transparent;
+      color: var(--fg);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background:
+        radial-gradient(circle at 0 0, rgba(255,255,255,0.1) 0, transparent 55%),
+        linear-gradient(90deg, var(--accent), #f7e7aa);
+      color: #1a130a;
+      border-color: rgba(0,0,0,0.65);
+      font-weight: 600;
+    }
+
+    .btn-primary span.icon {
+      font-size: 1rem;
+    }
+
+    .btn-ghost {
+      color: var(--muted);
+      background: rgba(10,8,6,0.9);
+    }
+
+    .btn-ghost:hover {
+      border-color: rgba(227,193,93,0.6);
+      color: var(--accent);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.03);
+    }
+
+    @media (max-width: 600px) {
+      .title-main {
+        font-size: 1.4rem;
+      }
+      .card {
+        padding: 18px 14px 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="left-pane">
+      <div>
+        <div class="logo-mark">SHU · ICs · RESONANCE</div>
+        <h1 class="title-main">共振導向系統</h1>
+        <p class="title-sub">復古場景 × 六個直覺選擇</p>
+
+        <a href="resonance-archive.html" class="stamp-link">
+          <span class="stamp-dot"></span>
+          <span>老時光版本 · Persona Archive</span>
+        </a>
+      </div>
+
+      <div class="left-bottom">
+        <span>完成時間：約 30 秒 · 共 6 題</span>
+        <small>※ 本測驗僅作為展覽中的故事延伸，非嚴肅心理量表。</small>
+      </div>
+    </section>
+
+    <section class="right-pane">
+      <article class="card">
+        <div class="card-eyebrow">INTRODUCTION</div>
+        <div class="card-title">
+          你誤闖了老台灣的時光縫隙。<br>
+          <strong>光影、氣味、聲音，通通變得慢下來。</strong>
+        </div>
+        <div class="card-body">
+          <p>接下來，你將依照直覺，選出那些最先吸引你的日常細節。</p>
+          <p>準備好看看，在舊時代裡的你，會留下什麼樣的共振痕跡嗎？</p>
+        </div>
+        <div class="card-actions">
+          <a href="resonance-test.html" class="btn-primary">
+            <span class="icon">➤</span>
+            <span>開始測驗</span>
+          </a>
+          <a href="resonance-archive.html" class="btn-ghost">
+            查看全部人格手冊
+          </a>
+          <a href="index.html" class="btn-ghost">
+            回到展覽首頁
+          </a>
+        </div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

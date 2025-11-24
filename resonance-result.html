@@ -7,347 +7,498 @@
   <style>
     :root {
       --bg: #0b0908;
-      --bg-soft: #15100f;
-      --fg: #f4ecdd;
+      --fg: #f5ecdd;
       --muted: #b3a38b;
       --accent: #e3c15d;
-      --accent-soft: rgba(227,193,93,0.18);
+      --accent-soft: rgba(227,193,93,0.16);
+      --card: rgba(13,9,7,0.96);
       --border: #3a3027;
-      --chip-bg: rgba(20,14,8,0.9);
+      --pill: rgba(35,27,21,0.95);
     }
     * { box-sizing: border-box; }
+
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
       font-family: system-ui, -apple-system, BlinkMacSystemFont,
-                   "Noto Sans TC", "Microsoft JhengHei", sans-serif;
-      color: var(--fg);
+        "Noto Sans TC","Microsoft JhengHei", sans-serif;
       background:
         radial-gradient(120% 160% at 10% 0%, #2a2018 0%, #0b0908 50%, #000 100%);
+      color: var(--fg);
     }
+
     body {
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: 16px;
     }
-    .wrap {
+
+    .shell {
       width: 100%;
       max-width: 960px;
-      background: radial-gradient(120% 160% at 50% 0%, #221813 0%, #120e0c 55%, #070606 100%);
-      border-radius: 20px;
+      min-height: 520px;
+      border-radius: 22px;
       border: 1px solid var(--border);
+      background:
+        radial-gradient(140% 200% at 50% 0%, #231813 0%, #120e0c 55%, #070606 100%);
       box-shadow:
-        0 24px 60px rgba(0,0,0,0.85),
+        0 26px 80px rgba(0,0,0,0.9),
         0 0 0 1px rgba(250,250,250,0.03);
-      padding: 24px 22px 18px;
       position: relative;
-      overflow: hidden;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 2.1fr);
+      gap: 12px;
     }
-    @media (max-width: 768px) {
-      body { padding: 12px; }
-      .wrap { padding: 20px 14px 16px; }
+
+    @media (max-width: 840px) {
+      .shell {
+        grid-template-columns: 1fr;
+        min-height: 0;
+      }
     }
-    .wrap::before {
+
+    .shell::before {
       content: "";
       position: absolute;
       inset: -40%;
       background-image:
-        radial-gradient(circle at 0% 0%, rgba(227,193,93,0.22) 0, transparent 45%),
-        radial-gradient(circle at 80% 10%, rgba(227,193,93,0.15) 0, transparent 50%);
+        radial-gradient(circle at 0% 0%, rgba(227,193,93,0.25) 0, transparent 55%),
+        radial-gradient(circle at 90% 100%, rgba(227,193,93,0.18) 0, transparent 55%);
       mix-blend-mode: screen;
-      opacity: 0.7;
+      opacity: 0.85;
       pointer-events: none;
     }
 
-    .header-row {
+    .left-pane {
       position: relative;
       z-index: 1;
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 12px;
-      align-items: center;
-    }
-    .eyebrow {
-      font-size: 0.78rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .badge {
-      font-size: 0.78rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      padding: 5px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(227,193,93,0.7);
-      color: var(--accent);
-      background: rgba(0,0,0,0.45);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .badge span.dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: var(--accent);
-      box-shadow: 0 0 10px rgba(227,193,93,0.8);
-    }
-
-    .result-main {
-      position: relative;
-      z-index: 1;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background:
-        radial-gradient(circle at 10% 0%, rgba(227,193,93,0.25), transparent 55%),
-        rgba(5,4,3,0.92);
-      padding: 18px 16px 16px;
-      margin-bottom: 16px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.9fr) minmax(0, 1.5fr);
-      gap: 16px;
-    }
-    @media (max-width: 768px) {
-      .result-main {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .title-block h1 {
-      font-family: "Noto Serif TC", "Times New Roman", serif;
-      margin: 0 0 4px;
-      font-weight: 600;
-      font-size: clamp(1.4rem, 2.1vw, 1.9rem);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--accent);
-    }
-    .persona-name {
-      font-family: "Noto Serif TC", "Times New Roman", serif;
-      font-size: 1.2rem;
-      margin-bottom: 6px;
-    }
-    .persona-sub {
-      font-size: 0.94rem;
-      color: var(--muted);
-      margin-bottom: 10px;
-    }
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 10px;
-    }
-    .tag-chip {
-      font-size: 0.78rem;
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.16);
-      background: var(--chip-bg);
-      color: var(--fg);
-    }
-
-    .summary {
-      font-size: 0.9rem;
-      line-height: 1.7;
-      color: var(--fg);
-    }
-
-    .cta-block {
+      padding-right: 10px;
+      border-right: 1px solid rgba(255,255,255,0.08);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 10px;
     }
-    .cta-main-text {
+
+    @media (max-width: 840px) {
+      .left-pane {
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        padding-right: 0;
+        padding-bottom: 12px;
+      }
+    }
+
+    .logo-mark {
+      font-size: 0.78rem;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .title-main {
+      margin-top: 8px;
+      font-family: "Noto Serif TC","Times New Roman",serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.28em;
+      text-indent: 0.28em;
+      color: var(--accent);
+    }
+
+    .title-sub {
+      margin-top: 4px;
       font-size: 0.86rem;
       color: var(--muted);
+    }
+
+    .left-bottom {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 16px;
+    }
+
+    .right-pane {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 560px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: var(--card);
+      box-shadow:
+        0 20px 60px rgba(0,0,0,0.85),
+        0 0 0 1px rgba(250,250,250,0.03);
+      padding: 18px 16px 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "RESULT";
+      position: absolute;
+      top: 4px;
+      right: 10px;
+      font-size: 2rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.04);
+      pointer-events: none;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(227,193,93,0.65);
+      background: rgba(10,7,5,0.9);
+      font-size: 0.78rem;
+      color: var(--accent);
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .persona-title {
+      margin-top: 10px;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .persona-en {
+      font-size: 0.86rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .persona-summary {
+      margin-top: 10px;
+      font-size: 0.95rem;
+      color: var(--fg);
+    }
+
+    .tags {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      font-size: 0.78rem;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: var(--pill);
+      color: var(--muted);
+    }
+
+    .section-title {
+      margin-top: 12px;
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .section-body {
+      margin-top: 4px;
+      font-size: 0.86rem;
+      color: var(--fg);
       line-height: 1.6;
     }
-    .btn-primary {
-      margin-top: 6px;
+
+    .section-body p {
+      margin: 0 0 4px;
+    }
+
+    .section-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    .link-small {
+      margin-top: 8px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .link-small a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px dotted rgba(227,193,93,0.6);
+    }
+
+    .link-small a:hover {
+      opacity: 0.9;
+    }
+
+    .card-actions {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .btn-main, .btn-ghost {
       border-radius: 999px;
-      border: 1px solid rgba(227,193,93,0.9);
-      background: radial-gradient(circle at 30% 0%, rgba(227,193,93,0.45), rgba(227,193,93,0.18));
-      color: #120f08;
-      padding: 9px 18px;
-      font-size: 0.88rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,0.16);
+      padding: 7px 16px;
+      font-size: 0.84rem;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      box-shadow: 0 0 22px rgba(227,193,93,0.45);
+      background: transparent;
+      color: var(--fg);
+      text-decoration: none;
+      white-space: nowrap;
     }
-    .btn-primary span.icon {
-      font-size: 1.1rem;
+
+    .btn-main {
+      background:
+        radial-gradient(circle at 0 0, rgba(255,255,255,0.08) 0, transparent 55%),
+        linear-gradient(90deg, var(--accent), #f7e7aa);
+      color: #1a130a;
+      border-color: rgba(0,0,0,0.7);
+      font-weight: 600;
+    }
+
+    .btn-main:hover {
+      filter: brightness(1.03);
     }
 
     .btn-ghost {
-      margin-top: 4px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.16);
-      background: transparent;
+      background: rgba(10,7,6,0.92);
       color: var(--muted);
-      padding: 7px 14px;
-      font-size: 0.8rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      cursor: pointer;
     }
 
-    .foot-note {
-      position: relative;
-      z-index: 1;
-      margin-top: 4px;
-      font-size: 0.8rem;
-      color: var(--muted);
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
+    .btn-ghost:hover {
+      border-color: rgba(227,193,93,0.6);
+      color: var(--accent);
+    }
+
+    .btn-main span.icon {
+      font-size: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .shell {
+        padding: 14px;
+      }
+      .card {
+        padding: 16px 14px 12px;
+      }
     }
   </style>
 </head>
 <body>
-  <main class="wrap">
-    <header class="header-row">
-      <div class="eyebrow">Resonance Navigation · Result</div>
-      <div class="badge">
-        <span class="dot"></span>
-        本期封面人物
+  <main class="shell">
+    <section class="left-pane">
+      <div>
+        <div class="logo-mark">SHU · IC · RESONANCE</div>
+        <h1 class="title-main">共振導向系統</h1>
+        <p class="title-sub">這是一份來自老時光的共振側寫。</p>
       </div>
-    </header>
-
-    <section class="result-main" id="resultArea">
-      <div class="title-block">
-        <h1 id="resultTitle">你的共振人格</h1>
-        <div class="persona-name" id="personaName">溫度的收集者</div>
-        <div class="persona-sub" id="personaSubtitle">
-          把世界情緒悄悄放進口袋的人。
-        </div>
-        <div class="tags" id="tagList">
-          <!-- JS 填入 -->
-        </div>
-        <p class="summary" id="personaSummary">
-          你習慣先感受氛圍，再決定要不要發聲。
-          在展覽裡，你會留意那些不大聲、卻讓整個空間變得更柔軟的細節。
-        </p>
+      <div class="left-bottom">
+        你可以選擇從這個人格出發逛展，也可以回到展覽首頁，或重新測驗一次。
       </div>
-
-      <aside class="cta-block">
-        <div class="cta-main-text">
-          我們已經替你排版好一份
-          <strong>「共振人格報紙」</strong>，
-          把你的封面故事、六種人格圖鑑，以及逛展小建議通通收在一張報紙裡。
-          <br><br>
-          你可以先打開專刊看看「你在這個時代的共振位置」，也可以直接依照人格推薦
-          的方式，走進展場或遊戲世界。
-        </div>
-        <div>
-          <button class="btn-primary" id="btnOpenPaper">
-            <span class="icon">➤</span>
-            <span>打開我的共振人格報紙</span>
-          </button>
-          <button class="btn-ghost" id="btnRoute">
-            依照這個人格逛展 / 進入遊戲
-          </button>
-        </div>
-      </aside>
     </section>
 
-    <footer class="foot-note">
-      <div>※ 這份結果不評分、不貼標，只是提供你一個閱讀自己的角度。</div>
-      <div>你可以稍後再回到「共振人格專刊」頁面複習六種角色。</div>
-    </footer>
+    <section class="right-pane">
+      <article class="card">
+        <div class="badge">
+          <span class="badge-dot"></span>
+          <span id="badgeLabel">你的共振人格</span>
+        </div>
+        <div class="persona-title" id="personaTitle">溫度的收集者</div>
+        <div class="persona-en" id="personaEn">Collector of Warmth</div>
+        <div class="persona-summary" id="personaSummary">
+          你靠「感覺的暖度」認識世界。
+        </div>
+
+        <div class="tags" id="tagContainer">
+          <!-- JS 填入 -->
+        </div>
+
+        <div class="section-title">老時光裡的你</div>
+        <div class="section-body" id="personaStory">
+          <p>在老台灣的日常裡，你會先注意到一盞燈、一個眼神、一句輕聲的問候。</p>
+          <p>你記住的是當時那種「舒服、被理解」的感覺。</p>
+        </div>
+
+        <div class="section-title">逛展建議</div>
+        <div class="section-body" id="personaSuggest">
+          先去有故事、有人物、能讓你慢慢停留的作品區。
+        </div>
+
+        <div class="link-small">
+          查看完整的人格手冊：
+          <a href="#" id="linkArchive">打開《共振人格手冊》</a>
+        </div>
+
+        <div class="card-actions">
+          <a href="#" id="btnPersonaRoute" class="btn-main">
+            <span class="icon">➤</span>
+            <span>從這個共振人格開始逛展</span>
+          </a>
+          <a href="index.html" class="btn-ghost">
+            回到展覽首頁
+          </a>
+          <a href="resonance-test.html" class="btn-ghost">
+            重新測驗一次
+          </a>
+        </div>
+      </article>
+    </section>
   </main>
 
   <script>
-    // 六種人格資料（和報紙頁共用）
     const PERSONAS = {
       temp: {
-        id: 'temp',
-        name: '溫度的收集者',
-        tags: ['感受力', '細膩', '溫度感'],
-        sub: '你先感受，再行動；你先理解，再說出口。',
-        summary: '在快速變動的時代裡，你像行走的情緒感應器。你會先確認「這裡安不安全」，再決定要不要發聲。你不一定說得多，但你通常聽得比別人更仔細。'
+        id: "temp",
+        title: "溫度的收集者",
+        en: "Collector of Warmth",
+        summary: "你靠「感覺的暖度」認識世界。",
+        tags: ["暖意", "直覺", "靠近感"],
+        story: [
+          "在老台灣的日常裡，你會先注意到一盞燈、一個眼神、一句輕聲的問候。",
+          "你記住的是當時那種「舒服、被理解」的感覺。"
+        ],
+        suggest: "先去有故事、有人物、能讓你慢慢停留的作品區。"
       },
       freq: {
-        id: 'freq',
-        name: '頻率的校準者',
-        tags: ['穩定', '節奏', '控場'],
-        sub: '你不吵、也不急；你只是始終維持在「對的節奏」。',
-        summary: '當周遭節奏混亂時，你會下意識幫大家把步調拉回來。你習慣先看清楚狀況，再推動下一步，是團隊裡的穩定音軌。'
+        id: "freq",
+        title: "頻率的校準者",
+        en: "Rhythm Tuner",
+        summary: "你追尋節奏、規律與微妙的秩序。",
+        tags: ["節奏", "規律", "穩定感"],
+        story: [
+          "你會留意掛鐘的滴答、街上車流的速度、隊伍前進的步調。",
+          "只要節奏對了，你就能安穩地待在那個空間裡。"
+        ],
+        suggest: "先從動線清楚、結構完整、節奏感強的作品開始逛。"
       },
       sig: {
-        id: 'sig',
-        name: '訊號的開拓者',
-        tags: ['探索', '好奇', '突破'],
-        sub: '你被未知吸引，被新事物點燃，是時代的探測器。',
-        summary: '你常常是第一個先踩出去的人。你喜歡嘗試沒試過的東西，比起「做對」，你更在意「有沒有先去看看」。'
+        id: "sig",
+        title: "訊號的開拓者",
+        en: "Signal Pioneer",
+        summary: "你總能第一個看到新方向。",
+        tags: ["靈光", "直覺跳點", "新路徑"],
+        story: [
+          "在老街的轉角，你總是會注意到大家還沒發現的小東西。",
+          "一個怪招牌、一台新機器、一句奇怪的廣告詞，都可能讓你停下來。"
+        ],
+        suggest: "優先走向實驗性強、看起來「有點不一樣」的作品區。"
       },
       mem: {
-        id: 'mem',
-        name: '記憶的編排者',
-        tags: ['整理', '敘事', '分析'],
-        sub: '你喜歡讓世界變得有邏輯、有順序、有章法。',
-        summary: '資訊一多，你的大腦就開始自動分類、標註、排版。你擅長把複雜的東西整理成一條清楚的故事線。'
+        id: "mem",
+        title: "記憶的編排者",
+        en: "Memory Curator",
+        summary: "你在細節裡整理世界的故事。",
+        tags: ["細節", "整理", "片段意義"],
+        story: [
+          "你會收集票根、便條紙、老照片，慢慢排成自己的時間線。",
+          "別人只覺得是小東西，你卻能從中讀出很多訊息。"
+        ],
+        suggest: "花一點時間在文字、註解、資料型的作品旁邊，你會看得特別開心。"
       },
       noise: {
-        id: 'noise',
-        name: '噪點的解構者',
-        tags: ['質疑', '分析', '破解'],
-        sub: '你不害怕質疑，你只是習慣看清楚。',
-        summary: '你天生對「哪裡怪怪的」特別敏感。你會拆解說法、檢查漏洞，幫團隊避免踩進明顯的坑。'
+        id: "noise",
+        title: "噪點的解構者",
+        en: "Noise Decoder",
+        summary: "你能從雜訊中找出有趣的真相。",
+        tags: ["反向思考", "不完美", "亂中找序"],
+        story: [
+          "收音機失真、電視畫面跑掉、印刷錯位，你反而會看得更認真。",
+          "對你來說，錯誤本身就是一種線索。"
+        ],
+        suggest: "尋找那些「看起來不太順眼」或故意做壞的作品，它們會讓你很有感。"
       },
       echo: {
-        id: 'echo',
-        name: '回聲的放大者',
-        tags: ['分享', '傳遞', '連結'],
-        sub: '你喜歡分享、講故事、連結人與人之間的頻率。',
-        summary: '只要你覺得好，你就會想讓更多人知道。你擅長把作品、故事、情緒轉成大家聽得懂、看得見的訊號。'
+        id: "echo",
+        title: "回聲的放大者",
+        en: "Echo Amplifier",
+        summary: "你被情緒、人聲與共鳴所牽引。",
+        tags: ["共鳴", "感受力", "情緒流動"],
+        story: [
+          "你會記得的是誰笑得最大聲、哪一句話讓空氣安靜下來。",
+          "聲音背後的情緒，比內容本身更抓住你。"
+        ],
+        suggest: "優先看看有「聲音、訪談、故事分享」的作品區，你會很容易投入其中。"
       }
     };
 
-    function getQueryType() {
-      const params = new URLSearchParams(window.location.search);
-      const t = params.get('type');
-      if (t && PERSONAS[t]) return t;
-      // 沒帶參數時，先用 temp 當預設方便測試
-      return 'temp';
+    function getQueryParam(name) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
     }
 
+    const type = getQueryParam("type") || "temp";
+    const persona = PERSONAS[type] || PERSONAS["temp"];
+
+    const personaTitleEl = document.getElementById("personaTitle");
+    const personaEnEl = document.getElementById("personaEn");
+    const personaSummaryEl = document.getElementById("personaSummary");
+    const tagContainerEl = document.getElementById("tagContainer");
+    const personaStoryEl = document.getElementById("personaStory");
+    const personaSuggestEl = document.getElementById("personaSuggest");
+    const linkArchiveEl = document.getElementById("linkArchive");
+    const btnPersonaRoute = document.getElementById("btnPersonaRoute");
+    
+    // 只是示範，之後你可以改成自己覺得最適合的對應
+    const personaToSection = {
+    temp:  'section-food',   // 溫度的收集者 → 食
+    freq:  'section-wear',   // 頻率的校準者 → 衣
+    sig:   'section-live',   // 訊號的開拓者 → 住
+    mem:   'section-edu',    // 記憶的編排者 → 育
+    noise: 'section-move',   // 噪點的解構者 → 行
+    echo:  'section-fun'     // 回聲的放大者 → 樂
+    };
+
+
     function renderResult() {
-      const type = getQueryType();
-      const p = PERSONAS[type];
+      personaTitleEl.textContent = persona.title;
+      personaEnEl.textContent = persona.en;
+      personaSummaryEl.textContent = persona.summary;
 
-      document.getElementById('personaName').textContent = p.name;
-      document.getElementById('personaSubtitle').textContent = p.sub;
-      document.getElementById('personaSummary').textContent = p.summary;
-
-      const tagList = document.getElementById('tagList');
-      tagList.innerHTML = '';
-      p.tags.forEach(tag => {
-        const span = document.createElement('span');
-        span.className = 'tag-chip';
+      tagContainerEl.innerHTML = "";
+      persona.tags.forEach(tag => {
+        const span = document.createElement("span");
+        span.className = "tag";
         span.textContent = tag;
-        tagList.appendChild(span);
+        tagContainerEl.appendChild(span);
       });
 
-      // 按鈕帶著 type 去報紙頁
-      document.getElementById('btnOpenPaper').onclick = () => {
-        window.location.href = 'resonance-persona-newspaper.html?type=' + encodeURIComponent(type);
-      };
-      document.getElementById('btnRoute').onclick = () => {
-        // TODO: 之後可以改成實際的逛展 / 遊戲路線 URL
-        alert('之後可以在這裡接「依人格推薦逛展 / 進遊戲」的路線頁面喔！目前先預留。');
-      };
+      personaStoryEl.innerHTML = "";
+      persona.story.forEach(line => {
+        const p = document.createElement("p");
+        p.textContent = line;
+        personaStoryEl.appendChild(p);
+      });
+
+      personaSuggestEl.textContent = persona.suggest;
+
+      // 連到人格手冊，預設打開對應那一頁
+      linkArchiveEl.href = `resonance-archive.html?type=${encodeURIComponent(persona.id)}`;
+
+      // 從人格開始逛展：這裡用 query 帶出人格代號，之後你可以在主站處理
+      btnPersonaRoute.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.location.href = `index.html?persona=${encodeURIComponent(persona.id)}`;
+      });
     }
 
     renderResult();

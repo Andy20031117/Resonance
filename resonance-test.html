@@ -10,8 +10,7 @@
       --fg: #f5ecdd;
       --muted: #b3a38b;
       --accent: #e3c15d;
-      --accent-soft: rgba(227,193,93,0.16);
-      --card: rgba(13,9,7,0.9);
+      --card: rgba(13,9,7,0.96);
       --border: #3a3027;
     }
     * { box-sizing: border-box; }
@@ -36,7 +35,7 @@
 
     .shell {
       width: 100%;
-      max-width: 960px;
+      max-width: 1040px;
       min-height: 520px;
       border-radius: 20px;
       border: 1px solid var(--border);
@@ -47,14 +46,12 @@
         radial-gradient(140% 200% at 50% 0%, #221813 0%, #120e0c 55%, #070606 100%);
       overflow: hidden;
       display: grid;
-      grid-template-columns: minmax(0, 1.6fr) minmax(0, 2.2fr);
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 2.5fr);
       position: relative;
     }
 
     @media (max-width: 840px) {
-      body {
-        padding: 10px;
-      }
+      body { padding: 10px; }
       .shell {
         grid-template-columns: 1fr;
         min-height: 0;
@@ -73,7 +70,6 @@
       pointer-events: none;
     }
 
-    /* 左邊：場景背景（之後可換成實際照片） */
     .scene-pane {
       position: relative;
       overflow: hidden;
@@ -82,7 +78,7 @@
 
     @media (max-width: 840px) {
       .scene-pane {
-        min-height: 200px;
+        min-height: 180px;
         border-right: none;
         border-bottom: 1px solid rgba(255,255,255,0.08);
       }
@@ -94,7 +90,7 @@
       background-size: cover;
       background-position: center;
       filter: grayscale(0.4) contrast(1.05);
-      opacity: 0.25;
+      opacity: 0.18;
     }
 
     .scene-overlay {
@@ -109,33 +105,34 @@
       position: relative;
       z-index: 1;
       height: 100%;
-      padding: 18px 18px 18px;
+      padding: 20px 20px 14px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
 
     .eyebrow {
-      font-size: 0.78rem;
+      font-size: 0.82rem;
       letter-spacing: 0.22em;
       text-transform: uppercase;
       color: var(--muted);
     }
 
     .scene-title {
-      margin-top: 6px;
+      margin-top: 8px;
       font-family: "Noto Serif TC","Times New Roman",serif;
-      font-size: 1.2rem;
-      letter-spacing: 0.16em;
+      font-size: 1.6rem;
+      letter-spacing: 0.28em;
       text-transform: uppercase;
       color: var(--accent);
+      text-indent: 0.28em;
     }
 
     .scene-sub {
-      margin-top: 6px;
-      font-size: 0.88rem;
+      margin-top: 10px;
+      font-size: 0.94rem;
       color: var(--muted);
-      line-height: 1.6;
+      line-height: 1.7;
     }
 
     .progress-wrap {
@@ -159,7 +156,6 @@
       transition: width 0.4s ease;
     }
 
-    /* 右邊：作答卡片 */
     .question-pane {
       position: relative;
       padding: 18px 18px 18px;
@@ -172,11 +168,11 @@
       position: relative;
       z-index: 1;
       width: 100%;
-      max-width: 520px;
+      max-width: 620px;
       background: var(--card);
       border-radius: 18px;
       border: 1px solid rgba(255,255,255,0.08);
-      padding: 16px 16px 14px;
+      padding: 18px 18px 14px;
       box-shadow:
         0 16px 40px rgba(0,0,0,0.75),
         0 0 0 1px rgba(250,250,250,0.03);
@@ -200,7 +196,7 @@
       justify-content: space-between;
       align-items: baseline;
       gap: 8px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .card-step {
@@ -217,32 +213,34 @@
     .card-hint {
       font-size: 0.76rem;
       color: var(--muted);
+      text-align: right;
+    }
+
+    .question-title {
+      margin: 0 0 4px;
+      font-size: 1.05rem;
+      font-weight: 600;
     }
 
     .question-text {
-      margin: 2px 0 10px;
-      font-size: 0.98rem;
-      line-height: 1.6;
+      margin: 0 0 12px;
+      font-size: 0.96rem;
+      line-height: 1.7;
+      color: var(--fg);
     }
 
     .options {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr; /* 改成單欄直向 */
       gap: 8px;
-    }
-
-    @media (max-width: 540px) {
-      .options {
-        grid-template-columns: 1fr;
-      }
     }
 
     .option-btn {
       border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(15,11,8,0.9);
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(15,11,8,0.95);
       padding: 7px 12px;
-      font-size: 0.86rem;
+      font-size: 0.9rem;
       color: var(--fg);
       text-align: left;
       cursor: pointer;
@@ -254,14 +252,14 @@
     }
 
     .option-btn span.bullet {
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.18);
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.7rem;
+      font-size: 0.72rem;
       color: var(--muted);
       flex-shrink: 0;
     }
@@ -291,23 +289,33 @@
     }
 
     .nav-hint {
-      margin-top: 10px;
-      font-size: 0.76rem;
+      margin-top: 12px;
+      font-size: 0.78rem;
       color: var(--muted);
       display: flex;
       justify-content: space-between;
       gap: 8px;
       flex-wrap: wrap;
+      align-items: center;
     }
 
-    .nav-hint button {
+    .nav-hint button,
+    .nav-hint a {
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.16);
-      background: transparent;
+      background: rgba(10,7,6,0.92);
       color: var(--muted);
       font-size: 0.76rem;
       padding: 4px 10px;
       cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .nav-hint button:hover,
+    .nav-hint a:hover {
+      border-color: rgba(227,193,93,0.6);
+      color: var(--accent);
     }
 
     .fade-in {
@@ -315,29 +323,23 @@
     }
 
     @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(8px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
   <main class="shell">
-    <!-- 左側：場景區（之後可加照片） -->
+    <!-- 左側：場景區 -->
     <section class="scene-pane">
       <div class="scene-bg" id="sceneBg"></div>
       <div class="scene-overlay"></div>
       <div class="scene-inner">
         <div>
-          <div class="eyebrow">共振導向系統 · Resonance Test</div>
-          <h1 class="scene-title" id="sceneTitle">場景</h1>
+          <div class="eyebrow">共振導向系統 · RESONANCE TEST</div>
+          <h1 class="scene-title" id="sceneTitle">晨光</h1>
           <p class="scene-sub" id="sceneDesc">
-            你正走進一個復古年代的小場景，請靠直覺選出第一個吸引你的東西。
+            你正身處老台灣的「晨光」，請依直覺作答。
           </p>
         </div>
         <div class="progress-wrap">
@@ -354,107 +356,118 @@
       <div class="card fade-in" id="card">
         <header class="card-header">
           <div class="card-step" id="stepLabel">Q01 · 直覺選擇</div>
-          <div class="card-hint">選出你「第一個想靠近」的東西即可。</div>
+          <div class="card-hint">不要想太多，只選「第一個浮現的畫面」。</div>
         </header>
+        <div class="question-title" id="questionTitle">晨光</div>
         <div class="question-text" id="questionText">
-          你第一個注意到的是？
+          你剛醒來時，第一個闖入耳裡的，是——？
         </div>
         <div class="options" id="optionsContainer">
           <!-- JS 填入 -->
         </div>
         <div class="nav-hint">
-          <span>總共有 6 題，整個過程約 30 秒。</span>
-          <button type="button" id="btnRestart">重新開始</button>
+          <span>共 6 題，完成後會為你生成一則共振人格側寫。</span>
+          <div>
+            <a href="resonance-start.html">回到測驗介紹</a>
+            <a href="resonance-archive.html">查看人格手冊</a>
+            <button type="button" id="btnRestart">重新開始</button>
+            <a href="index.html">展覽首頁</a>
+          </div>
         </div>
       </div>
     </section>
   </main>
 
   <script>
-    // 六題題庫（之後你可以搬到獨立 data.js）
     const QUESTIONS = [
       {
         id: 1,
-        scene: "老房子的客廳",
-        desc: "你打開木門走進客廳，陽光從花窗撒進來。你第一個注意到的是？",
-        img: "img/scene-livingroom.jpg", // 之後放實際圖
+        key: "morning",
+        sceneTitle: "晨光",
+        img: "",
+        prompt: "你剛醒來時，第一個闖入耳裡的，是——？",
         options: [
-          { text: "老電扇的暖風", type: "temp" },
-          { text: "掛鐘的滴答聲", type: "freq" },
-          { text: "電視白噪點", type: "sig" },
-          { text: "泛黃的記事本", type: "mem" },
-          { text: "收音機雜訊", type: "noise" },
-          { text: "錄音機錄音鍵", type: "echo" }
+          { text: "微暖的晨風吹", type: "temp" },
+          { text: "腳踏車輕輕叮噹", type: "freq" },
+          { text: "巷口熟悉叫賣聲", type: "sig" },
+          { text: "老電視低低的說話", type: "mem" },
+          { text: "電風扇輕微抖動聲", type: "noise" },
+          { text: "孩子們的清亮笑聲", type: "echo" }
         ]
       },
       {
         id: 2,
-        scene: "老式廚房",
-        desc: "鍋蓋輕敲、蒸氣上升，你走進廚房。你身體最先被吸引的是？",
-        img: "img/scene-kitchen.jpg",
+        key: "kitchen",
+        sceneTitle: "炊氣",
+        img: "",
+        prompt: "走進老廚房，最先撲鼻而來的，是——？",
         options: [
-          { text: "熱湯蒸氣", type: "temp" },
-          { text: "切菜節奏", type: "freq" },
-          { text: "爐火亮起", type: "sig" },
-          { text: "貼滿的食譜", type: "mem" },
-          { text: "金屬鍋氣味", type: "noise" },
-          { text: "油亮食物", type: "echo" }
+          { text: "熱湯升起的暖蒸氣", type: "temp" },
+          { text: "木櫥散出的淡淡木香", type: "freq" },
+          { text: "爐火突然的微焦味", type: "sig" },
+          { text: "食譜紙張的乾書味", type: "mem" },
+          { text: "鐵鍋受熱的金屬味", type: "noise" },
+          { text: "剛煎點心的油香氣", type: "echo" }
         ]
       },
       {
         id: 3,
-        scene: "街口",
-        desc: "你來到巷口，小販聲與車聲交錯。下一秒你注意到的是？",
-        img: "img/scene-street.jpg",
+        key: "alley",
+        sceneTitle: "巷隅",
+        img: "",
+        prompt: "踏出家門，你的第一眼落在——？",
         options: [
-          { text: "陽光味", type: "temp" },
-          { text: "機車聲", type: "freq" },
-          { text: "奇怪小物件", type: "sig" },
-          { text: "公告牆", type: "mem" },
-          { text: "怪怪的招牌", type: "noise" },
-          { text: "追逐笑聲", type: "echo" }
+          { text: "陽光照在晒衣的亮影", type: "temp" },
+          { text: "路口紅綠燈的閃爍節奏", type: "freq" },
+          { text: "路邊一件奇怪的小玩意", type: "sig" },
+          { text: "佈告欄上密密的字紙", type: "mem" },
+          { text: "招牌突然不規律地閃光", type: "noise" },
+          { text: "巷底學生邊走邊笑鬧", type: "echo" }
         ]
       },
       {
         id: 4,
-        scene: "文具行",
-        desc: "鐵門半開的文具行，空氣裡是紙香與塑膠味。你第一個走向哪裡？",
-        img: "img/scene-stationery.jpg",
+        key: "desk",
+        sceneTitle: "墨印",
+        img: "",
+        prompt: "路過書桌，你最想伸手碰——？",
         options: [
-          { text: "暖色蠟筆", type: "temp" },
-          { text: "整齊鉛筆", type: "freq" },
-          { text: "新奇筆", type: "sig" },
-          { text: "分類紙張", type: "mem" },
-          { text: "卡鍵計算機", type: "noise" },
-          { text: "貼紙牆", type: "echo" }
+          { text: "曬得暖暖的桌巾布料", type: "temp" },
+          { text: "木筆筒圓滑的邊角", type: "freq" },
+          { text: "一支亮得很突兀的新筆", type: "sig" },
+          { text: "貼著標籤的舊資料夾", type: "mem" },
+          { text: "書本邊緣粗粗的磨損感", type: "noise" },
+          { text: "雜誌封面上的彩色插圖", type: "echo" }
         ]
       },
       {
         id: 5,
-        scene: "舊書房",
-        desc: "書房裡充滿木頭與舊紙味。你最先靠近的是？",
-        img: "img/scene-study.jpg",
+        key: "evening",
+        sceneTitle: "暮聲",
+        img: "",
+        prompt: "傍晚裡，你停下腳步，只因為聽見——？",
         options: [
-          { text: "相簿信件", type: "temp" },
-          { text: "筆筒與時鐘", type: "freq" },
-          { text: "奇怪封面", type: "sig" },
-          { text: "分類資料", type: "mem" },
-          { text: "粗糙邊緣書本", type: "noise" },
-          { text: "插圖雜誌", type: "echo" }
+          { text: "鄰居收衣的輕輕拍動", type: "temp" },
+          { text: "公車靠近的固定節奏", type: "freq" },
+          { text: "哪裡突然傳來的一聲響", type: "sig" },
+          { text: "店家收攤時的紙箱沙沙", type: "mem" },
+          { text: "老喇叭播放的卡卡雜音", type: "noise" },
+          { text: "巷口越聚越熱的談笑聲", type: "echo" }
         ]
       },
       {
         id: 6,
-        scene: "夜晚屋頂",
-        desc: "夜風帶著城市聲，你站在屋頂。抬頭時，你最先感受到？",
-        img: "img/scene-rooftop.jpg",
+        key: "night",
+        sceneTitle: "夜影",
+        img: "",
+        prompt: "夜裡的街上，你最先跟隨——？",
         options: [
-          { text: "風的溫度", type: "temp" },
-          { text: "遠方燈號", type: "freq" },
-          { text: "亮光劃過", type: "sig" },
-          { text: "心裡的線索", type: "mem" },
-          { text: "怪異燈光", type: "noise" },
-          { text: "城市回聲", type: "echo" }
+          { text: "街燈微暖的橘黃色光", type: "temp" },
+          { text: "遠方電塔規律的閃燈", type: "freq" },
+          { text: "天邊突然劃過的小亮點", type: "sig" },
+          { text: "你筆記本裡那條熟悉線索", type: "mem" },
+          { text: "大樓窗戶忽明忽暗的怪光", type: "noise" },
+          { text: "晚風帶來的城市回聲", type: "echo" }
         ]
       }
     ];
@@ -462,14 +475,7 @@
     const ORDER = ["temp", "freq", "sig", "mem", "noise", "echo"];
 
     let currentIndex = 0;
-    let scores = {
-      temp: 0,
-      freq: 0,
-      sig: 0,
-      mem: 0,
-      noise: 0,
-      echo: 0
-    };
+    let scores = { temp:0, freq:0, sig:0, mem:0, noise:0, echo:0 };
 
     const sceneBgEl = document.getElementById("sceneBg");
     const sceneTitleEl = document.getElementById("sceneTitle");
@@ -479,6 +485,7 @@
 
     const cardEl = document.getElementById("card");
     const stepLabelEl = document.getElementById("stepLabel");
+    const questionTitleEl = document.getElementById("questionTitle");
     const questionTextEl = document.getElementById("questionText");
     const optionsContainerEl = document.getElementById("optionsContainer");
     const btnRestart = document.getElementById("btnRestart");
@@ -488,25 +495,19 @@
       const total = QUESTIONS.length;
       const step = currentIndex + 1;
 
-      // 場景文字
-      sceneTitleEl.textContent = q.scene;
-      sceneDescEl.textContent = q.desc || "請依直覺選擇。";
+      sceneTitleEl.textContent = q.sceneTitle;
+      sceneDescEl.textContent =
+        "你正身處老台灣的「" + q.sceneTitle + "」，請依直覺作答。";
 
-      // 背景圖（未來你放真圖就會套用）
       sceneBgEl.style.backgroundImage = q.img ? `url('${q.img}')` : "none";
 
-      // 進度
       progressLabelEl.textContent = `問題 ${step} / ${total}`;
-      const percent = (step / total) * 100;
-      progressBarInnerEl.style.width = `${percent}%`;
+      progressBarInnerEl.style.width = `${(step/total)*100}%`;
 
-      // 卡片標頭
-      stepLabelEl.textContent = `Q${String(step).padStart(2, "0")} · 直覺選擇`;
+      stepLabelEl.textContent = `Q${String(step).padStart(2,"0")} · 直覺選擇`;
+      questionTitleEl.textContent = q.sceneTitle;
+      questionTextEl.textContent = q.prompt;
 
-      // 題目文字（保留一個簡短句子）
-      questionTextEl.textContent = "選出你第一個想靠近的東西。";
-
-      // 選項
       optionsContainerEl.innerHTML = "";
       q.options.forEach((opt, idx) => {
         const btn = document.createElement("button");
@@ -520,9 +521,8 @@
         optionsContainerEl.appendChild(btn);
       });
 
-      // 動畫 reset
       cardEl.classList.remove("fade-in");
-      void cardEl.offsetWidth; // reflow
+      void cardEl.offsetWidth;
       cardEl.classList.add("fade-in");
     }
 
@@ -534,31 +534,27 @@
         currentIndex += 1;
         renderQuestion();
       } else {
-        // 全部答完 → 計算結果
         const resultType = getResultType();
-        // 導到結果頁（你之前那個 resonance-result.html）
-        window.location.href = `resonance-result.html?type=${encodeURIComponent(resultType)}`;
+        window.location.href =
+          `resonance-result.html?type=${encodeURIComponent(resultType)}`;
       }
     }
 
     function getResultType() {
       let max = -Infinity;
-      let bestTypes = [];
+      let best = [];
       for (const key of ORDER) {
         const val = scores[key];
         if (val > max) {
           max = val;
-          bestTypes = [key];
+          best = [key];
         } else if (val === max) {
-          bestTypes.push(key);
+          best.push(key);
         }
       }
-      // 有平手就依 ORDER 順序選第一個
-      if (bestTypes.length === 0) return "temp";
-      for (const k of ORDER) {
-        if (bestTypes.includes(k)) return k;
-      }
-      return bestTypes[0];
+      if (best.length === 0) return "temp";
+      for (const k of ORDER) if (best.includes(k)) return k;
+      return best[0];
     }
 
     function resetTest() {
@@ -569,7 +565,6 @@
 
     btnRestart.addEventListener("click", resetTest);
 
-    // 初始化
     renderQuestion();
   </script>
 </body>
