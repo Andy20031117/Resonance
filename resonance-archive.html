@@ -5,470 +5,700 @@
   <title>共振人格手冊 · Persona Archive</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
-    :root {
-      --bg: #0b0908;
-      --fg: #f5ecdd;
-      --muted: #b3a38b;
-      --accent: #e3c15d;
-      --accent-soft: rgba(227,193,93,0.16);
-      --card: #15100d;
-      --border: #3a3027;
-    }
-    * { box-sizing: border-box; }
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont,
-        "Noto Sans TC","Microsoft JhengHei", sans-serif;
-      background:
-        radial-gradient(120% 160% at 10% 0%, #2a2018 0%, #0b0908 50%, #000 100%);
-      color: var(--fg);
-    }
-
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-    }
-
-      /* shell：不要太貼滿上下一定高度，留一點呼吸 */
-.shell {
-  position: relative;
-  width: 100%;
-  max-width: 1040px;
-  min-height: 0;
-  border-radius: 22px;
-  border: 1px solid var(--border);
-  background:
-    radial-gradient(140% 200% at 50% 0%, #221813 0%, #120e0c 55%, #070606 100%);
-  box-shadow:
-    0 26px 80px rgba(0,0,0,0.9),
-    0 0 0 1px rgba(250,250,250,0.03);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 18px 14px 16px;
-  overflow: hidden;
-}
-
-    .shell::before {
-      content: "";
-      position: absolute;
-      inset: -40%;
-      background-image:
-        radial-gradient(circle at 0% 0%, rgba(227,193,93,0.22) 0, transparent 55%),
-        radial-gradient(circle at 90% 100%, rgba(227,193,93,0.18) 0, transparent 55%);
-      mix-blend-mode: screen;
-      opacity: 0.85;
-      pointer-events: none;
-    }
-
-    /* 書本：寬度跟高度綁在視窗裡，不會超出去 */
-.book-wrap {
-  position: relative;
-  z-index: 1;
-  width: min(720px, 100%);
-  max-height: calc(100vh - 140px);
-  border-radius: 20px;
-  background: radial-gradient(circle at 10% 0%, #3a2b1e 0, #1a130d 30%, #120d0a 65%);
-  box-shadow:
-    0 26px 60px rgba(0,0,0,0.9),
-    0 0 0 1px rgba(255,255,255,0.04);
-  padding: 18px 20px 14px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden; /* 整本書不會超出 */
-}
-
-/* 小螢幕時不要硬塞固定比例，高度優先 */
-@media (max-width: 720px) {
-  .book-wrap {
-    width: 100%;
-    max-height: calc(100vh - 120px);
+  :root {
+    --bg: #0b0908;
+    --fg: #f5ecdd;
+    --muted: #b3a38b;
+    --accent: #e3c15d;
+    --border: #3a3027;
+    --card: #130e0b;
   }
-}
 
-    .book-wrap::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: 20px;
-      border: 1px solid rgba(255,255,255,0.06);
-      pointer-events: none;
-    }
+  * { box-sizing: border-box; }
 
-    .book-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 8px;
-      font-size: 0.78rem;
-      color: var(--muted);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont,
+      "Noto Sans TC","Microsoft JhengHei",sans-serif;
+    background:
+      radial-gradient(120% 160% at 10% 0%, #2a2018 0%, #0b0908 50%, #000 100%);
+    color: var(--fg);
+  }
 
-    .book-head span.code {
-      font-family: "Noto Serif TC","Times New Roman",serif;
-      letter-spacing: 0.2em;
-    }
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
 
-    /* 內頁可稍微捲動，避免內容超長 */
-.book-main {
-  margin-top: 16px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  padding-right: 4px;
-}
-    .persona-name {
-      font-size: 1.2rem;
-      font-family: "Noto Serif TC","Times New Roman",serif;
-      margin-bottom: 4px;
-    }
+  .shell {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    padding: 18px;
+    border-radius: 26px;
+    border: 1px solid var(--border);
+    background:
+      radial-gradient(140% 200% at 50% 0%, #251912 0, #14100d 55%, #070606 100%);
+    box-shadow:
+      0 30px 80px rgba(0,0,0,0.9),
+      0 0 0 1px rgba(250,250,250,0.03);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-    .persona-en {
-      font-size: 0.86rem;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
+  /* 書本外框：放大＋角度更平＋拿掉過重內陰影 */
+  .book {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    max-height: calc(100vh - 90px);
+    background:
+    radial-gradient(circle at 50% 0, #6b5644 0, #2a201b 45%, #17120f 80%);
+    border-radius: 22px;
+    padding: 20px 24px 16px;
+    display: flex;
+    flex-direction: column;
+    transform-origin: center center;
+    transform:
+      perspective(1200px)
+      rotateX(5deg);   /* 原本 14deg → 5deg，比較像桌上開一本書 */
+    transform-style: preserve-3d;
+    overflow: hidden;
+  }
 
-    .divider {
-      margin: 10px 0 10px;
-      border-bottom: 1px solid rgba(255,255,255,0.12);
+  @media (max-width: 900px) {
+    .book {
+      max-width: 100%;
+      max-height: none;
+      padding: 16px 16px 12px;
+      transform: perspective(900px) rotateX(3deg);
     }
+  }
 
-    .summary {
-      font-size: 0.92rem;
-      color: var(--fg);
-    }
+  .book-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 0.8rem;
+    color: var(--muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
 
-    .keywords {
-      margin-top: 10px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
+  .book-header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
 
-    .keyword-pill {
-      font-size: 0.78rem;
-      padding: 3px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(25,17,12,0.9);
-      color: var(--muted);
-    }
+  .book-header-main { font-size: 0.8rem; }
+  .book-header-sub { font-size: 0.76rem; }
+  .book-header-code { font-size: 0.78rem; }
 
-    .section {
-      margin-top: 12px;
-      font-size: 0.84rem;
-      color: var(--fg);
-      line-height: 1.7;
-    }
+  /* 內頁：左右兩頁 */
+  .book-inner {
+    margin-top: 14px;
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr; /* 左頁略寬一點，好排文字 */
+    gap: 22px;
+    border-radius: 18px;
+    padding: 18px 18px 14px;
+    background:
+      radial-gradient(circle at 50% 0, #332117 0, #18100c 55%);
+    position: relative;
+  }
 
-    .section-title {
-      font-size: 0.8rem;
-      color: var(--muted);
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-    }
+  /* 書脊線：保留但變細一點，避免太重 */
+  .book-inner::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    bottom: 10px;
+    left: 50%;
+    width: 1px;
+    transform: translateX(-0.5px);
+    background: linear-gradient(
+      to bottom,
+      rgba(0,0,0,0) 0,
+      rgba(0,0,0,0.75) 15%,
+      rgba(255,255,255,0.18) 50%,
+      rgba(0,0,0,0.75) 85%,
+      rgba(0,0,0,0) 100%
+    );
+    opacity: 0.6;
+    pointer-events: none;
+  }
 
-    .section p {
-      margin: 0 0 4px;
-    }
+  .page-left,
+  .page-right {
+    position: relative;
+    padding: 4px 6px 4px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
 
-    .section p:last-child {
-      margin-bottom: 0;
-    }
+  /* 左右頁原本的 rotateY 太多，會加上模糊感 → 改成很微弱 */
+  .page-left {
+    transform-origin: right center;
+    transform: perspective(1200px) rotateY(2deg);
+  }
 
-    .book-foot {
-      margin-top: 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.76rem;
-      color: var(--muted);
-    }
+  .page-right {
+    transform-origin: left center;
+    transform: perspective(1200px) rotateY(-2deg);
+  }
 
-    .foot-left {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
+  .page-heading-zh {
+    font-family: "Noto Serif TC","Times New Roman",serif;
+    font-size: 1.5rem;
+    letter-spacing: 0.24em;
+    text-indent: 0.24em;
+    margin: 0 0 4px;
+    color: var(--fg);
+  }
 
-    .foot-right {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      justify-content: flex-end;
-    }
+  .page-heading-en {
+    font-size: 0.8rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
 
-    .btn-nav, .btn-link {
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.16);
-      background: rgba(12,8,6,0.9);
-      color: var(--muted);
-      font-size: 0.76rem;
-      padding: 4px 10px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      text-decoration: none;
-      white-space: nowrap;
-    }
+  .page-tagline {
+    font-size: 0.94rem;
+    margin-bottom: 10px;
+  }
 
-    .btn-nav[disabled] {
-      opacity: 0.4;
-      cursor: default;
-    }
+  .page-keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
 
-    .btn-nav:not([disabled]):hover,
-    .btn-link:hover {
-      border-color: rgba(227,193,93,0.7);
-      color: var(--accent);
-    }
+  .pill {
+    border-radius: 999px;
+    padding: 2px 10px;
+    font-size: 0.78rem;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--accent);
+    background: rgba(10,8,6,0.9);
+  }
 
-    .page-number {
-      font-size: 0.78rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
+  .section-title {
+    font-size: 0.82rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 10px 0 4px;
+  }
+
+  .page-text {
+    font-size: 0.88rem;
+    line-height: 1.9;
+    color: var(--fg);
+    margin: 0 0 6px;
+  }
+
+  .page-body-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  .page-footer {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* 右頁：人物樣貌佔位 – 把黑霧拿掉一點，畫面更清楚 */
+  .character-frame {
+    flex: 1;
+    min-height: 0;
+    border-radius: 18px;
+    border: 1px dashed rgba(255,255,255,0.28);
+    background:
+      radial-gradient(circle at 30% 0%, rgba(255,255,255,0.06) 0, transparent 45%),
+      radial-gradient(circle at 80% 95%, rgba(0,0,0,0.85) 0, rgba(0,0,0,1) 55%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+
+  .character-placeholder {
+    text-align: center;
+    opacity: 0.95;
+  }
+
+  .character-silhouette {
+    width: 130px;
+    height: 170px;
+    border-radius: 999px 999px 80px 80px;
+    border: 1px solid rgba(255,255,255,0.22);
+    margin: 0 auto 10px;
+    background:
+      radial-gradient(circle at 50% 18%, rgba(255,255,255,0.4) 0, rgba(255,255,255,0) 55%),
+      radial-gradient(circle at 50% 80%, rgba(227,193,93,0.45) 0, rgba(0,0,0,1) 65%);
+    
+  }
+
+  .character-label {
+    font-size: 0.78rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .character-note {
+    font-size: 0.8rem;
+    margin-top: 6px;
+    color: var(--muted);
+  }
+
+  .page-right-meta {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .page-right-meta strong {
+    color: var(--accent);
+  }
+
+  /* 底部導覽列 */
+  .book-footer {
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.78rem;
+    color: var(--muted);
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .book-page-indicator {
+    letter-spacing: 0.2em;
+  }
+
+  .book-nav {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .book-nav a {
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 0.78rem;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(10,8,6,0.95);
+    color: var(--muted);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .book-nav a:hover {
+    border-color: rgba(227,193,93,0.7);
+    color: var(--accent);
+  }
+
+  /* 左右翻頁箭頭 */
+  .book-arrow {
+    position: absolute;
+    top: 50%;
+    width: 40px;
+    height: 72px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: radial-gradient(circle at 50% 0, rgba(227,193,93,0.25), rgba(10,8,6,0.96));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--fg);
+    transform: translateY(-50%);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    opacity: 0.85;
+    transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+    z-index: 5;
+  }
+
+  .book-arrow span {
+    font-size: 1.4rem;
+    line-height: 1;
+  }
+
+  .book-arrow.left { left: 18px; }
+  .book-arrow.right { right: 18px; }
+
+  .book-arrow:hover {
+    opacity: 1;
+    transform: translateY(-50%) translateZ(8px) scale(1.05);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.95);
+  }
+
+  .book-arrow:disabled {
+    opacity: 0.16;
+    cursor: default;
+    box-shadow: none;
+  }
+
+  /* 翻頁動畫：只動右頁 / 左頁，幅度更大一點像翻頁 */
+  .book.flip-next .page-right {
+    animation: flipNext 0.45s ease;
+  }
+
+  .book.flip-prev .page-left {
+    animation: flipPrev 0.45s ease;
+  }
+
+  @keyframes flipNext {
+    0%   { transform: perspective(1200px) rotateY(-2deg); }
+    35%  { transform: perspective(1200px) rotateY(-40deg) translateZ(10px); }
+    70%  { transform: perspective(1200px) rotateY(-12deg); }
+    100% { transform: perspective(1200px) rotateY(-2deg); }
+  }
+
+  @keyframes flipPrev {
+    0%   { transform: perspective(1200px) rotateY(2deg); }
+    35%  { transform: perspective(1200px) rotateY(40deg) translateZ(10px);  }
+    70%  { transform: perspective(1200px) rotateY(12deg); }
+    100% { transform: perspective(1200px) rotateY(2deg); }
+  }
+
+  /* 手機版：改成單頁直排，拿掉 3D 角度與箭頭 */
+  @media (max-width: 768px) {
+    body { padding: 10px; }
+    .book {
+      max-height: none;
+      transform: none;
+      box-shadow:
+        0 18px 40px rgba(0,0,0,0.8),
+        0 0 0 1px rgba(250,250,250,0.04);
     }
-  </style>
+    .book-inner {
+      grid-template-columns: 1fr;
+      gap: 10px;
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.04);
+    }
+    .book-inner::before { display: none; }
+    .page-left,
+    .page-right {
+      transform: none;
+    }
+    .book-arrow { display: none; }
+  }
+  
+</style>
+
 </head>
 <body>
   <main class="shell">
-    <section class="book-wrap" id="book">
-      <header class="book-head">
-        <span>共振人格手冊 · Persona Archive</span>
-        <span class="code" id="pageCode">T-01</span>
+    <section class="book" id="book">
+      <!-- 左右翻頁箭頭 -->
+      <button class="book-arrow left" id="prevBtn" aria-label="上一頁">
+        <span>‹</span>
+      </button>
+      <button class="book-arrow right" id="nextBtn" aria-label="下一頁">
+        <span>›</span>
+      </button>
+
+      <!-- 書本抬頭 -->
+      <header class="book-header">
+        <div class="book-header-left">
+          <div class="book-header-main">共振人格手冊 · PERSONA ARCHIVE</div>
+          <div class="book-header-sub" id="headerSub">溫度的收集者 · COLLECTOR OF WARMTH</div>
+        </div>
+        <div class="book-header-code" id="headerCode">T-01</div>
       </header>
 
-      <div class="book-main">
-        <div>
-          <div class="persona-name" id="personaName">溫度的收集者</div>
-          <div class="persona-en" id="personaEn">Collector of Warmth</div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="summary" id="personaSummary">
-          你靠「感覺的暖度」認識世界。
-        </div>
-
-        <div class="keywords" id="keywords">
-          <!-- JS 填入 -->
-        </div>
-
-        <section class="section">
-          <div class="section-title">老時光裡的你</div>
-          <div id="personaStory">
-            <p>在老台灣的日常裡，你會先注意到一盞燈、一個眼神、一句輕聲的問候。</p>
-            <p>你記住的是當時那種「舒服、被理解」的感覺。</p>
+      <!-- 內頁：左人格文字 / 右角色樣貌 -->
+      <div class="book-inner">
+        <!-- 左頁：人格說明 -->
+        <div class="page-left">
+          <div>
+            <h1 class="page-heading-zh" id="personaNameZh">溫度的收集者</h1>
+            <div class="page-heading-en" id="personaNameEn">COLLECTOR OF WARMTH</div>
+            <div class="page-tagline" id="personaTagline">
+              你靠「感覺的暖度」認識世界。
+            </div>
+            <div class="page-keywords" id="personaKeywords">
+              <!-- JS 填入 -->
+            </div>
           </div>
-        </section>
 
-        <section class="section">
-          <div class="section-title">逛展建議</div>
-          <p id="personaSuggest">先去有故事、有人物、能讓你慢慢停留的作品區。</p>
-        </section>
+          <div class="page-body-scroll">
+            <div>
+              <div class="section-title">老時光裡的你</div>
+              <p class="page-text" id="personaOldYou">
+                在老台灣的日常裡，你會先注意到一盞燈、一個眼神、一句輕聲的問候。
+                你記住的是當時那種「舒服、被理解」的感覺。
+              </p>
+            </div>
+
+            <div>
+              <div class="section-title">逛展建議</div>
+              <p class="page-text" id="personaSuggest">
+                先去有故事、有人物、能讓你慢慢停留的作品區。
+              </p>
+            </div>
+          </div>
+
+          <div class="page-footer" id="personaFooter">
+            時代共振 · 檔案保管所
+          </div>
+        </div>
+
+        <!-- 右頁：人物樣貌佔位（未來可以換成實際人物圖） -->
+        <div class="page-right">
+          <div class="character-frame">
+            <div class="character-placeholder">
+              <div class="character-silhouette"></div>
+              <div class="character-label">PERSONA PORTRAIT</div>
+              <div class="character-note" id="personaPortraitHint">
+                之後可以在這裡放上<br>「共振人格」的視覺樣貌、插畫或 3D 角色。
+              </div>
+            </div>
+          </div>
+          <div class="page-right-meta" id="personaRightMeta">
+            建議與你共振的主題節點：<strong>食 · 街口的煙與光</strong><br>
+            也可以試著從其他路徑慢慢逛展，看感覺會不會不一樣。
+          </div>
+        </div>
       </div>
 
-      <footer class="book-foot">
-        <div class="foot-left">
-          <span>時代共振 · 檔案保管所</span>
-          <span class="page-number" id="pageNumber">PAGE 01 / 06</span>
+      <!-- 底部：頁碼與返回按鈕 -->
+      <footer class="book-footer">
+        <div class="book-page-indicator" id="pageIndicator">
+          PAGE 01 / 06
         </div>
-        <div class="foot-right">
-          <button type="button" class="btn-nav" id="btnPrev">
-            ◀ 上一頁
-          </button>
-          <button type="button" class="btn-nav" id="btnNext">
-            下一頁 ▶
-          </button>
-          <a href="index.html" class="btn-link">回到展覽首頁</a>
-          <a href="#" id="btnBackResult" class="btn-link">回到測驗結果</a>
-          <a href="resonance-start.html" class="btn-link">回到測驗開始</a>
-        </div>
+        <nav class="book-nav">
+          <a href="index.html">回到展覽首頁</a>
+          <a href="resonance-result.html">回到測驗結果</a>
+          <a href="resonance-start.html">回到測驗開始</a>
+        </nav>
       </footer>
     </section>
   </main>
 
   <script>
-    const PAGES = [
+    // 六種共振人格資料（文字你之後可以再細修）
+    const PERSONAS = [
       {
         id: "temp",
         code: "T-01",
-        pageIndex: 1,
-        title: "溫度的收集者",
-        en: "Collector of Warmth",
-        summary: "你靠「感覺的暖度」認識世界。",
-        tags: ["暖意", "直覺", "靠近感"],
-        story: [
-          "在老台灣的日常裡，你會先注意到一盞燈、一個眼神、一句輕聲的問候。",
-          "你記住的是當時那種「舒服、被理解」的感覺。"
-        ],
-        suggest: "先去有故事、有人物、能讓你慢慢停留的作品區。"
+        nameZh: "溫度的收集者",
+        nameEn: "COLLECTOR OF WARMTH",
+        tagline: "你靠「感覺的暖度」認識世界。",
+        keywords: ["暖意", "直覺", "靠近感"],
+        oldYou:
+          "在老台灣的日常裡，你會先注意到一盞燈、一個眼神、一句輕聲的問候。你記住的是當時那種「舒服、被理解」的感覺。",
+        suggest:
+          "先去有故事、有人物、能讓你慢慢停留的作品區。你也適合待在能與人聊上幾句的展位。",
+        rightMeta:
+          "建議從「食」與「住」相關的小組開始逛，感受作品裡的溫度與照顧。"
       },
       {
         id: "freq",
         code: "F-02",
-        pageIndex: 2,
-        title: "頻率的校準者",
-        en: "Rhythm Tuner",
-        summary: "你追尋節奏、規律與微妙的秩序。",
-        tags: ["節奏", "規律", "穩定感"],
-        story: [
-          "你會留意掛鐘的滴答、街上車流的速度、隊伍前進的步調。",
-          "只要節奏對了，你就能安穩地待在那個空間裡。"
-        ],
-        suggest: "先從動線清楚、結構完整、節奏感強的作品開始逛。"
+        nameZh: "頻率的校準者",
+        nameEn: "TUNER OF FREQUENCIES",
+        tagline: "你習慣先找到「節奏」，再慢慢靠近內容。",
+        keywords: ["節奏", "秩序", "穩定"],
+        oldYou:
+          "在老台灣的街景裡，你會先聽見公車進站的聲響、紅綠燈切換的節奏、電台整點報時。這些規律讓你覺得安心。",
+        suggest:
+          "可以先看時間線、流程感強的作品，像是紀錄成長、移動路徑的展區，再延伸到其他主題。",
+        rightMeta:
+          "建議從「行」與「育」的作品開始，看人與系統、日常節奏之間的關係。"
       },
       {
         id: "sig",
         code: "S-03",
-        pageIndex: 3,
-        title: "訊號的開拓者",
-        en: "Signal Pioneer",
-        summary: "你總能第一個看到新方向。",
-        tags: ["靈光", "直覺跳點", "新路徑"],
-        story: [
-          "在老街的轉角，你總是會注意到大家還沒發現的小東西。",
-          "一個怪招牌、一台新機器、一句奇怪的廣告詞，都可能讓你停下來。"
-        ],
-        suggest: "優先走向實驗性強、看起來「有點不一樣」的作品區。"
+        nameZh: "訊號的開拓者",
+        nameEn: "SCOUT OF SIGNALS",
+        tagline: "你會主動去追那些「不太一樣的東西」。",
+        keywords: ["好奇", "實驗", "探索"],
+        oldYou:
+          "在老台灣的巷弄裡，你會被一個奇怪的招牌、一種沒看過的小玩意吸引。你總是想：這是什麼？為什麼會在這裡？",
+        suggest:
+          "先去看最「怪」、最跳 tone 的作品，從那裡展開你自己的逛展路線。",
+        rightMeta:
+          "可以從「樂」與「行」的展區開始，尋找那些打破日常感的實驗作品。"
       },
       {
         id: "mem",
         code: "M-04",
-        pageIndex: 4,
-        title: "記憶的編排者",
-        en: "Memory Curator",
-        summary: "你在細節裡整理世界的故事。",
-        tags: ["細節", "整理", "片段意義"],
-        story: [
-          "你會收集票根、便條紙、老照片，慢慢排成自己的時間線。",
-          "別人只覺得是小東西，你卻能從中讀出很多訊息。"
-        ],
-        suggest: "花一點時間在文字、註解、資料型的作品旁邊，你會看得特別開心。"
+        nameZh: "記憶的編排者",
+        nameEn: "CURATOR OF MEMORY",
+        tagline: "你習慣把碎片整理成一條故事線。",
+        keywords: ["回顧", "整理", "脈絡感"],
+        oldYou:
+          "在老台灣的客廳裡，你會翻著相簿、報紙、舊錄影帶，試著把零散的畫面拼成一個完整故事。",
+        suggest:
+          "先看有明顯「前因後果」的展區，例如成長、歷程、城市變遷，再把其他作品慢慢補進你的故事裡。",
+        rightMeta:
+          "適合從「育」與「住」主題開始，看人與空間、時間之間如何互相記錄。"
       },
       {
         id: "noise",
         code: "N-05",
-        pageIndex: 5,
-        title: "噪點的解構者",
-        en: "Noise Decoder",
-        summary: "你能從雜訊中找出有趣的真相。",
-        tags: ["反向思考", "不完美", "亂中找序"],
-        story: [
-          "收音機失真、電視畫面跑掉、印刷錯位，你反而會看得更認真。",
-          "對你來說，錯誤本身就是一種線索。"
-        ],
-        suggest: "尋找那些「看起來不太順眼」或故意做壞的作品，它們會讓你很有感。"
+        nameZh: "噪點的解構者",
+        nameEn: "DECODER OF NOISE",
+        tagline: "你會先注意到「哪裡怪怪的」。",
+        keywords: ["反差", "質疑", "拆解"],
+        oldYou:
+          "在老台灣的廣播與電視聲裡，你會特別留意卡頓、失真、畫面對不上的瞬間。你覺得那些地方藏著真正的訊息。",
+        suggest:
+          "可以先看那些明明很日常，卻刻意留下破綻與反差的作品，邊看邊問自己：這裡到底哪裡不對勁？",
+        rightMeta:
+          "從「行」與「衣」的展區開始，觀察看似正常的系統與外表下，藏了哪些問題。"
       },
       {
         id: "echo",
         code: "E-06",
-        pageIndex: 6,
-        title: "回聲的放大者",
-        en: "Echo Amplifier",
-        summary: "你被情緒、人聲與共鳴所牽引。",
-        tags: ["共鳴", "感受力", "情緒流動"],
-        story: [
-          "你會記得的是誰笑得最大聲、哪一句話讓空氣安靜下來。",
-          "聲音背後的情緒，比內容本身更抓住你。"
-        ],
-        suggest: "優先看看有「聲音、訪談、故事分享」的作品區，你會很容易投入其中。"
+        nameZh: "回聲的放大者",
+        nameEn: "AMPLIFIER OF ECHOES",
+        tagline: "你特別在意「情緒留下的回音」。",
+        keywords: ["共鳴", "情緒", "連結"],
+        oldYou:
+          "在老台灣的巷弄裡，你會記住的是大家一起笑、一起哭、一起吵架的聲音，而不是畫面本身。",
+        suggest:
+          "先去感受情緒濃度高的作品區，像是講關係、衝突或告別的作品，再回頭找出你自己共鳴最深的那一件。",
+        rightMeta:
+          "適合從「樂」與「食」主題開始，尋找那些會在你心裡留下迴響的瞬間。"
       }
     ];
 
-    function getQueryParam(name) {
-      const url = new URL(window.location.href);
-      return url.searchParams.get(name);
-    }
+    const ORDER = PERSONAS.map(p => p.id);
 
-    const type = getQueryParam("type");
-    const resultType = type && PAGES.some(p => p.id === type) ? type : null;
+    const bookEl = document.getElementById("book");
+    const headerSubEl = document.getElementById("headerSub");
+    const headerCodeEl = document.getElementById("headerCode");
+    const nameZhEl = document.getElementById("personaNameZh");
+    const nameEnEl = document.getElementById("personaNameEn");
+    const taglineEl = document.getElementById("personaTagline");
+    const keywordsEl = document.getElementById("personaKeywords");
+    const oldYouEl = document.getElementById("personaOldYou");
+    const suggestEl = document.getElementById("personaSuggest");
+    const rightMetaEl = document.getElementById("personaRightMeta");
+    const pageIndicatorEl = document.getElementById("pageIndicator");
+    const portraitHintEl = document.getElementById("personaPortraitHint");
 
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    // 讀取網址上的 ?type=xxx → 對應到某一頁
+    const params = new URLSearchParams(window.location.search);
+    const initialType = params.get("type");
     let currentIndex = 0;
-    if (resultType) {
-      const foundIndex = PAGES.findIndex(p => p.id === resultType);
-      if (foundIndex !== -1) currentIndex = foundIndex;
+    if (initialType) {
+      const idx = ORDER.indexOf(initialType);
+      if (idx >= 0) currentIndex = idx;
     }
 
-    const personaNameEl = document.getElementById("personaName");
-    const personaEnEl = document.getElementById("personaEn");
-    const personaSummaryEl = document.getElementById("personaSummary");
-    const keywordsEl = document.getElementById("keywords");
-    const personaStoryEl = document.getElementById("personaStory");
-    const personaSuggestEl = document.getElementById("personaSuggest");
-    const pageCodeEl = document.getElementById("pageCode");
-    const pageNumberEl = document.getElementById("pageNumber");
-    const btnPrev = document.getElementById("btnPrev");
-    const btnNext = document.getElementById("btnNext");
-    const btnBackResult = document.getElementById("btnBackResult");
+    function renderPersona(index) {
+      const p = PERSONAS[index];
+      if (!p) return;
 
-    function renderPage() {
-      const page = PAGES[currentIndex];
+      headerSubEl.textContent = `${p.nameZh} · ${p.nameEn}`;
+      headerCodeEl.textContent = p.code;
 
-      pageCodeEl.textContent = page.code;
-      personaNameEl.textContent = page.title;
-      personaEnEl.textContent = page.en;
-      personaSummaryEl.textContent = page.summary;
+      nameZhEl.textContent = p.nameZh;
+      nameEnEl.textContent = p.nameEn;
+      taglineEl.textContent = p.tagline;
+      oldYouEl.textContent = p.oldYou;
+      suggestEl.textContent = p.suggest;
+      rightMetaEl.textContent = p.rightMeta;
+
+      // 關於未來角色樣貌的說明，可以依人格微調
+      portraitHintEl.innerHTML =
+        `這一頁之後可以放上<br><strong>${p.nameZh}</strong> 的插畫、3D 造型或肖像。`;
 
       keywordsEl.innerHTML = "";
-      page.tags.forEach(tag => {
+      p.keywords.forEach(kw => {
         const span = document.createElement("span");
-        span.className = "keyword-pill";
-        span.textContent = tag;
+        span.className = "pill";
+        span.textContent = kw;
         keywordsEl.appendChild(span);
       });
 
-      personaStoryEl.innerHTML = "";
-      page.story.forEach(line => {
-        const p = document.createElement("p");
-        p.textContent = line;
-        personaStoryEl.appendChild(p);
-      });
+      const pageNum = String(index + 1).padStart(2, "0");
+      const pageTotal = String(PERSONAS.length).padStart(2, "0");
+      pageIndicatorEl.textContent = `PAGE ${pageNum} / ${pageTotal}`;
 
-      personaSuggestEl.textContent = page.suggest;
-      pageNumberEl.textContent =
-        `PAGE ${String(page.pageIndex).padStart(2, "0")} / ${String(PAGES.length).padStart(2, "0")}`;
-
-      // 導回測驗結果（如果有 type）
-      if (resultType) {
-        btnBackResult.href = `resonance-result.html?type=${encodeURIComponent(page.id)}`;
-      } else {
-        btnBackResult.href = "resonance-result.html";
-      }
-
-      // 上一頁 / 下一頁按鈕狀態
-      btnPrev.disabled = currentIndex === 0;
-      btnNext.disabled = currentIndex === PAGES.length - 1;
+      prevBtn.disabled = index === 0;
+      nextBtn.disabled = index === PERSONAS.length - 1;
     }
 
-    btnPrev.addEventListener("click", () => {
-      if (currentIndex > 0) {
-        currentIndex -= 1;
-        renderPage();
+    function goNext() {
+      if (currentIndex >= PERSONAS.length - 1) return;
+      currentIndex += 1;
+      bookEl.classList.remove("flip-prev");
+      void bookEl.offsetWidth;
+      bookEl.classList.add("flip-next");
+      renderPersona(currentIndex);
+      setTimeout(() => bookEl.classList.remove("flip-next"), 460);
+    }
+
+    function goPrev() {
+      if (currentIndex <= 0) return;
+      currentIndex -= 1;
+      bookEl.classList.remove("flip-next");
+      void bookEl.offsetWidth;
+      bookEl.classList.add("flip-prev");
+      renderPersona(currentIndex);
+      setTimeout(() => bookEl.classList.remove("flip-prev"), 460);
+    }
+
+    prevBtn.addEventListener("click", goPrev);
+    nextBtn.addEventListener("click", goNext);
+
+    // 可選：滑鼠移到書本左／右 15% 區域時，提示可以翻頁
+    bookEl.addEventListener("mousemove", (e) => {
+      const rect = bookEl.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const ratio = x / rect.width;
+
+      if (ratio < 0.18 && currentIndex > 0) {
+        bookEl.style.cursor = "w-resize";
+      } else if (ratio > 0.82 && currentIndex < PERSONAS.length - 1) {
+        bookEl.style.cursor = "e-resize";
+      } else {
+        bookEl.style.cursor = "default";
       }
     });
 
-    btnNext.addEventListener("click", () => {
-      if (currentIndex < PAGES.length - 1) {
-        currentIndex += 1;
-        renderPage();
+    // 如果你真的想做「滑鼠一靠近就翻頁」，可以開啟下面這段（目前先註解避免太暴衝）
+    /*
+    bookEl.addEventListener("click", (e) => {
+      const rect = bookEl.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const ratio = x / rect.width;
+      if (ratio < 0.18) {
+        goPrev();
+      } else if (ratio > 0.82) {
+        goNext();
       }
     });
+    */
 
-    renderPage();
+    renderPersona(currentIndex);
   </script>
 </body>
 </html>
