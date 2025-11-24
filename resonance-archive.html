@@ -67,9 +67,8 @@
     flex-direction: column;
     transform-origin: center center;
     transform:
-      perspective(1200px)
-      rotateX(5deg);   /* 原本 14deg → 5deg，比較像桌上開一本書 */
-    transform-style: preserve-3d;
+      none;
+    transform-style: flat;
     overflow: hidden;
   }
 
@@ -149,12 +148,12 @@
   /* 左右頁原本的 rotateY 太多，會加上模糊感 → 改成很微弱 */
   .page-left {
     transform-origin: right center;
-    transform: perspective(1200px) rotateY(2deg);
+    transform: none;
   }
 
   .page-right {
     transform-origin: left center;
-    transform: perspective(1200px) rotateY(-2deg);
+    transform: none;
   }
 
   .page-heading-zh {
@@ -403,7 +402,6 @@
     }
     .book-arrow { display: none; }
   }
-  
 </style>
 
 </head>
