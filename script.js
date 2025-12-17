@@ -339,7 +339,7 @@ const categoryData = {
   ],
   education: [
     { name: "樂壓Talk's", desc: "AI陪你聊心事，壓力不再自己扛" , img: "grouplogo/leyatalks.png" , ig: "https://www.instagram.com/le_ya.talks?igsh=a3U3aDgxbTNjNnAx", web: "https://leyatalks.com/" },
-    { name: "Lunia", desc: "做一個能記錄夢的地方。在Lunia,夢不只是夢。" , img: "grouplogo/lunia.png" , ig: "https://www.instagram.com/lunia_diary?igsh=czVkdjgzNWI3NWM1", web: "https://apps.apple.com/tw/app/lunia/id6748688251" },
+    { name: "Lunia", desc: "做一個能記錄夢的地方。在Lunia,夢不只是夢。" , img: "grouplogo/lunia.png" , ig: "https://www.instagram.com/lunia_diary?igsh=czVkdjgzNWI3NWM1", web: "https://innerlunia.carrd.co/#", app: "https://apps.apple.com/tw/app/lunia/id6748688251" },
     { name: "MaMoon", desc: "會說話的好朋友 陪伴孩子的每一天。" , img: "grouplogo/mamoon.png" , ig: "https://www.instagram.com/mamoon_0223?igsh=MTIyZHFpMmc4ZDE2Ng==", web: "https://mamoon1140223.github.io/mamoon" },
     { name: "自律控肉飯", desc: "時間自律是大家的課題，一起加入我們一起自律。" , img: "grouplogo/kongrolab.png" , ig: "https://www.instagram.com/kongro__lab?igsh=azB1Z2l6aG03NHl2", web: "https://pengdoucheng.github.io/" },
     { name: "彼站彼話", desc: "傳統文化不無聊，帶你進入趣味的閩南圈。" , img: "grouplogo/bizhanbihua.png" , ig: "https://www.instagram.com/hitetsam_game?igsh=YXl2Y3RzeDZ2bTR1", web: "https://hitetsamgame.framer.website" },
@@ -384,6 +384,7 @@ document.querySelectorAll('.group-btn').forEach(btn => {
                         <div class="card-links">
                           ${group.ig ? `<a href="${group.ig}" target="_blank"><img src="ig icon.png" class="icon" alt="Instagram"></a>` : ''}
                           ${group.web ? `<a href="${group.web}" target="_blank"><img src="web icon.png" class="icon" alt="Website"></a>` : ''}
+                          ${group.app ? `<a href="${group.app}" target="_blank"><img src="app icon.png" class="icon" alt="App"></a>` : ''}
                         </div>
       `;
 
