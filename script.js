@@ -298,7 +298,7 @@ const categoryData = {
   ],
   housing: [
     { name: "藥嚀管", desc: "藥嚀在手，吃藥不愁。" , img: "grouplogo/yaoningguan.png" , ig: "https://www.instagram.com/yao_ning_guan?igsh=MTN0Mnp6aG9vd25vdg==", web: "https://www.example.com" },
-    { name: "未來居所", desc: "讓AI協助你大展身手，創建屬於你自己的房屋。" , img: "grouplogo/futurenest.png" , ig: "https://www.instagram.com/future_nest111?igsh=MWxoNjlocHVhYjBlcw==", web: "https://www.example.com" },
+    { name: "未來居所", desc: "讓AI協助你大展身手，創建屬於你自己的房屋。" , img: "grouplogo/futurenest.png" , ig: "https://www.instagram.com/future_nest111?igsh=MWxoNjlocHVhYjBlcw==", web: "https://a110070254.github.io/futurehouse/web/files/index.html" },
   ],
   transport: [
     { name: "Circolle", desc: "一手交易，交二手貨。" , img: "grouplogo/secondhaneasy.png" , ig: "https://www.instagram.com/second_han.easy?igsh=MThnbWlmcHAwMThlcA==", web: "https://circolle.xyz" },
@@ -307,13 +307,13 @@ const categoryData = {
   education: [
     { name: "樂壓Talk's", desc: "AI陪你聊心事，壓力不再自己扛" , img: "grouplogo/leyatalks.png" , ig: "https://www.instagram.com/le_ya.talks?igsh=a3U3aDgxbTNjNnAx", web: "https://leyatalks.com/" },
     { name: "Lunia", desc: "做一個能記錄夢的地方。在Lunia,夢不只是夢。" , img: "grouplogo/lunia.png" , ig: "https://www.instagram.com/lunia_diary?igsh=czVkdjgzNWI3NWM1", web: "https://apps.apple.com/tw/app/lunia/id6748688251" },
-    { name: "MaMoon", desc: "會說話的好朋友 陪伴孩子的每一天。" , img: "grouplogo/mamoon.png" , ig: "https://www.instagram.com/mamoon_0223?igsh=MTIyZHFpMmc4ZDE2Ng==", web: "https://www.example.com" },
-    { name: "自律控肉飯", desc: "時間自律是大家的課題，一起加入我們一起自律。" , img: "grouplogo/kongrolab.png" , ig: "https://www.instagram.com/kongro__lab?igsh=azB1Z2l6aG03NHl2", web: "https://www.example.com" },
-    { name: "彼站彼話", desc: "傳統文化不無聊，帶你進入趣味的閩南圈。" , img: "grouplogo/bizhanbihua.png" , ig: "https://www.instagram.com/hitetsam_game?igsh=YXl2Y3RzeDZ2bTR1", web: "https://www.example.com" },
+    { name: "MaMoon", desc: "會說話的好朋友 陪伴孩子的每一天。" , img: "grouplogo/mamoon.png" , ig: "https://www.instagram.com/mamoon_0223?igsh=MTIyZHFpMmc4ZDE2Ng==", web: "https://mamoon1140223.github.io/mamoon" },
+    { name: "自律控肉飯", desc: "時間自律是大家的課題，一起加入我們一起自律。" , img: "grouplogo/kongrolab.png" , ig: "https://www.instagram.com/kongro__lab?igsh=azB1Z2l6aG03NHl2", web: "https://pengdoucheng.github.io/" },
+    { name: "彼站彼話", desc: "傳統文化不無聊，帶你進入趣味的閩南圈。" , img: "grouplogo/bizhanbihua.png" , ig: "https://www.instagram.com/hitetsam_game?igsh=YXl2Y3RzeDZ2bTR1", web: "https://hitetsamgame.framer.website" },
   ],
   entertainment: [
-    { name: "青山", desc: "青山出巡，故事啟程『一次跨越時代的對話，一段重新連結傳統的旅程』" , img: "grouplogo/qingshan.png" , ig: "https://www.instagram.com/qingshan.ics?igsh=MWVzaGhzYzY1N3htNA==", web: "https://www.example.com" },
-    { name: "光腳工作室", desc: "劇情冒險遊戲熱烈開發中，關注更多我們的開發日常和進度吧！" , img: "grouplogo/lightfoot.png" , ig: "https://www.instagram.com/lightfootgames?igsh=N2JzaHh2c2h2MmRr", web: "https://www.example.com" },
+    { name: "青山", desc: "青山出巡，故事啟程『一次跨越時代的對話，一段重新連結傳統的旅程』" , img: "grouplogo/qingshan.png" , ig: "https://www.instagram.com/qingshan.ics?igsh=MWVzaGhzYzY1N3htNA==", web: "https://qing-shan.vercel.app/" },
+    { name: "光腳工作室", desc: "劇情冒險遊戲熱烈開發中，關注更多我們的開發日常和進度吧！" , img: "grouplogo/lightfoot.png" , ig: "https://www.instagram.com/lightfootgames?igsh=N2JzaHh2c2h2MmRr" },
   ]
 };
 
