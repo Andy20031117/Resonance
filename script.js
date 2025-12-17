@@ -86,6 +86,39 @@ links.forEach(link => {
   });
 });
 
+// 漢堡選單
+document.addEventListener('DOMContentLoaded', () => {
+  const navbar = document.querySelector('.navbar');
+  const burger = document.querySelector('.burger');
+  const menuLinks = document.querySelectorAll('.menu a');
+
+  if (!navbar || !burger) return;
+
+  // 點擊漢堡：開 / 關選單
+  burger.addEventListener('click', () => {
+    const isOpen = navbar.classList.toggle('open');
+    burger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+
+  // 點擊任一選單項目後，自動收起（手機體驗）
+  menuLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 767) {
+        navbar.classList.remove('open');
+        burger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  });
+
+  // 視窗從手機拉回桌機時，保險關閉手機狀態
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 767) {
+      navbar.classList.remove('open');
+      burger.setAttribute('aria-expanded', 'false');
+    }
+  });
+});
+
 // 泡泡動畫
 document.addEventListener("DOMContentLoaded", () => {
   const bubbleArea = document.querySelector(".bubble-area");
